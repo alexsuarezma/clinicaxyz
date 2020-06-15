@@ -11,7 +11,6 @@
 
     $salida = "";
 	$p = $conn->real_escape_string($_POST['personal']);
-	var_dump($p);
     $query = "SELECT * FROM empleados WHERE (nombres NOT LIKE '') AND (deleted=0) AND (personal='$p') ORDER By cedula LIMIT 25";
 
     if (isset($_POST['consulta'])) {
