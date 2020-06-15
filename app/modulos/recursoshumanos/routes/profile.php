@@ -28,7 +28,7 @@
 </head>
 <body>
 <?php
-  printLayout('../index.php', '../../../../index.html', 'contrato.php', 'personal.php');
+    printLayout('../index.php', '../../../../index.html', 'contrato.php', 'selectPersonal.php', 'reclutamiento.php', 'historialPersonal.php');
 ?>
 <div class="container-fluid">
   <div class="row">

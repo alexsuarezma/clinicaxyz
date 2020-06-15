@@ -1,5 +1,5 @@
 <?php
-   function printLayout ($route, $homePage, $createPage, $personalPage){
+   function printLayout ($route, $homePage, $createPage, $personalPage, $reclutamiento, $historialPersonal){
       echo "<nav class='navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow'>";
       echo "<a class='navbar-brand col-md-3 col-lg-2 mr-0 px-3' href=$route>";
       echo "<span className='font-weight-bold'>Recursos</span>";
@@ -10,7 +10,7 @@
       echo "</button>";
       echo "<ul class='navbar-nav px-3'>";
       echo "<li class='nav-item text-nowrap'>";
-      echo "<a class='nav-link' href='#'>Sign out</a>";
+      echo "<a class='nav-link' href='#'>Cerrar sesión</a>";
       echo "</li>";
       echo "</ul>";
       echo "</nav>";
@@ -21,7 +21,7 @@
       echo "<li class='nav-item'>";
       echo "<a class='nav-link active' href=$homePage>";
       echo "<span data-feather='home'></span>";
-      echo "Home Page <span class='sr-only'>(current)</span>";
+      echo "Pagina Principal <span class='sr-only'>(current)</span>";
       echo "</a>";
       echo "</li>";
       echo "<li class='nav-item'>";
@@ -43,7 +43,7 @@
       echo "</a>";
       echo "</li>";
       echo "<li class='nav-item'>";
-      echo "<a class='nav-link' href='#'>";
+      echo "<a class='nav-link' href=$reclutamiento>";
       echo "<span data-feather='layers'></span>";
       echo "Reclutamiento";
       echo "</a>";
@@ -51,37 +51,37 @@
       echo "</ul>";
 
       echo "<h6 class='sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted'>";
-      echo "<span>Saved reports</span>";
+      echo "<span>Sub menus</span>";
       echo "<a class='d-flex align-items-center text-muted' href='#' aria-label='Add a new report'>";
       echo "<span data-feather='plus-circle'></span>";
       echo "</a>";
       echo "</h6>";
       echo "<ul class='nav flex-column mb-2'>";
       echo "<li class='nav-item'>";
-      echo "<a class='nav-link' href='#'>";
+      echo "<a class='nav-link' href=$historialPersonal>";
       echo "<span data-feather='file-text'></span>";
-      echo "Current month";
+      echo "Historial de personal";
       echo "</a>";
       echo "</li>";
-      echo "<li class='nav-item'>";
-      echo "<a class='nav-link' href='#'>";
-      echo "<span data-feather='file-text'></span>";
-      echo "Last quarter";
-      echo "</a>";
-      echo "</li>";
-      echo "<li class='nav-item'>";
-      echo "<a class='nav-link' href='#'>";
-      echo "<span data-feather='file-text'></span>";
-      echo "Social engagement";
-      echo "</a>";
-      echo "</li>";
-      echo "<li class='nav-item'>";
-      echo "<a class='nav-link' href='#'>";
-      echo "<span data-feather='file-text'></span>";
-      echo "Year-end sale";
-      echo "</a>";
-      echo "</li>";
-      echo "</ul>";
+      // echo "<li class='nav-item'>";
+      // echo "<a class='nav-link' href='#'>";
+      // echo "<span data-feather='file-text'></span>";
+      // echo "Last quarter";
+      // echo "</a>";
+      // echo "</li>";
+      // echo "<li class='nav-item'>";
+      // echo "<a class='nav-link' href='#'>";
+      // echo "<span data-feather='file-text'></span>";
+      // echo "Historial de";
+      // echo "</a>";
+      // echo "</li>";
+      // echo "<li class='nav-item'>";
+      // echo "<a class='nav-link' href='#'>";
+      // echo "<span data-feather='file-text'></span>";
+      // echo "Year-end sale";
+      // echo "</a>";
+      // echo "</li>";
+      // echo "</ul>";
       echo "</div>";
       echo "</nav>";
    }

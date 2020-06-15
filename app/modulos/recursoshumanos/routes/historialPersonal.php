@@ -1,3 +1,9 @@
+<?php 
+    require '../../../../database.php'; 
+    require '../components/layout.php';
+        $results = $conn->query("SELECT * FROM empleados WHERE deleted = 1")->fetchAll(PDO::FETCH_OBJ);
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,7 +11,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/dashboard/">
-    <link rel="stylesheet" href="../assets/styles/component/cards.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <!-- Bootstrap core CSS -->
     <link href="../assets/dist/css/bootstrap.css" rel="stylesheet">
@@ -26,7 +33,6 @@
 </head>
 <body>
 <?php
-  require '../components/layout.php';
   printLayout('../index.php', '../../../../index.html', 'contrato.php', 'selectPersonal.php', 'reclutamiento.php', 'historialPersonal.php');
 ?>
 <div class="container-fluid">
@@ -34,7 +40,7 @@
 
     <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-            <h1 class="h2">Dashboard</h1>
+            <h1 class="h2">Historial de personal contratado</h1>
             <h5 id="personal" style="display: none"><?php echo $_GET["pers"] ?></h5>
             <div class="btn-toolbar mb-2 mb-md-0">
                 <div class="btn-group mr-2">
@@ -50,10 +56,26 @@
     <div class="container">
       <input type="text" name="busqueda" id="busqueda" placeholder="Search for names.." title="Type in a name">
     </div>
-        <div class="container page-container">
-            <div id="datos" class="row gutters">            
+            <div class="container" >
+                <ul class="list-group">
+                      <?php
+                        foreach ($results as $empleados):?>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span><?php echo $empleados->cedula?></span>
+                        <span style="text-decoration: line-through;"><?php echo $empleados->nombres?> <?php echo $empleados->apellidos?></span>
+                        <span>
+                        <a href="../components/view.php?id=<?php echo $empleados->cedula?>" ><i class="fas fa-external-link-alt" style="color:blue;" ></i></a>
+                        <a href="../controllers/deleteFisic.php?id=<?php echo $empleados->cedula?>" ><i class="fas fa-trash-alt" style="color:red;" ></i></a>
+                        </span>
+                        </li>
+                      <?php 
+                        endforeach;
+                      ?>    
+                    
+                    
+                    
+                </ul>
             </div>
-        </div>
      </main>
    </div>
   </div>
@@ -63,8 +85,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
   <script src="../components/scripts/dashboard.js"></script>      
-  <script type="text/javascript" src="../components/scripts/jquery.min.js"></script>    
-  <script type="text/javascript" src="../components/scripts/searchFilter.js"></script>      
+  <!-- <script type="text/javascript" src="../components/scripts/jquery.min.js"></script>    
+  <script type="text/javascript" src="../components/scripts/searchFilter.js"></script>       -->
   
 </body>
 </html>

@@ -22,7 +22,7 @@
 </head>
   <body>
 <?php
-  printLayout('../index.php', '../../../../index.html', 'contrato.php', 'selectPersonal.php', 'reclutamiento.php', 'historialPersonal.php');
+    printLayout('../index.php', '../../../../index.html', 'contrato.php', 'selectPersonal.php', 'reclutamiento.php', 'historialPersonal.php');
 ?>
 <div class="container-fluid">
   <div class="row">
@@ -40,9 +40,40 @@
                   <div class="face face2">
                       <div class="content">
                           <h3>
-                              <a href="create.php">Registro de empleado</a>
-                          </h3>
-                          <i class="fa fa-arrow-circle-right" aria-hidden="true"></i>                         
+                              <a href="personal.php?pers=Medico">Medico</a>
+                          </h3>                     
+                      </div>
+                  </div>
+              </div>
+              <div class="card">
+                  <div class="face face1">
+                      <div class="content">
+                          <div class="icon">
+                              <i class="fa fa-address-book" aria-hidden="true"></i>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="face face2">
+                      <div class="content">
+                          <h3>
+                              <a href="personal.php?pers=Asistencial">Asistencial</a>
+                          </h3>                      
+                      </div>
+                  </div>
+              </div>
+              <div class="card">
+                  <div class="face face1">
+                      <div class="content">
+                          <div class="icon">
+                              <i class="fa fa-address-book" aria-hidden="true"></i>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="face face2">
+                      <div class="content">
+                          <h3>
+                              <a href="personal.php?pers=Administrativo">Administrativo</a>
+                          </h3>                      
                       </div>
                   </div>
               </div>

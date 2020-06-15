@@ -6,4 +6,4 @@
        $stmt = $conn->prepare($sql);
        $stmt->bindParam(':cedula', $id);
        $stmt->execute();
-       header("Location:../routes/personal.php");
+       header("Location:../routes/selectPersonal.php");

@@ -6,7 +6,7 @@
     <meta name="description" content="">
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Jekyll v4.0.1">
-    <title>Dashboard Template · Bootstrap</title>
+    <title>Recursos Humanos</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/dashboard/">
     <!-- Bootstrap core CSS -->
@@ -17,7 +17,7 @@
   <body>
 <?php
   require 'components/layout.php';
-  printLayout('index.php', '../../../index.html', 'routes/contrato.php', 'routes/personal.php');
+  printLayout('index.php', '../../../index.html', 'routes/contrato.php', 'routes/selectPersonal.php', 'routes/reclutamiento.php', 'routes/historialPersonal.php');
 ?>
 <div class="container-fluid">
   <div class="row">
@@ -36,10 +36,6 @@
           </button>
         </div>
       </div>
-<?php
-echo "ehkchc\nkslask; ";
-echo "ehkchckslask";
-?>
       <div class="container mt-5">
       </div>
     </main>
