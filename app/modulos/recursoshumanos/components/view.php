@@ -2,6 +2,7 @@
     require '../../../../database.php';
     require 'layout.php';
     $id = $_GET['id'];    
+    
             $records = $conn->prepare("SELECT * FROM empleados WHERE cedula = :cedula");
             $records->bindParam(':cedula', $id);
             $records->execute();
@@ -26,7 +27,7 @@
 <body>
 <?php
   
-  printLayout('../index.php', '../../../../index.html', 'contrato.php', 'selectPersonal.php', 'reclutamiento.php', 'historialPersonal.php');
+  printLayout('../index.php', '../../../../index.html', '../routes/contrato.php', '../routes/selectPersonal.php', '../routes/reclutamiento.php', '../routes/historialPersonal.php');
 ?>
 <div class="container-fluid">
   <div class="row">

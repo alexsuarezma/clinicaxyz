@@ -64,8 +64,8 @@
                         <span><?php echo $empleados->cedula?></span>
                         <span style="text-decoration: line-through;"><?php echo $empleados->nombres?> <?php echo $empleados->apellidos?></span>
                         <span>
-                        <a href="../components/view.php?id=<?php echo $empleados->cedula?>" ><i class="fas fa-external-link-alt" style="color:blue;" ></i></a>
-                        <a href="../controllers/deleteFisic.php?id=<?php echo $empleados->cedula?>" ><i class="fas fa-trash-alt" style="color:red;" ></i></a>
+                        <a href="../components/view.php?id=<?php echo $empleados->cedula?>" ><i class="fas fa-external-link-alt" style="color:blue;" title="Ver Informacion"></i></a>
+                        <a href="../controllers/deleteFisic.php?id=<?php echo $empleados->cedula?>" ><i class="fas fa-trash-alt" style="color:red;" title="Eliminar Registro Fisicamente"></i></a>
                         </span>
                         </li>
                       <?php 

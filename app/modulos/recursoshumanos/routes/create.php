@@ -4,8 +4,11 @@
     $created = date('d')."/".date('m')."/".date('Y');
     $creacion = date('d')."/".date('m')."/".date('Y')." ".date("H").":".date("i").":".date("s");
     
-    
-      
+    //$_FILES["fileDocument"];
+    //$permitidos = array("application/pdf");
+   
+
+
       if(!isset($_POST["btn-submit"])){
         $results = $conn->query("SELECT * FROM especialidades")->fetchAll(PDO::FETCH_OBJ);
       }else{   
@@ -19,9 +22,24 @@
                 echo "<script language='javascript'>alert('La cedula que intenta ingresar ya esta registrada en el sistema.');</script>";
            }else{
               // CREATE
+               $ruta = "../assets/static/contratos/";
+    $archivo = $ruta.$_FILES["fileDocument"]["name"];
+      if(!file_exists($ruta)){
+        mkdir($ruta);
+      }
+
+      if(!file_exists($archivo)){
+        $resultado = @move_uploaded_file($_FILES["fileDocument"]["tmp_name"],$archivo);
+        if($resultado){
+          //seguardo
+        }else{
+          //nose guardo
+        }
+      }else{
+        echo "ya existe";
+      }
                   try {
-                    $sql = "INSERT INTO empleados (cedula,profileimage,nombres,apellidos,direccion,nacionalidad,fechaNacimiento,distrito,ciudad,telefono,celular,email,sexo,estadoCivil,hijos,nombreHijo,apellidoHijo,anosHijo,mesesHijo,nombreHijo2,apellidoHijo2,anosHijo2,mesesHijo2,nombreHijo3,apellidoHijo3,anosHijo3,mesesHijo3,nombresContactoEmerg,telefonoContactoEmerg,celularContactoEmerg,nombresContactoEmerg2,telefonoContactoEmerg2,celularContactoEmerg2,titulo,institucion,fechaIngresoInsti,fechaEgresoInsti,salarioBase,idcontrato,especialidad,cargo,personal,area,idhorario,documentosDescription,fileDocument,disponible,deleted,created_at,updated_at) VALUES (:cedula,:profileimage,:nombres,:apellidos,:direccion,:nacionalidad,:fechaNacimiento,:distrito,:ciudad,:telefono,:celular,:email,:sexo,:estadoCivil,:hijos,:nombreHijo,:apellidoHijo,:anosHijo,:mesesHijo,:nombreHijo2,:apellidoHijo2,:anosHijo2,:mesesHijo2,:nombreHijo3,:apellidoHijo3,:anosHijo3,:mesesHijo3,:nombresContactoEmerg,:telefonoContactoEmerg,:celularContactoEmerg,:nombresContactoEmerg2,:telefonoContactoEmerg2,:celularContactoEmerg2,:titulo,:institucion,:fechaIngresoInsti,:fechaEgresoInsti,:salarioBase,:idcontrato,:especialidad,:cargo,:personal,:area,:idhorario,:documentosDescription,:fileDocument,:disponible,:deleted,:created_at,:updated_at)";
-                    $stmt = $conn->prepare($sql);
+                    $sql = "INSERT INTO empleados (cedula,profileimage,nombres,apellidos,direccion,nacionalidad,fechaNacimiento,distrito,ciudad,telefono,celular,email,sexo,estadoCivil,hijos,nombreHijo,apellidoHijo,anosHijo,mesesHijo,nombreHijo2,apellidoHijo2,anosHijo2,mesesHijo2,nombreHijo3,apellidoHijo3,anosHijo3,mesesHijo3,nombresContactoEmerg,telefonoContactoEmerg,celularContactoEmerg,nombresContactoEmerg2,telefonoContactoEmerg2,celularContactoEmerg2,titulo,institucion,fechaIngresoInsti,fechaEgresoInsti,salarioBase,idcontrato,especialidad,cargo,personal,area,idhorario,documentosDescription,fileDocument,disponible,deleted,created_at,updated_at) VALUES (:cedula,:profileimage,:nombres,:apellidos,:direccion,:nacionalidad,:fechaNacimiento,:distrito,:ciudad,:telefono,:celular,:email,:sexo,:estadoCivil,:hijos,:nombreHijo,:apellidoHijo,:anosHijo,:mesesHijo,:nombreHijo2,:apellidoHijo2,:anosHijo2,:mesesHijo2,:nombreHijo3,:apellidoHijo3,:anosHijo3,:mesesHijo3,:nombresContactoEmerg,:telefonoContactoEmerg,:celularContactoEmerg,:nombresContactoEmerg2,:telefonoContactoEmerg2,:celularContactoEmerg2,:titulo,:institucion,:fechaIngresoInsti,:fechaEgresoInsti,:salarioBase,:idcontrato,:especialidad,:cargo,:personal,:area,:idhorario,:documentosDescription,:fileDocument,:disponible,:deleted,:created_at,:updated_at)";                    $stmt = $conn->prepare($sql);
                     $stmt->bindParam(':cedula', $_POST['cedula']);
                     $stmt->bindValue(':profileimage', null, PDO::PARAM_INT);
                     $stmt->bindParam(':nombres',$_POST['nombres']);
@@ -67,7 +85,7 @@
                     $stmt->bindParam(':area',$_POST['area']);
                     $stmt->bindParam(':idhorario',$_POST['idhorario']);
                     $stmt->bindParam(':documentosDescription',$_POST['documentosDescription']);
-                    $stmt->bindValue(':fileDocument', 0, PDO::PARAM_INT);
+                    $stmt->bindParam(':fileDocument', $archivo);
                     $stmt->bindValue(':deleted', 0, PDO::PARAM_INT);
                     $stmt->bindValue(':disponible', 1, PDO::PARAM_INT);
                     $stmt->bindValue(':created_at', $creacion);
@@ -418,7 +436,8 @@
                         <option><?php echo $especialidad->idespecialidad?></option> 
                       <?php 
                         endforeach;
-                      ?>                     
+                      ?>               
+                      <option>No aplica</option>      
                     </select>
                     <div class="invalid-feedback">
                       <!--mensaje para feedback del campo.-->
@@ -485,7 +504,7 @@
                   </div>  
                   <div class="input-group mb-3">
                   <div class="custom-file">
-                    <input name="fileDocument" type="file" class="form-control" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01">
+                    <input name="fileDocument" type="file" class="form-control" id="fileDocument" accept="application/pdf" aria-describedby="inputGroupFileAddon01">
                   </div>
                 </div>
 

@@ -236,6 +236,7 @@
                 <textarea name="documentosDescription" class="form-control" id="lugar" rows="3" disabled=""><?php echo $results["documentosDescription"]?></textarea>
                 </div>        
             </div>   
+            <a href="../components/viewDocuments.php?contrato=<?php echo $results["fileDocument"]?>">Visualizar Documentos</a>
         </div> 
         <hr class="mt-2 mb-3">
         </div>

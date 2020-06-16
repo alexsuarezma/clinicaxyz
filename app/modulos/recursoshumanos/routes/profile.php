@@ -58,7 +58,7 @@
                             <div class="author-card-avatar"><img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="Daniel Adams">
                             </div>
                             <div class="author-card-details">
-                                <h5 class="author-card-name text-lg"><?php echo $results['nombres']?> <?php echo $results['apellidos'] ?> </h5><span class="author-card-position">Contratado desde el dd/mm/aa</span>
+                                <h5 class="author-card-name text-lg"><?php echo $results['nombres']?> <?php echo $results['apellidos'] ?> </h5><span class="author-card-position">Contratado desde el <?php echo $results["created_at"]?></span>
                                 <h5 id="ocultCedula"style="display: none"><?php echo $results['cedula']?></h5>
                             </div>
                         </div>

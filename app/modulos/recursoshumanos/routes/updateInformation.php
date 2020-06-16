@@ -254,12 +254,13 @@
                     <select class="custom-select" name="especialidad" id="validationServer40" required>
                        <option selected="true"><?php echo $results["especialidad"]?></option>
                        <option disabled value="">Seleccione...</option>
-                      <?php
-                        foreach ($espe as $especialidad):?>
-                        <option><?php echo $especialidad->idespecialidad?></option> 
-                      <?php 
-                        endforeach;
-                      ?>                     
+                        <?php
+                          foreach ($espe as $especialidad):?>
+                          <option><?php echo $especialidad->idespecialidad?></option> 
+                        <?php 
+                          endforeach;
+                        ?>      
+                        <option>No aplica</option>                    
                     </select>
                     <div class="invalid-feedback">
                       <!--mensaje para feedback del campo.-->
@@ -273,9 +274,9 @@
                           <select class="custom-select" name="cargo" id="validationServer41" required>
                           <option selected="true"><?php echo $results["cargo"]?></option>
                           <option disabled value="">Seleccione...</option>
-                          <option>Cargo 1</option>
-                          <option>Cargo 2</option>
-                          <option>Cargo 3</option>
+                          <option>Jefe de Area</option>
+                          <option>Asistente</option>
+                          <option>Otro</option>
                           </select>
                           <div class="invalid-feedback">
                           <!--mensaje para feedback del campo.-->
@@ -299,9 +300,9 @@
                           <select class="custom-select" name="area" id="validationServer43" required>
                               <option selected="true"><?php echo $results["area"]?></option>
                               <option disabled value="">Seleccione...</option>
-                              <option>1</option>
-                              <option>2</option>
-                              <option>3</option>
+                              <option>Area 1</option>
+                              <option>Area 2</option>
+                              <option>Area 3</option>
                               </select>
                             <div class="invalid-feedback">
                             <!--mensaje para feedback del campo.-->
@@ -312,9 +313,9 @@
                               <select class="custom-select" name="idhorario" id="validationServer44" required>
                                   <option selected="true"><?php echo $results["idhorario"]?></option>
                                   <option disabled value="">Seleccione...</option>
-                                  <option>1</option>
-                                  <option>2</option>
-                                  <option>3</option>
+                                  <option>Matutino</option>
+                                  <option>Vespertino</option>
+                                  <option>Nocturno</option>
                                   </select>
                                 <div class="invalid-feedback">
                                 <!--mensaje para feedback del campo.-->
