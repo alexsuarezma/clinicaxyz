@@ -82,11 +82,7 @@ integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7
    
 
     <form class="form-signin" method="POST" action="index.php">
-    <h1 class="h3 mb-3 font-weight-normal">
-    <?php require 'header.php' ?>  
-    <?php if(!empty($message)): ?>
-        <p> <?= $message ?></p>
-      <?php endif; ?></h1>
+    
     
   <img class="mb-4" src="../assets/brand/bootstrap-solid.svg" alt="" width="72" height="72">
   <h1 class="h3 mb-3 font-weight-normal">Login</h1>
