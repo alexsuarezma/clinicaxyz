@@ -135,3 +135,136 @@ const cedula = document.getElementById("validationServer01").value;
       }
 
 }
+
+function validarExtdoc()
+{
+    var archivoInput = document.getElementById('fileDocument');
+    var archivoRuta = archivoInput.value;
+    var extPermitidas = /(.pdf|.PDF)$/i;
+    if(!extPermitidas.exec(archivoRuta)){
+        alert('Asegurese de haber seleccionado un documento con extension ".pdf o .PDF" ');
+        archivoInput.value = '';
+        return false;
+    }
+    // else
+    // {
+    //     //PRevio del PDF
+    //     if (archivoInput.files && archivoInput.files[0]) 
+    //     {
+    //         var visor = new FileReader();
+    //         visor.onload = function(e) 
+    //         {
+    //             document.getElementById('visorDocument').innerHTML = 
+    //             '<embed src="'+e.target.result+'" width="200" height="200" />';
+    //         };
+    //         visor.readAsDataURL(archivoInput.files[0]);
+    //     }
+    // }
+}
+
+
+$(document).ready(function(){
+  var i = 1;
+  var academico = 1;
+
+  $('#add').click(function () {
+      i++;
+      $('#dynamic_field').append(`<div class="form-row" id="row${i}">`+
+                                      '<div class="col-md-3 mb-3">'+
+                                          '<label for="validationServer04">Nombres</label>'+
+                                          `<input type="text" name="nombreHijo${i}" class="form-control" onkeypress="return soloLetras(event)" id="validationServer14" autocomplete="off">`+
+                                      '</div>'+
+                                      '<div class="col-md-3 mb-3">'+
+                                          '<label for="validationServer04">Apellidos</label>'+
+                                          `<input type="text" name="apellidoHijo${i}" class="form-control" onkeypress="return soloLetras(event)" id="validationServer15" autocomplete="off">`+
+                                      '</div>'+
+                                      '<div class="col-md-2 mb-3">'+
+                                          '<label for="validationServer04">Años</label>'+
+                                          `<input type="text" name="anosHijo${i}" class="form-control" onkeypress="return soloNumeros(event)" maxlength="2" id="validationServer16" autocomplete="off">`+
+                                      '</div>'+
+                                      '<div class="col-md-2 mb-3">'+
+                                          '<label for="validationServer04">Meses</label>'+
+                                          `<input type="text" name="mesesHijo${i}" class="form-control" onkeypress="return soloNumeros(event)" maxlength="2" id="validationServer17" autocomplete="off">`+
+                                      '</div>'+
+                                  '</div>');
+      document.getElementById("numeroHijos").value = i;
+  });
+
+
+  $('#add-aspirante').click(function () {
+      i++;
+      $('#dynamic_field_academico').append(`<div class="form-row" id="row${i}">`+
+                                              '<div class="form-row">'+
+                                                '<div class="col-md-12 mb-3">'+
+                                                  '<label for="validationServer08">Titulo / Profesión</label>'+
+                                                  `<input type="text" name="titulo${i}" class="form-control" onkeypress="return soloLetras(event)" id="validationServer32" autocomplete="off" required>`+
+                                                '</div>'+
+                                                '<div class="col-md-12 mb-3">'+
+                                                    '<label for="validationServer11">Institución</label>'+
+                                                    `<input type="text" name="institucion${i}" class="form-control" onkeypress="return soloLetras(event)" id="validationServer33" autocomplete="off" required>`+
+                                                  '</div>'+
+                                              '</div>'+
+                                              '<div class="form-row">'+
+                                                '<div class="col-md-10 ml-2 mb-3">'+
+                                                  '<label for="validationServer16">Año de ingreso</label>'+
+                                                  `<input type="text" name="anoIngreso${i}" class="form-control" id="validationServer35" onkeypress="return soloNumeros(event)" maxlength="4" required>`+
+                                                '</div>'+
+                                                '<div class="col-md-10 ml-2 mb-3">'+
+                                                  '<label for="validationServer16">Año de Egreso</label>'+
+                                                  `<input type="text" name="anoEgreso${i}" class="form-control" id="validationServer36" onkeypress="return soloNumeros(event)" maxlength="4" required>`+
+                                              '</div>'+
+                                            '</div>');
+      document.getElementById("antecedentesAcadem").value = i;
+  });
+
+  $('#add-experiencia').click(function () {
+    academico++;
+    $('#dynamic_field_experiencia').append(`<div class="form-row" id="row-experiencia${academico}">`+
+                                            '<div class="col-md-4 mb-3">'+
+                                          '<label for="validationServer08">Empresa</label>'+
+                                          `<input type="text" name="empresa${academico}" class="form-control" onkeypress="return soloLetras(event)" id="validationServer32" autocomplete="off" required>`+
+                                        '</div>'+
+                                        '<div class="col-md-5 mb-3">'+
+                                          '<label for="validationServer16">Dirección</label>'+
+                                          `<input type="text" name="direccion${academico}" class="form-control" id="validationServer35" required>`+
+                                        '</div>'+
+                                        '<div class="col-md-3 mb-3">'+
+                                          '<label for="validationServer16">Cargo</label>'+
+                                          `<input type="text" name="cargo${academico}" class="form-control" id="validationServer36" onkeypress="return soloLetras(event)" required>`+
+                                        '</div>'+
+                                        '<div class="col-md-2 mb-3">'+
+                                        '<label for="validationServer16">Años</label>'+
+                                        `<input type="text" name="ano${academico}" class="form-control" id="validationServer36" required>`+
+                                      '</div>'+
+                                      '<div class="col-md-2 mb-3">'+
+                                        '<label for="validationServer16">Meses</label>'+
+                                        `<input type="text" name="meses${academico}" class="form-control" id="validationServer36" required>`+
+                                      '</div>'+
+                                        '<div class="col-md-5 mb-3 mr-3">'+
+                                          '<label for="validationServer11">Naturaleza de la empresa</label>'+
+                                          `<input type="text" name="naturalezaEmpresa${academico}" class="form-control" onkeypress="return soloLetras(event)" id="validationServer33" autocomplete="off" required>`+
+                                        '</div>');
+    document.getElementById("experienciaLaboral").value = academico;
+});
+
+  $('#remove-experiencia').click(function () {
+    if(academico == 1){
+
+    }else{
+        $('#row-experiencia'+ academico).remove();
+        academico--;
+        document.getElementById("experienciaLaboral").value = academico;
+    }
+  }); 
+
+  $('#remove').click(function () {
+      if(i == 1){
+
+      }else{
+          $('#row'+ i).remove();
+          i--;
+          document.getElementById("numeroHijos").value = i;
+          document.getElementById("antecedentesAcadem").value = i;
+      }
+  });      
+})

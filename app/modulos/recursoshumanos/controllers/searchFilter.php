@@ -11,11 +11,11 @@
 
     $salida = "";
 	$p = $conn->real_escape_string($_POST['personal']);
-    $query = "SELECT * FROM empleados WHERE (nombres NOT LIKE '') AND (deleted=0) AND (personal='$p') ORDER By cedula LIMIT 25";
+    $query = "SELECT * FROM empleados WHERE (nombres NOT LIKE '') AND (deleted=0) ORDER By id_empleados LIMIT 25";
 
     if (isset($_POST['consulta'])) {
 		$q = $conn->real_escape_string($_POST['consulta']);
-    	$query = "SELECT * FROM empleados WHERE (cedula LIKE '%$q%' OR nombres LIKE '%$q%' OR apellidos LIKE '%$q%' OR sexo LIKE '%$q%' OR ciudad LIKE '$q') AND (deleted=0) AND (personal='$p')";
+    	$query = "SELECT * FROM empleados WHERE (id_empleados LIKE '%$q%' OR nombres LIKE '%$q%' OR apellidos LIKE '%$q%' OR sexo LIKE '%$q%' OR ciudad LIKE '$q') AND (deleted=0)";
     }
 
     $resultado = $conn->query($query);
