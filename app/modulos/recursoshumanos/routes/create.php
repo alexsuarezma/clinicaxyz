@@ -10,7 +10,7 @@
 
 
       if(!isset($_POST["btn-submit"])){
-        $results = $conn->query("SELECT * FROM especialidades")->fetchAll(PDO::FETCH_OBJ);
+        // $results = $conn->query("SELECT * FROM especialidades")->fetchAll(PDO::FETCH_OBJ);
       }else{   
           $cedula = $_POST['cedula'];
           $records = $conn->prepare('SELECT cedula FROM empleados WHERE cedula = :ced');
@@ -23,21 +23,21 @@
            }else{
               // CREATE
                $ruta = "../assets/static/contratos/";
-    $archivo = $ruta.$_FILES["fileDocument"]["name"];
-      if(!file_exists($ruta)){
-        mkdir($ruta);
-      }
+               $archivo = $ruta.$_FILES["fileDocument"]["name"];
+            if(!file_exists($ruta)){
+              mkdir($ruta);
+            }
 
-      if(!file_exists($archivo)){
-        $resultado = @move_uploaded_file($_FILES["fileDocument"]["tmp_name"],$archivo);
-        if($resultado){
-          //seguardo
-        }else{
-          //nose guardo
-        }
-      }else{
-        echo "ya existe";
-      }
+            if(!file_exists($archivo)){
+              $resultado = @move_uploaded_file($_FILES["fileDocument"]["tmp_name"],$archivo);
+              if($resultado){
+                //seguardo
+              }else{
+                //nose guardo
+              }
+            }else{
+              echo "ya existe";
+            }
                   try {
                     $sql = "INSERT INTO empleados (cedula,profileimage,nombres,apellidos,direccion,nacionalidad,fechaNacimiento,distrito,ciudad,telefono,celular,email,sexo,estadoCivil,hijos,nombreHijo,apellidoHijo,anosHijo,mesesHijo,nombreHijo2,apellidoHijo2,anosHijo2,mesesHijo2,nombreHijo3,apellidoHijo3,anosHijo3,mesesHijo3,nombresContactoEmerg,telefonoContactoEmerg,celularContactoEmerg,nombresContactoEmerg2,telefonoContactoEmerg2,celularContactoEmerg2,titulo,institucion,fechaIngresoInsti,fechaEgresoInsti,salarioBase,idcontrato,especialidad,cargo,personal,area,idhorario,documentosDescription,fileDocument,disponible,deleted,created_at,updated_at) VALUES (:cedula,:profileimage,:nombres,:apellidos,:direccion,:nacionalidad,:fechaNacimiento,:distrito,:ciudad,:telefono,:celular,:email,:sexo,:estadoCivil,:hijos,:nombreHijo,:apellidoHijo,:anosHijo,:mesesHijo,:nombreHijo2,:apellidoHijo2,:anosHijo2,:mesesHijo2,:nombreHijo3,:apellidoHijo3,:anosHijo3,:mesesHijo3,:nombresContactoEmerg,:telefonoContactoEmerg,:celularContactoEmerg,:nombresContactoEmerg2,:telefonoContactoEmerg2,:celularContactoEmerg2,:titulo,:institucion,:fechaIngresoInsti,:fechaEgresoInsti,:salarioBase,:idcontrato,:especialidad,:cargo,:personal,:area,:idhorario,:documentosDescription,:fileDocument,:disponible,:deleted,:created_at,:updated_at)";                    $stmt = $conn->prepare($sql);
                     $stmt->bindParam(':cedula', $_POST['cedula']);
@@ -92,6 +92,13 @@
                     $stmt->bindValue(':updated_at', null, PDO::PARAM_INT);
                   
                       if($stmt->execute()){
+                            for($i=1;$i<=$_POST['numeroHijos'];$i++){
+                              //Insertar en la tabla hijos_empleados
+                                // var_dump($_POST["nombreHijo$i"]);
+                                // var_dump($_POST["apellidoHijo$i"]);
+                                // var_dump($_POST["anosHijo$i"]);
+                                // var_dump($_POST["mesesHijo$i"]);
+                            }
                           header("Location:profile.php?id=$cedula");                          
                       }
                   } catch (PDOException $e) {
@@ -113,6 +120,7 @@
     <title>Recursos Humanos</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/dashboard/">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">  
     <!-- Bootstrap core CSS -->
     <link href="../assets/dist/css/bootstrap.css" rel="stylesheet">
     <!-- Custom styles for this template -->
@@ -173,7 +181,17 @@
                       </div>
                     <div class="col-md-3 mb-3">
                       <label for="validationServer01">Nacionalidad</label>
-                      <input type="text" name="nacionalidad" class="form-control" onkeypress="return soloLetras(event)" id="validationServer05" autocomplete="off" required>
+                      <select class="custom-select" name="nacionalidad" id="validationServer05" required>
+                        <option selected disabled value="">Seleccione...</option>
+                        <option>Ecuatoriana</option>
+                        <option>Venezolana</option>
+                        <option>Cubana</option>
+                        <option>Argentina</option>
+                        <option>Colombiana</option>
+                        <option>Peruana</option>
+                        <option>Chilena</option>
+                      </select>
+                      <!-- <input type="text" name="nacionalidad" class="form-control" onkeypress="return soloLetras(event)" id="validationServer05" autocomplete="off" required> -->
                     </div>
                     <div class="col-md-3 mb-3">
                       <label for="validationServer16">Fecha de nacimiento</label>
@@ -185,10 +203,6 @@
                   </div>
               <div class="form-row">
                 <div class="col-md-6 mb-3">
-                  <label for="validationServer03">Distrito</label>
-                  <input type="text" name="distrito" class="form-control" id="validationServer07" autocomplete="off" required>
-                </div>
-                <div class="col-md-3 mb-3">
                     <label for="validationServer14">Ciudad</label>
                     <select class="custom-select" name="ciudad" id="validationServer08" required>
                         <option selected disabled value="">Seleccione...</option>
@@ -199,7 +213,7 @@
                         <!--mensaje para feedback del campo.-->
                       </div>
                   </div>
-                <div class="col-md-3 mb-3">
+                <div class="col-md-6 mb-3">
                   <label for="validationServer04">Telefono fijo</label>
                   <input type="text" name="telefono" class="form-control" onchange="validarTelefono('validationServer09')" onkeypress="return soloNumeros(event)" maxlength="7" id="validationServer09" onpaste="return false" autocomplete="off" required>
                   <div class="invalid-feedback">
@@ -264,60 +278,30 @@
                   </div>
               </div>
               <div id="radio-hijos" style="display: none;" class="form-group shadow-sm p-3 bg-white rounded">
-                    <div class="form-row">
-                      <div class="col-md-4 mb-3">
-                          <label for="validationServer04">Nombres</label>
-                          <input type="text" name="nombreHijo" class="form-control" onkeypress="return soloLetras(event)" id="validationServer14" autocomplete="off">
+                <div class=""id="dynamic_field">
+                      <div class="form-row">
+                          <div class="col-md-3 mb-3">
+                              <label for="validationServer04">Nombres</label>
+                              <input type="text" name="nombreHijo1" class="form-control" onkeypress="return soloLetras(event)" id="validationServer14" autocomplete="off">
+                          </div>
+                          <div class="col-md-3 mb-3">
+                              <label for="validationServer04">Apellidos</label>
+                              <input type="text" name="apellidoHijo1" class="form-control" onkeypress="return soloLetras(event)" id="validationServer15" autocomplete="off">
+                          </div>
+                          <div class="col-md-2 mb-3">
+                              <label for="validationServer04">Años</label>
+                              <input type="text" name="anosHijo1" class="form-control" onkeypress="return soloNumeros(event)" maxlength="2" id="validationServer16" autocomplete="off">
+                          </div>
+                          <div class="col-md-2 mb-3">
+                              <label for="validationServer04">Meses</label>
+                              <input type="text" name="mesesHijo1" class="form-control" onkeypress="return soloNumeros(event)" maxlength="2" id="validationServer17" autocomplete="off">
+                          </div>
+                          <div class="col-md-1"><i class="fa fa-plus-circle ml-5 mt-4" name="add" id="add" aria-hidden="true" style="cursor:pointer; font-size:25px;" title="agregar"></i></div>   
+                          <div class="col-md-1"><i class="fa fa-minus-circle mt-4" name="remove" id="remove" aria-hidden="true" style="cursor:pointer; font-size:25px;" title="eliminar"></i></button></div>
                       </div>
-                      <div class="col-md-4 mb-3">
-                          <label for="validationServer04">Apellidos</label>
-                          <input type="text" name="apellidoHijo" class="form-control" onkeypress="return soloLetras(event)" id="validationServer15" autocomplete="off">
-                      </div>
-                      <div class="col-md-2 mb-3">
-                          <label for="validationServer04">Años</label>
-                          <input type="text" name="anosHijo" class="form-control" onkeypress="return soloNumeros(event)" id="validationServer16" autocomplete="off">
-                      </div>
-                      <div class="col-md-2 mb-3">
-                          <label for="validationServer04">Meses</label>
-                          <input type="text" name="mesesHijo" class="form-control" onkeypress="return soloNumeros(event)" id="validationServer17" autocomplete="off">
-                      </div>
+                      <input  name="numeroHijos" style="display:none;" id="numeroHijos" value="<?php echo 1;?>">
+                      <!-- <button name="enviar" id="enviar">enviar</button> -->
                   </div>
-                  <div class="form-row">
-                    <div class="col-md-4 mb-3">
-                        <label for="validationServer04">Nombres</label>
-                        <input type="text" name="nombreHijo2" class="form-control" onkeypress="return soloLetras(event)" id="validationServer18" autocomplete="off">
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <label for="validationServer04">Apellidos</label>
-                        <input type="text" name="apellidoHijo2" class="form-control" onkeypress="return soloLetras(event)" id="validationServer19" autocomplete="off">
-                    </div>
-                    <div class="col-md-2 mb-3">
-                        <label for="validationServer04">Años</label>
-                        <input type="text" name="anosHijo2" class="form-control" onkeypress="return soloNumeros(event)" id="validationServer20" autocomplete="off">
-                    </div>
-                    <div class="col-md-2 mb-3">
-                        <label for="validationServer04">Meses</label>
-                        <input type="text" name="mesesHijo2" class="form-control" onkeypress="return soloNumeros(event)" id="validationServer21" autocomplete="off">
-                    </div>
-                </div>
-                <div class="form-row">
-                  <div class="col-md-4 mb-3">
-                      <label for="validationServer04">Nombres</label>
-                      <input type="text" name="nombreHijo3" class="form-control" onkeypress="return soloLetras(event)" id="validationServer22" autocomplete="off">
-                  </div>
-                  <div class="col-md-4 mb-3">
-                      <label for="validationServer04">Apellidos</label>
-                      <input type="text" name="apellidoHijo3" class="form-control" onkeypress="return soloLetras(event)" id="validationServer23" autocomplete="off">
-                  </div>
-                  <div class="col-md-2 mb-3">
-                      <label for="validationServer04">Años</label>
-                      <input type="text" name="anosHijo3" class="form-control" onkeypress="return soloNumeros(event)" id="validationServer24" autocomplete="off">
-                  </div>
-                  <div class="col-md-2 mb-3">
-                      <label for="validationServer04">Meses</label>
-                      <input type="text" name="mesesHijo3" class="form-control" onkeypress="return soloNumeros(event)" id="validationServer25" autocomplete="off">
-                  </div>
-                </div>
               </div>
               <label class="font-weight-bolder mt-3">Contactos para casos de emergencia</label>
               <hr class="mt-1 mb-4 mr-5 ">
@@ -427,22 +411,6 @@
                       <!--mensaje para feedback del campo.-->
                     </div>
                   </div>
-                  <div class="col-md-3 mb-3">
-                    <label for="validationServer10">Especialidad</label>
-                    <select class="custom-select" name="especialidad" id="validationServer40" required>
-                      <option selected disabled value="">Seleccione...</option>
-                      <?php
-                        foreach ($results as $especialidad):?>
-                        <option><?php echo $especialidad->idespecialidad?></option> 
-                      <?php 
-                        endforeach;
-                      ?>               
-                      <option>No aplica</option>      
-                    </select>
-                    <div class="invalid-feedback">
-                      <!--mensaje para feedback del campo.-->
-                    </div>
-                  </div>
                 </div>
                 
                 <div class="form-row">
@@ -450,9 +418,31 @@
                           <label for="validationServer15">Cargo</label>
                           <select class="custom-select" name="cargo" id="validationServer41" required>
                           <option selected disabled value="">Seleccione...</option>
-                          <option>Jefe de Area</option>
-                          <option>Asistente</option>
-                          <option>Otro</option>
+                          <option>Jefe de Relaciones Humanas</option>
+                          <option>Gerente de RRHH</option>
+                          <option>Administrativo de RRHH</option>
+                          <option>Gerente de Administracion</option>
+                          <option>Secretaria de Gerencia</option>
+                          <option>Cajera</option>
+                          <option>Recepcionista Digitadora</option>
+                          <option>Auditor Medico</option>
+                          <option>Secretaria de erencia</option>
+                          <option>Director Medico</option>
+                          <option>Jefa de Enfermeria</option>
+                          <option>Enfermera Consultorios Externos</option>
+                          <option>Enfermera Clínica</option>
+                          <option>Técnicos Paramédicos</option>
+                          <option>Auxiliares de Servicio</option>
+                          <option>Asistente de Logística</option>
+                          <option>Operario de Limpieza</option>
+                          <option>Guardia</option>
+                          <option>Gerente de Finanzas</option>
+                          <option>Encargado de Contabilidad</option>
+                          <option>Administrativo Contable</option>
+                          <option>Asistente Contable</option>
+                          <option>Contador</option>
+                          <option>Medico de Cardiología</option>
+                          <option>Asistente de Cardiología</option>
                           </select>
                           <div class="invalid-feedback">
                           <!--mensaje para feedback del campo.-->
@@ -465,6 +455,7 @@
                             <option>Administrativo</option>
                             <option>Medico</option>
                             <option>Asistencial</option>
+                            <option>Directivo</option>
                           </select>
                           <div class="invalid-feedback">
                             <!--mensaje para feedback del campo.-->
@@ -474,9 +465,13 @@
                           <label for="validationServer07">Área</label>
                           <select class="custom-select" name="area" id="validationServer43" required>
                               <option selected disabled value="">Seleccione...</option>
-                              <option>Area 1</option>
-                              <option>Area 2</option>
-                              <option>Area 3</option>
+                              <option>Recursos Humanos</option>
+                              <option>Administracion</option>
+                              <option>Asistencia Medica</option>
+                              <option>Suministro</option>
+                              <option>Higiene, Seguridad y Limpieza</option>
+                              <option>Finanzas y contabilidad</option>
+                              <option>Especialidades</option>
                               </select>
                             <div class="invalid-feedback">
                             <!--mensaje para feedback del campo.-->
@@ -488,7 +483,6 @@
                                   <option selected disabled value="">Seleccione...</option>
                                   <option>Matutino</option>
                                   <option>Vespertino</option>
-                                  <option>Nocturno</option>
                                   </select>
                                 <div class="invalid-feedback">
                                 <!--mensaje para feedback del campo.-->
@@ -504,7 +498,7 @@
                   </div>  
                   <div class="input-group mb-3">
                   <div class="custom-file">
-                    <input name="fileDocument" type="file" class="form-control" id="fileDocument" accept="application/pdf" aria-describedby="inputGroupFileAddon01">
+                    <input name="fileDocument" type="file" class="form-control" onchange="return validarExtdoc()" id="fileDocument" accept="application/pdf" aria-describedby="inputGroupFileAddon01" required>
                   </div>
                 </div>
 

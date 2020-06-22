@@ -27,7 +27,7 @@
       echo "<li class='nav-item'>";
       echo "<a class='nav-link' href=$createPage>";
       echo "<span data-feather='briefcase'></span>";
-      echo "Contrato";
+      echo "Registro de Empleado";
       echo "</a>";
       echo "</li>";
       echo "<li class='nav-item'>";

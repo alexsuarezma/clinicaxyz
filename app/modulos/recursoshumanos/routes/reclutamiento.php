@@ -1,7 +1,7 @@
 <?php 
     require '../../../../database.php'; 
     require '../components/layout.php';
-        $results = $conn->query("SELECT * FROM aspirante")->fetchAll(PDO::FETCH_OBJ);
+        $results = $conn->query("SELECT * FROM aspirantes")->fetchAll(PDO::FETCH_OBJ);
 
 ?>
 <!DOCTYPE html>
@@ -61,13 +61,13 @@
                       <?php
                         foreach ($results as $aspirante):?>
                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <span><?php echo $aspirante->cedula?></span>
+                        <span><?php echo $aspirante->id_aspirante?></span>
                         <span >Aspirante: <?php echo $aspirante->nombres?> <?php echo $aspirante->apellidos?></span>
                         <span >Enviado: <?php echo $aspirante->created_at?></span>
                         <span>
                         <a href="../components/viewDocuments.php?contrato=<?php echo $aspirante->fileDocument?>" ><i class="fas fa-file-contract" style="color:black;" title="Ver Curriculum" ></i></a>
-                        <a href="../components/viewAspirante.php?id=<?php echo $aspirante->cedula?>" ><i class="fas fa-external-link-alt" style="color:blue;" title="Ver Informacion"></i></a>
-                        <a href="../controllers/deleteFisic.php?id=<?php echo $aspirante->cedula?>&aspirante=si"><i class="fas fa-trash-alt" style="color:red;" title="Eliminar Aspirante"></i></a>
+                        <a href="../components/viewAspirante.php?id=<?php echo $aspirante->id_aspirante?>" ><i class="fas fa-external-link-alt" style="color:blue;" title="Ver Informacion"></i></a>
+                        <a href="../controllers/deleteFisic.php?id=<?php echo $aspirante->id_aspirante?>&aspirante=si"><i class="fas fa-trash-alt" style="color:red;" title="Eliminar Aspirante"></i></a>
                         </span>
                         </li>
                       <?php 
