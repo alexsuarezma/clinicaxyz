@@ -1,6 +1,7 @@
 <?php 
     require '../../../../database.php'; 
     require '../components/layout.php';
+    require '../components/modal.php';
         $results = $conn->query("SELECT * FROM aspirantes")->fetchAll(PDO::FETCH_OBJ);
 
 ?>
@@ -52,32 +53,32 @@
                 </button>
             </div>
       </div>
-    <div class="container">
+    <div class="container mt-4">
       <input type="text" name="busqueda" id="busqueda" placeholder="Search for names.." title="Type in a name">
     </div>
-            <div class="container" >
+            <div class="container mt-5" >
                 <ul class="list-group">
           
                       <?php
                         foreach ($results as $aspirante):?>
                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <span><?php echo $aspirante->id_aspirante?></span>
+                        <span id="cedulaAspirante"><?php echo $aspirante->id_aspirante?></span>
                         <span >Aspirante: <?php echo $aspirante->nombres?> <?php echo $aspirante->apellidos?></span>
                         <span >Enviado: <?php echo $aspirante->created_at?></span>
                         <span>
                         <a href="../components/viewDocuments.php?contrato=<?php echo $aspirante->fileDocument?>" ><i class="fas fa-file-contract" style="color:black;" title="Ver Curriculum" ></i></a>
                         <a href="../components/viewAspirante.php?id=<?php echo $aspirante->id_aspirante?>" ><i class="fas fa-external-link-alt" style="color:blue;" title="Ver Informacion"></i></a>
-                        <a href="../controllers/deleteFisic.php?id=<?php echo $aspirante->id_aspirante?>&aspirante=si"><i class="fas fa-trash-alt" style="color:red;" title="Eliminar Aspirante"></i></a>
+                        <a id="delete" href="#"><i class="fas fa-trash-alt" style="color:red;" title="Eliminar Aspirante"></i></a>
                         </span>
                         </li>
                       <?php 
                         endforeach;
                       ?>    
-                    
-                    
-                    
                 </ul>
             </div>
+            <?php          
+                      printModal('Eliminar Aspirante','btn-delete','modal-delete','¡Hey!. Estas apunto de ELIMINAR información sensible. ¿Realmente desea ELIMINAR los datos de este aspirante?');
+            ?>
      </main>
    </div>
   </div>
@@ -89,6 +90,16 @@
   <script src="../components/scripts/dashboard.js"></script>      
   <!-- <script type="text/javascript" src="../components/scripts/jquery.min.js"></script>    
   <script type="text/javascript" src="../components/scripts/searchFilter.js"></script>       -->
-  
+  <script>
+    $(document).ready(function(){
+        $('#delete').click(function(){
+            $("#modal-delete").modal('show');
+            $('#btn-delete').click(function(){
+              location.href=`../controllers/deleteFisic.php?id=${$('#cedulaAspirante').text()}&aspirante=si`;
+            });
+            
+        });
+     });
+  </script>
 </body>
 </html>

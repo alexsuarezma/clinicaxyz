@@ -2,16 +2,18 @@
    require 'database.php';
    $hora = (date("H")-7);
    $creacion = date('d')."/".date('m')."/".date('Y')." ".$hora.":".date("i").":".date("s");
-      if(isset($_POST["btn-submit"])){
-        // $cedula = $_POST['cedula'];
-        // $records = $conn->prepare('SELECT id_aspirante FROM aspirantes WHERE id_aspirante = :ced');
-        // $records->bindParam(':ced',$cedula);
-        // $records->execute();
-        // $results = $records->fetch(PDO::FETCH_ASSOC);
+   $ciudades = $conn->query("SELECT * FROM ciudades ORDER BY nombre ASC")->fetchAll(PDO::FETCH_OBJ);
 
-        //  if ($results['id_aspirante']==$_POST["cedula"]) {/*repetida*/ 
-        //       echo "<script language='javascript'>alert('Ya has enviado una postulacion antes, te contactaremos lo antes posible.');</script>";
-        //  }else{
+      if(isset($_POST["btn-submit"])){
+        
+        $records = $conn->prepare('SELECT id_aspirante FROM aspirantes WHERE id_aspirante = :ced');
+        $records->bindParam(':ced',$_POST['cedula']);
+        $records->execute();
+        $results = $records->fetch(PDO::FETCH_ASSOC);
+
+         if ($results['id_aspirante']==$_POST["cedula"]) {/*repetida*/ 
+              echo "<script language='javascript'>alert('Ya has enviado una postulacion antes, te contactaremos lo antes posible.');</script>";
+         }else{
 
             $ruta = "app/modulos/recursoshumanos/assets/static/postulantes/";
             $archivo = $ruta.$_FILES["fileDocument"]["name"];
@@ -61,44 +63,58 @@
                   if($stmt->execute()){
                         for($i=1;$i<=$_POST['antecedentesAcadem'];$i++){
                           //Insertar en la tabla antecedentesAcademicos
-                          $sql = "INSERT INTO estudios_aspirantes (titulo,institucion,fecha_ingreso,fecha_egreso,id_aspirante) VALUES (:titulo,:institucion,:fecha_ingreso,:fecha_egreso,:id_aspirante)";                    
+                          $sql = "INSERT INTO estudios_aspirantes (titulo,institucion,fecha_ingreso,fecha_egreso,id_aspirante_est) VALUES (:titulo,:institucion,:fecha_ingreso,:fecha_egreso,:id_aspirante_est)";                    
                           $stmt = $conn->prepare($sql);
                           $stmt->bindParam(':titulo',$_POST["titulo$i"]);
                           $stmt->bindParam(':institucion',$_POST["institucion$i"]);
                           $stmt->bindParam(':fecha_ingreso',$_POST["anoIngreso$i"]);
                           $stmt->bindParam(':fecha_egreso',$_POST["anoEgreso$i"]);
-                          $stmt->bindParam(':id_aspirante', $_POST['cedula']);
+                          $stmt->bindParam(':id_aspirante_est', $_POST['cedula']);
                           $stmt->execute();
-                            // var_dump($_POST["nombreHijo$i"]);
-                            // var_dump($_POST["apellidoHijo$i"]);
-                            // var_dump($_POST["anosHijo$i"]);
-                            // var_dump($_POST["mesesHijo$i"]);
+
                         }
 
                         for($i=1;$i<=$_POST['experienciaLaboral'];$i++){
-                          //Insertar en la tabla antecedentesAcademicos
-                          $sql = "INSERT INTO expe_laboral (nombre_emp,naturaleza_emp,direccion,cargo,años,meses,id_aspirante) VALUES (:nombre_emp,:naturaleza_emp,:direccion,:cargo,:años,:meses,:id_aspirante)";                    
+                          //Insertar en la tabla experiencia laboral
+                          $sql = "INSERT INTO expe_laboral (nombre_emp,naturaleza_emp,direccion,cargo,anos,meses,id_aspirante_expe) VALUES (:nombre_emp,:naturaleza_emp,:direccion,:cargo,:anos,:meses,:id_aspirante_expe)";                    
                           $stmt = $conn->prepare($sql);
                           $stmt->bindParam(':nombre_emp',$_POST["titulo$i"]);
                           $stmt->bindParam(':naturaleza_emp',$_POST["institucion$i"]);
                           $stmt->bindParam(':direccion',$_POST["anoIngreso$i"]);
                           $stmt->bindParam(':cargo',$_POST["anoEgreso$i"]);
-                          $stmt->bindParam(':años',$_POST["anoEgreso$i"]);
+                          $stmt->bindParam(':anos',$_POST["anoEgreso$i"]);
                           $stmt->bindParam(':meses',$_POST["anoEgreso$i"]);
-                          $stmt->bindParam(':id_aspirante', $_POST['cedula']);
+                          $stmt->bindParam(':id_aspirante_expe', $_POST['cedula']);
                           $stmt->execute();
-                            // var_dump($_POST["nombreHijo$i"]);
-                            // var_dump($_POST["apellidoHijo$i"]);
-                            // var_dump($_POST["anosHijo$i"]);
-                            // var_dump($_POST["mesesHijo$i"]);
                         }
+
+                        for($i=1;$i<=4;$i++){
+                          //Insertar en la tabla antecedentesAcademicos
+                          $sql = "INSERT INTO referencias (tipo_refe,nombres_refe,apellidos_refe,telefono_refe,celular_refe,id_aspirante_refe) VALUES (:tipo_refe,:nombres_refe,:apellidos_refe,:telefono_refe,:celular_refe,:id_aspirante_refe)";                    
+                          $stmt = $conn->prepare($sql);
+                          if($i<=2){
+                            // personal
+                            $stmt->bindValue(':tipo_refe', 1, PDO::PARAM_INT);
+                          }else{
+                            $stmt->bindValue(':tipo_refe', 2, PDO::PARAM_INT);
+                          }
+                          
+                          $stmt->bindParam(':nombres_refe',$_POST["nombresRefe$i"]);
+                          $stmt->bindParam(':apellidos_refe',$_POST["apellidosRefe$i"]);
+                          $stmt->bindParam(':telefono_refe',$_POST["telefonoRefe$i"]);
+                          $stmt->bindParam(':celular_refe',$_POST["celularRefe$i"]);
+                          $stmt->bindParam(':id_aspirante_refe', $_POST['cedula']);
+                          $stmt->execute();
+                        }
+                        
+                        
 
                       header("Location:thanksyou.html");                          
                   }
               } catch (PDOException $e) {
                   die('Problema: ' . $e->getMessage());
               }
-          
+            }
       }
 ?>
 
@@ -199,7 +215,16 @@
                   </div>
                 <div class="col-md-3 mb-3">
                   <label for="validationServer01">Nacionalidad</label>
-                  <input type="text" name="nacionalidad" class="form-control" onkeypress="return soloLetras(event)" id="validationServer05" autocomplete="off" required>
+                  <select class="custom-select" name="nacionalidad" id="validationServer05" required>
+                        <option selected disabled value="">Seleccione...</option>
+                        <option>Ecuatoriana</option>
+                        <option>Venezolana</option>
+                        <option>Cubana</option>
+                        <option>Argentina</option>
+                        <option>Colombiana</option>
+                        <option>Peruana</option>
+                        <option>Chilena</option>
+                      </select>
                 </div>
                 <div class="col-md-3 mb-3">
                   <label for="validationServer16">Fecha de nacimiento</label>
@@ -218,8 +243,13 @@
                 <label for="validationServer14">Ciudad</label>
                 <select class="custom-select" name="ciudad" id="validationServer08" onkeypress="return soloLetras(event)" required>
                     <option selected disabled value="">Seleccione...</option>
-                    <option>Guayaquil</option>
-                    <option>Quito</option>
+                    <?php
+                    foreach ($ciudades as $ciudadesAspirante):
+                    ?>
+                    <option value="<?php echo $ciudadesAspirante->idciudades;?>"><?php echo utf8_encode($ciudadesAspirante->nombre);?></option>
+                    <?php 
+                    endforeach;
+                    ?>  
                   </select>
                   <div class="invalid-feedback">
                     <!--mensaje para feedback del campo.-->
@@ -295,21 +325,21 @@
                 <div class="form-row">
                   <div class="col-md-10 ml-2 mb-3">
                     <label for="validationServer16">Año de Ingreso</label>
-                    <input type="text" name="anoIngreso1" class="form-control" id="validationServer35" onkeypress="return soloNumeros(event)" maxlength="4" required>
+                    <input type="date" name="anoIngreso1" class="form-control" id="validationServer35" required>
                     <div class="invalid-feedback">
                       <!--mensaje para feedback del campo.-->
                     </div>
                   </div>
                   <div class="col-md-10 ml-2 mb-3">
                     <label for="validationServer16">Año de Egreso</label>
-                    <input type="text" name="anoEgreso1" class="form-control" id="validationServer36" onkeypress="return soloNumeros(event)" maxlength="4" required>
+                    <input type="date" name="anoEgreso1" class="form-control" id="validationServer36" required>
                       <div class="invalid-feedback">
                           <!--mensaje para feedback del campo.-->
                       </div>
                 </div>    
               </div>
                   <div class="col-md-1"><i class="fa fa-plus-circle ml-5 mt-4" name="add" id="add-aspirante" aria-hidden="true" style="cursor:pointer; font-size:25px;" title="agregar"></i></div>   
-                  <div class="col-md-1"><i class="fa fa-minus-circle mt-4" name="remove" id="remove" aria-hidden="true" style="cursor:pointer; font-size:25px;" title="eliminar"></i></button></div>
+                  <div class="col-md-1"><i class="fa fa-minus-circle mt-4" name="remove" id="remove-academico" aria-hidden="true" style="cursor:pointer; font-size:25px;" title="eliminar"></i></button></div>
               </div>
               <hr class="mt-1 mb-4 mr-5">
               <input  name="antecedentesAcadem" style="display: none;" id="antecedentesAcadem" value="<?php echo 1;?>">
@@ -334,11 +364,11 @@
                       </div>    
                       <div class="col-md-2 mb-3">
                         <label for="validationServer16">Años</label>
-                        <input type="text" name="ano1" class="form-control" id="validationServer36" required>
+                        <input type="text" name="ano1" class="form-control" onkeypress="return soloNumeros(event)" maxlength="2" id="validationServer36" required>
                       </div>  
                       <div class="col-md-2 mb-3">
                         <label for="validationServer16">Meses</label>
-                        <input type="text" name="meses1" class="form-control" id="validationServer36" required>
+                        <input type="text" name="meses1" class="form-control" onkeypress="return soloNumeros(event)" maxlength="2" id="validationServer36" required>
                       </div>  
                       <div class="col-md-5 mb-3 mr-3">
                         <label for="validationServer11">Naturaleza de la Empresa</label>
@@ -356,46 +386,78 @@
             <hr class="mt-1 mb-4 mr-5 ">
             <label class="font-weight-bolder mt-3 ml-2">Personales</label>
             <div class="form-row">
-              <div class="col-md-8 mb-3">
-                <label for="validationServer08">Nombres y apellidos</label>
-                <input type="text" name="especialidad" class="form-control" id="validationServer37" onkeypress="return soloLetras(event)" autocomplete="off" required>
+              <div class="col-md-4 mb-3">
+                <label for="validationServer08">Nombres</label>
+                <input type="text" name="nombresRefe1" class="form-control" id="validationServer37" onkeypress="return soloLetras(event)" autocomplete="off" required>
               </div>
               <div class="col-md-4 mb-3">
-                  <label for="validationServer11">Numero de telefono</label>
-                  <input type="text" name="especialidad2" class="form-control" onkeypress="return soloLetras(event)" id="validationServer38" autocomplete="off" required>
-                </div>
+                <label for="validationServer08">Apellidos</label>
+                <input type="text" name="apellidosRefe1" class="form-control" id="validationServer37" onkeypress="return soloLetras(event)" autocomplete="off" required>
+              </div>
+              <div class="col-md-2 mb-3">
+                  <label for="validationServer11">Número de teléfono</label>
+                  <input type="text" name="telefonoRefe1" class="form-control" onchange="validarTelefono('referenciatel1')"  onkeypress="return soloNumeros(event)" maxlength="7" id="referenciatel1" autocomplete="off" required>
+              </div>
+              <div class="col-md-2 mb-3">
+                  <label for="validationServer11">Número celular</label>
+                  <input type="text" name="celularRefe1" class="form-control" onchange="validarCelular('referenciacel1')" onkeypress="return soloNumeros(event)" maxlength="10" id="referenciacel1" autocomplete="off" required>
+              </div>
             </div>
             <div class="form-row">
-              <div class="col-md-8 mb-3">
-                <label for="validationServer08">Nombres y apellidos</label>
-                <input type="text" name="especialidad" class="form-control" id="validationServer37" onkeypress="return soloLetras(event)" autocomplete="off" required>
+              <div class="col-md-4 mb-3">
+                <label for="validationServer08">Nombres</label>
+                <input type="text" name="nombresRefe2" class="form-control" id="validationServer37" onkeypress="return soloLetras(event)" autocomplete="off" required>
               </div>
               <div class="col-md-4 mb-3">
-                  <label for="validationServer11">Numero de telefono</label>
-                  <input type="text" name="especialidad2" class="form-control" onkeypress="return soloLetras(event)" id="validationServer38" autocomplete="off" required>
+                <label for="validationServer08">Apellidos</label>
+                <input type="text" name="apellidosRefe2" class="form-control" id="validationServer37" onkeypress="return soloLetras(event)" autocomplete="off" required>
+              </div>
+              <div class="col-md-2 mb-3">
+                  <label for="validationServer11">Número de teléfono</label>
+                  <input type="text" name="telefonoRefe2" class="form-control" onkeypress="return soloNumeros(event)" maxlength="7" id="validationServer38" autocomplete="off" required>
                 </div>
+                <div class="col-md-2 mb-3">
+                  <label for="validationServer11">Número celular</label>
+                  <input type="text" name="celularRefe2" class="form-control" onkeypress="return soloNumeros(event)" maxlength="10" id="validationServer38" autocomplete="off" required>
+              </div>
             </div>
 
             <label class="font-weight-bolder mt-3 ml-2">Laborales</label>
             <div class="form-row">
-              <div class="col-md-8 mb-3">
-                <label for="validationServer08">Nombres y apellidos</label>
-                <input type="text" name="especialidad" class="form-control" id="validationServer37" onkeypress="return soloLetras(event)" autocomplete="off" required>
+              <div class="col-md-4 mb-3">
+                <label for="validationServer08">Nombres</label>
+                <input type="text" name="nombresRefe3" class="form-control" id="validationServer37" onkeypress="return soloLetras(event)" autocomplete="off" required>
               </div>
               <div class="col-md-4 mb-3">
-                  <label for="validationServer11">Numero de telefono</label>
-                  <input type="text" name="especialidad2" class="form-control" onkeypress="return soloLetras(event)" id="validationServer38" autocomplete="off" required>
-                </div>
+                <label for="validationServer08">Apellidos</label>
+                <input type="text" name="apellidosRefe3" class="form-control" id="validationServer37" onkeypress="return soloLetras(event)" autocomplete="off" required>
+              </div>
+              <div class="col-md-2 mb-3">
+                  <label for="validationServer11">Número de teléfono</label>
+                  <input type="text" name="telefonoRefe3" class="form-control" onkeypress="return soloNumeros(event)" maxlength="7" id="validationServer38" autocomplete="off" required>
+              </div>
+              <div class="col-md-2 mb-3">
+                  <label for="validationServer11">Número celular</label>
+                  <input type="text" name="celularRefe3" class="form-control" onkeypress="return soloNumeros(event)" maxlength="10" id="validationServer38" autocomplete="off" required>
+              </div>
             </div>
             <div class="form-row">
-              <div class="col-md-8 mb-3">
-                <label for="validationServer08">Nombres y apellidos</label>
-                <input type="text" name="especialidad" class="form-control" id="validationServer37" onkeypress="return soloLetras(event)" autocomplete="off" required>
+              <div class="col-md-4 mb-3">
+                <label for="validationServer08">Nombres</label>
+                <input type="text" name="nombresRefe4" class="form-control" id="validationServer37" onkeypress="return soloLetras(event)" autocomplete="off" required>
               </div>
               <div class="col-md-4 mb-3">
-                  <label for="validationServer11">Numero de telefono</label>
-                  <input type="text" name="especialidad2" class="form-control" onkeypress="return soloLetras(event)" id="validationServer38" autocomplete="off" required>
-                </div>
+                <label for="validationServer08">Apellidos</label>
+                <input type="text" name="apellidosRefe4" class="form-control" id="validationServer37" onkeypress="return soloLetras(event)" autocomplete="off" required>
+              </div>
+              <div class="col-md-2 mb-3">
+                  <label for="validationServer11">Número de teléfono</label>
+                  <input type="text" name="telefonoRefe4" class="form-control" onkeypress="return soloNumeros(event)" maxlength="7" id="validationServer38" autocomplete="off" required>
+              </div>
+              <div class="col-md-2 mb-3">
+                  <label for="validationServer11">Número celular</label>
+                  <input type="text" name="celularRefe4" class="form-control" onkeypress="return soloNumeros(event)" maxlength="10" id="validationServer38" autocomplete="off" required>
+              </div>
             </div>
             <label class="font-weight-bolder mt-3">Datos de oferta de empleo</label>
             <hr class="mt-1 mb-4 mr-5 ">

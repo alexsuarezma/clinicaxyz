@@ -166,6 +166,7 @@ function validarExtdoc()
 $(document).ready(function(){
   var i = 1;
   var academico = 1;
+  var laboral = 1;
 
   $('#add').click(function () {
       i++;
@@ -192,68 +193,78 @@ $(document).ready(function(){
 
 
   $('#add-aspirante').click(function () {
-      i++;
-      $('#dynamic_field_academico').append(`<div class="form-row" id="row${i}">`+
+      academico++;
+      $('#dynamic_field_academico').append(`<div class="form-row" id="row-academico${academico}">`+
                                               '<div class="form-row">'+
                                                 '<div class="col-md-12 mb-3">'+
                                                   '<label for="validationServer08">Titulo / Profesión</label>'+
-                                                  `<input type="text" name="titulo${i}" class="form-control" onkeypress="return soloLetras(event)" id="validationServer32" autocomplete="off" required>`+
+                                                  `<input type="text" name="titulo${academico}" class="form-control" onkeypress="return soloLetras(event)" id="validationServer32" autocomplete="off" required>`+
                                                 '</div>'+
                                                 '<div class="col-md-12 mb-3">'+
                                                     '<label for="validationServer11">Institución</label>'+
-                                                    `<input type="text" name="institucion${i}" class="form-control" onkeypress="return soloLetras(event)" id="validationServer33" autocomplete="off" required>`+
+                                                    `<input type="text" name="institucion${academico}" class="form-control" onkeypress="return soloLetras(event)" id="validationServer33" autocomplete="off" required>`+
                                                   '</div>'+
                                               '</div>'+
                                               '<div class="form-row">'+
                                                 '<div class="col-md-10 ml-2 mb-3">'+
                                                   '<label for="validationServer16">Año de ingreso</label>'+
-                                                  `<input type="text" name="anoIngreso${i}" class="form-control" id="validationServer35" onkeypress="return soloNumeros(event)" maxlength="4" required>`+
+                                                  `<input type="date" name="anoIngreso${academico}" class="form-control" id="validationServer35" required>`+
                                                 '</div>'+
                                                 '<div class="col-md-10 ml-2 mb-3">'+
                                                   '<label for="validationServer16">Año de Egreso</label>'+
-                                                  `<input type="text" name="anoEgreso${i}" class="form-control" id="validationServer36" onkeypress="return soloNumeros(event)" maxlength="4" required>`+
+                                                  `<input type="date" name="anoEgreso${academico}" class="form-control" id="validationServer36" required>`+
                                               '</div>'+
                                             '</div>');
-      document.getElementById("antecedentesAcadem").value = i;
+      document.getElementById("antecedentesAcadem").value = academico;
   });
 
   $('#add-experiencia').click(function () {
-    academico++;
-    $('#dynamic_field_experiencia').append(`<div class="form-row" id="row-experiencia${academico}">`+
+    laboral++;
+    $('#dynamic_field_experiencia').append(`<div class="form-row" id="row-experiencia${laboral}">`+
                                             '<div class="col-md-4 mb-3">'+
                                           '<label for="validationServer08">Empresa</label>'+
-                                          `<input type="text" name="empresa${academico}" class="form-control" onkeypress="return soloLetras(event)" id="validationServer32" autocomplete="off" required>`+
+                                          `<input type="text" name="empresa${laboral}" class="form-control" onkeypress="return soloLetras(event)" id="validationServer32" autocomplete="off" required>`+
                                         '</div>'+
                                         '<div class="col-md-5 mb-3">'+
                                           '<label for="validationServer16">Dirección</label>'+
-                                          `<input type="text" name="direccion${academico}" class="form-control" id="validationServer35" required>`+
+                                          `<input type="text" name="direccion${laboral}" class="form-control" id="validationServer35" required>`+
                                         '</div>'+
                                         '<div class="col-md-3 mb-3">'+
                                           '<label for="validationServer16">Cargo</label>'+
-                                          `<input type="text" name="cargo${academico}" class="form-control" id="validationServer36" onkeypress="return soloLetras(event)" required>`+
+                                          `<input type="text" name="cargo${laboral}" class="form-control" id="validationServer36" onkeypress="return soloLetras(event)" required>`+
                                         '</div>'+
                                         '<div class="col-md-2 mb-3">'+
                                         '<label for="validationServer16">Años</label>'+
-                                        `<input type="text" name="ano${academico}" class="form-control" id="validationServer36" required>`+
+                                        `<input type="text" name="ano${laboral}" class="form-control" onkeypress="return soloNumeros(event)" maxlength="2" id="validationServer36" required>`+
                                       '</div>'+
                                       '<div class="col-md-2 mb-3">'+
                                         '<label for="validationServer16">Meses</label>'+
-                                        `<input type="text" name="meses${academico}" class="form-control" id="validationServer36" required>`+
+                                        `<input type="text" name="meses${laboral}" class="form-control" onkeypress="return soloNumeros(event)" maxlength="2" id="validationServer36" required>`+
                                       '</div>'+
                                         '<div class="col-md-5 mb-3 mr-3">'+
                                           '<label for="validationServer11">Naturaleza de la empresa</label>'+
-                                          `<input type="text" name="naturalezaEmpresa${academico}" class="form-control" onkeypress="return soloLetras(event)" id="validationServer33" autocomplete="off" required>`+
+                                          `<input type="text" name="naturalezaEmpresa${laboral}" class="form-control" onkeypress="return soloLetras(event)" id="validationServer33" autocomplete="off" required>`+
                                         '</div>');
-    document.getElementById("experienciaLaboral").value = academico;
+    document.getElementById("experienciaLaboral").value = laboral;
 });
 
   $('#remove-experiencia').click(function () {
+    if(laboral == 1){
+
+    }else{
+        $('#row-experiencia'+ laboral).remove();
+        laboral--;
+        document.getElementById("experienciaLaboral").value = laboral;
+    }
+  }); 
+
+  $('#remove-academico').click(function () {
     if(academico == 1){
 
     }else{
-        $('#row-experiencia'+ academico).remove();
+        $('#row-academico'+ academico).remove();
         academico--;
-        document.getElementById("experienciaLaboral").value = academico;
+        document.getElementById("antecedentesAcadem").value = academico;
     }
   }); 
 
@@ -264,7 +275,6 @@ $(document).ready(function(){
           $('#row'+ i).remove();
           i--;
           document.getElementById("numeroHijos").value = i;
-          document.getElementById("antecedentesAcadem").value = i;
       }
   });      
 })

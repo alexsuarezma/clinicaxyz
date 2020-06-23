@@ -2,7 +2,7 @@
     require '../../../../database.php';
     session_start();
     $id = $_SESSION['cedula'];    
-            $records = $conn->prepare("SELECT * FROM empleados WHERE cedula = :cedula");
+            $records = $conn->prepare("SELECT * FROM empleados WHERE id_empleados = :cedula");
             $records->bindParam(':cedula', $id);
             $records->execute();
             $results = $records->fetch(PDO::FETCH_ASSOC);

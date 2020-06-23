@@ -3,10 +3,20 @@
     require 'layout.php';
     $id = $_GET['id'];    
 
-            $records = $conn->prepare("SELECT * FROM aspirante WHERE cedula = :cedula");
+            $records = $conn->prepare("SELECT * FROM aspirantes WHERE id_aspirante = :cedula");
             $records->bindParam(':cedula', $id);
             $records->execute();
             $results = $records->fetch(PDO::FETCH_ASSOC);
+            
+            $idciudad = $results['ciudad'];
+            
+            $ciudad = $conn->query("SELECT * FROM ciudades WHERE idciudades = $idciudad");
+            $ciudad->execute();
+            $nombreCiudad = $ciudad->fetch(PDO::FETCH_ASSOC);
+
+            $estudios = $conn->query("SELECT * FROM estudios_aspirantes WHERE id_aspirante_est = $id")->fetchAll(PDO::FETCH_OBJ);
+            $experiencia = $conn->query("SELECT * FROM expe_laboral WHERE id_aspirante_expe = $id")->fetchAll(PDO::FETCH_OBJ);
+            $referencias = $conn->query("SELECT * FROM referencias WHERE id_aspirante_refe = $id")->fetchAll(PDO::FETCH_OBJ);
     
 ?>
 <!DOCTYPE html>
@@ -55,7 +65,7 @@
                 <div class="form-row">
                     <div class="col-md-6 mb-3">
                     <label for="validationServer01">Numero de cedula</label>
-                    <input type="text" name="cedula" class="form-control"  value="<?php echo $results["cedula"] ?>" disabled="">
+                    <input type="text" name="cedula" class="form-control"  value="<?php echo $results["id_aspirante"] ?>" disabled="">
                     </div>
                 </div>
                 <div class="form-row">
@@ -79,15 +89,19 @@
                     </div>
                     <div class="col-md-3 mb-3">
                         <label for="validationServer02">Fecha de nacimiento</label>
-                        <input type="text" name="apellidos" class="form-control"  value="<?php echo $results["fechaNacimiento"] ?>" disabled="">
+                        <input type="text" name="apellidos" class="form-control"  value="<?php echo $results["fecha_nacimiento"] ?>" disabled="">
                     </div>
                 </div>
                 <div class="form-row">
-                    <div class="col-md-6 mb-3">
-                        <label for="validationServer02">Ciudad</label>
-                        <input type="text" name="apellidos" class="form-control"  value="<?php echo $results["ciudad"] ?>" disabled="">
+                    <div class="col-md-4 mb-3">
+                        <label for="validationServer02">Parroquia</label>
+                        <input type="text" name="apellidos" class="form-control"  value="<?php echo $results["parroquia"] ?>" disabled="">
                     </div>
-                    <div class="col-md-6 mb-3">
+                    <div class="col-md-4 mb-3">
+                        <label for="validationServer02">Ciudad</label>
+                        <input type="text" name="apellidos" class="form-control"  value="<?php echo $nombreCiudad['nombre'] ?>" disabled="">
+                    </div>
+                    <div class="col-md-4 mb-3">
                         <label for="validationServer02">Telefono fijo</label>
                         <input type="text" name="apellidos" class="form-control"  value="<?php echo $results["telefono"] ?>" disabled="">
                     </div>
@@ -107,90 +121,129 @@
                     </div>
                     <div class="col-md-2 mb-3">
                         <label for="validationServer02">Estado Civil</label>
-                        <input type="text" name="apellidos" class="form-control"  value="<?php echo $results["estadoCivil"] ?>" disabled="">
+                        <input type="text" name="apellidos" class="form-control"  value="<?php echo $results["estado_civil"] ?>" disabled="">
                     </div>
                 </div>
                 <label class="font-weight-bolder mt-3">Antecedentes acádemicos y profesionales</label>
                 <hr class="mt-1 mb-4 mr-5">
+
+                <?php
+                    foreach ($estudios as $estudiosAspirantes):
+                ?>
+                    <div class="form-row">
+                        <div class="col-md-6 mb-3">
+                            <label for="validationServer01">Titulo / Profesión</label>
+                            <input type="text" name="nombres" class="form-control" value="<?php echo $estudiosAspirantes->titulo?>" disabled="">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="validationServer02">Institución</label>
+                            <input type="text" name="apellidos" class="form-control"  value="<?php echo $estudiosAspirantes->institucion?>" disabled="">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-md-6 mb-3">
+                            <label for="validationServer02">Año de ingreso</label>
+                            <input type="text" name="apellidos" class="form-control" value="<?php echo $estudiosAspirantes->fecha_ingreso?>" disabled="">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="validationServer02">Año de Egreso</label>
+                            <input type="text" name="apellidos" class="form-control" value="<?php echo $estudiosAspirantes->fecha_egreso?>" disabled="">
+                        </div>
+                    </div>
+                    <hr class="mt-1 mb-4 mr-5">
+                <?php 
+                    endforeach;
+                ?>    
+                <label class="font-weight-bolder mt-3">Experiencia laboral</label>
+                <hr class="mt-1 mb-4 mr-5 ">
+                <?php
+                    foreach ($experiencia as $expeAspirantes):
+                ?>
+                    <div class="form-row">
+                        <div class="col-md-4 mb-3">
+                            <label for="validationServer08">Empresa</label>
+                            <input type="text" name="empresa1" class="form-control" value="<?php echo $expeAspirantes->nombre_emp?>" disabled="">
+                        </div>
+                        <div class="col-md-5 mb-3">
+                            <label for="validationServer16">Dirección</label>
+                            <input type="text" name="direccion1" class="form-control" value="<?php echo $expeAspirantes->naturaleza_emp?>" disabled="">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="validationServer16">Cargo</label>
+                            <input type="text" name="cargo1" class="form-control" value="<?php echo $expeAspirantes->direccion?>" disabled="">
+                        </div>    
+                        <div class="col-md-2 mb-3">
+                            <label for="validationServer16">Años</label>
+                            <input type="text" name="ano1" class="form-control"value="<?php echo $expeAspirantes->cargo?>" disabled="">
+                        </div>  
+                        <div class="col-md-2 mb-3">
+                            <label for="validationServer16">Meses</label>
+                            <input type="text" name="meses1" class="form-control" value="<?php echo $expeAspirantes->anos?>" disabled="">
+                        </div>  
+                        <div class="col-md-5 mb-3 mr-3">
+                            <label for="validationServer11">Naturaleza de la Empresa</label>
+                            <input type="text" name="naturalezaEmpresa1" class="form-control" value="<?php echo $expeAspirantes->meses?>" disabled="">
+                        </div>
+                    </div>
+                    <hr class="mt-1 mb-4 mr-5">
+                <?php 
+                    endforeach;
+                ?>  
+                <label class="font-weight-bolder mt-3">Referencias</label>
+                <hr class="mt-1 mb-4 mr-5 ">
+                <?php
+                    foreach ($referencias as $referenciasAspirantes):
+                ?>
+                <?php
+                if($referenciasAspirantes->tipo_refe == 1){
+                    echo '<label class="font-weight-bolder mt-1 ml-2">Personal</label>';
+                }else{
+                    echo '<label class="font-weight-bolder mt-1 ml-2">Laboral</label>';
+                }
+                ?>
                 <div class="form-row">
-                    <div class="col-md-6 mb-3">
-                        <label for="validationServer01">Titulo / Profesión</label>
-                        <input type="text" name="nombres" class="form-control" value="<?php echo $results["titulo"]?>" disabled="">
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="validationServer02">Institución</label>
-                        <input type="text" name="apellidos" class="form-control"  value="<?php echo $results["institucion"]?>" disabled="">
-                    </div>
+                <div class="col-md-4 mb-3">
+                    <label for="validationServer08">Nombres</label>
+                    <input type="text" name="nombresRefe1" class="form-control" value="<?php echo $referenciasAspirantes->nombres_refe?>" disabled="">
                 </div>
-                <div class="form-row">
-                    <div class="col-md-6 mb-3">
-                        <label for="validationServer02">Año de ingreso</label>
-                        <input type="text" name="apellidos" class="form-control" value="<?php echo $results["anoIngreso"]?>" disabled="">
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="validationServer02">Año de Egreso</label>
-                        <input type="text" name="apellidos" class="form-control" value="<?php echo $results["anoEgreso"]?>" disabled="">
-                    </div>
+                <div class="col-md-4 mb-3">
+                    <label for="validationServer08">Apellidos</label>
+                    <input type="text" name="apellidosRefe1" class="form-control" value="<?php echo $referenciasAspirantes->apellidos_refe?>" disabled="">
                 </div>
-                <div class="form-row">
-                    <div class="col-md-6 mb-3">
-                        <label for="validationServer01">Titulo / Profesión</label>
-                        <input type="text" name="nombres" class="form-control" value="<?php echo $results["titulo2"]?>" disabled="">
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="validationServer02">Institución</label>
-                        <input type="text" name="apellidos" class="form-control"  value="<?php echo $results["institucion2"]?>" disabled="">
-                    </div>
+                <div class="col-md-2 mb-3">
+                    <label for="validationServer11">Número de teléfono</label>
+                    <input type="text" name="telefonoRefe1" class="form-control" value="<?php echo $referenciasAspirantes->telefono_refe?>" disabled="">
                 </div>
-                <div class="form-row">
-                    <div class="col-md-6 mb-3">
-                        <label for="validationServer02">Año de ingreso</label>
-                        <input type="text" name="apellidos" class="form-control" value="<?php echo $results["anoIngreso2"]?>" disabled="">
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="validationServer02">Año de Egreso</label>
-                        <input type="text" name="apellidos" class="form-control" value="<?php echo $results["anoEgreso2"]?>" disabled="">
-                    </div>
+                <div class="col-md-2 mb-3">
+                    <label for="validationServer11">Número celular</label>
+                    <input type="text" name="celularRefe1" class="form-control" value="<?php echo $referenciasAspirantes->celular_refe?>" disabled="">
                 </div>
+                </div>
+                <hr class="mt-1 mb-1 mr-5">
+                <?php 
+                    endforeach;
+                ?>  
                 <label class="font-weight-bolder mt-3">Información ocupacional</label>
                 <hr class="mt-1 mb-4 mr-5">
                 <div class="form-row">
-                    <div class="col-md-2 mb-3">
-                        <label for="validationServer02">Fecha de envio del formulario</label>
-                        <input type="text" name="apellidos" class="form-control" value="<?php echo $results["created_at"]?>" disabled="">
+                    <div class="col-md-4 mb-3">
+                        <label for="validationServer02">Cargo al que postula</label>
+                        <input type="text" name="apellidos" class="form-control" value="<?php echo $results["cargo_postula"]?>" disabled="">
                     </div>
                     <div class="col-md-4 mb-3">
-                        <label for="validationServer02">Especialidad</label>
-                        <input type="text" name="apellidos" class="form-control" value="<?php echo $results["especialidad"]?>" disabled="">
-                    </div>
-                    <div class="col-md-2 mb-3">
-                        <label for="validationServer02">Especialidad 2</label>
-                        <input type="text" name="apellidos" class="form-control" value="<?php echo $results["especialidad2"]?>" disabled="">
+                        <label for="validationServer02">Sueldo esperado</label>
+                        <input type="text" name="apellidos" class="form-control" value="<?php echo $results["sueldo_espe"]?>" disabled="">
                     </div>
                     <div class="col-md-4 mb-3">
-                        <label for="validationServer02">Especialidad 3</label>
-                        <input type="text" name="apellidos" class="form-control" value="<?php echo $results["especialidad3"]?>" value="php echo $results" disabled="">
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="col-md-3 mb-3">
-                        <label for="validationServer02">Años de experiencia</label>
-                        <input type="text" name="apellidos" class="form-control" value="<?php echo $results["anosExperiencia"]?>" disabled="">
-                    </div>
-                    <div class="col-md-5 mb-3">
-                        <label for="validationServer02">Área pretendida</label>
-                        <input type="text" name="apellidos" class="form-control" value="<?php echo $results["areaPretendida"]?>" disabled="">
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <label for="validationServer02">Horario Pretendido</label>
-                        <input type="text" name="apellidos" class="form-control" value="<?php echo $results["horarioPretendido"]?>" disabled="">
+                        <label for="validationServer02">Disponibilidad Horaria</label>
+                        <input type="text" name="apellidos" class="form-control" value="<?php echo $results["disp_horario"]?>" disabled="">
                     </div>
                 </div>
                 <label class="font-weight-bolder mt-3">Descripcion del perfil del aspirante</label>
                 <hr class="mt-1 mb-4 mr-5 ">
                 <div class="form-row">
                     <div class="col-md-12 mb-3">
-                    <textarea name="documentosDescription" class="form-control" id="lugar" rows="3" disabled=""><?php echo $results["descriptionPerfil"]?></textarea>
+                    <textarea name="documentosDescription" class="form-control" id="lugar" rows="3" disabled=""><?php echo $results["descripcion"]?></textarea>
                     </div>        
                 </div>   
             </div> 
