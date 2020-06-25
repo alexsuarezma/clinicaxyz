@@ -2,9 +2,13 @@
   require '../../../../database.php';
   require '../components/layout.php';
     $created = date('d')."/".date('m')."/".date('Y');
-    $creacion = date('d')."/".date('m')."/".date('Y')." ".date("H").":".date("i").":".date("s");
+    $hora = (date("H")-7);
+    $creacion = date('d')."/".date('m')."/".date('Y')." ".$hora.":".date("i").":".date("s");
     
     $ciudades = $conn->query("SELECT * FROM ciudades ORDER BY nombre ASC")->fetchAll(PDO::FETCH_OBJ);
+    $cargos = $conn->query("SELECT * FROM cargo_empleados ORDER BY nombre_cargo ASC")->fetchAll(PDO::FETCH_OBJ);
+    $personal = $conn->query("SELECT * FROM personal_empleados ORDER BY nombre_personal ASC")->fetchAll(PDO::FETCH_OBJ);
+    $areas = $conn->query("SELECT * FROM area_empleados ORDER BY nombre_area ASC")->fetchAll(PDO::FETCH_OBJ);
     
    
 
@@ -13,16 +17,14 @@
         // $results = $conn->query("SELECT * FROM especialidades")->fetchAll(PDO::FETCH_OBJ);
       }else{   
           $cedula = $_POST['cedula'];
-          // $records = $conn->prepare('SELECT id_empleados FROM empleados WHERE id_empleados = :ced');
-          // $records->bindParam(':ced',$cedula);
-          // $records->execute();
-          // $results = $records->fetch(PDO::FETCH_ASSOC);
-          //  var_dump($results['id_empleados']);
-          //  var_dump($_POST["cedula"]);
+          $records = $conn->prepare('SELECT id_empleados FROM empleados WHERE id_empleados = :ced');
+          $records->bindParam(':ced',$cedula);
+          $records->execute();
+          $results = $records->fetch(PDO::FETCH_ASSOC);
 
-          //  if ($results['id_empleados']==$_POST["cedula"]) {/*repetida*/ 
-          //       echo "<script language='javascript'>alert('La cedula que intenta ingresar ya esta registrada en el sistema.');</script>";
-          //  }else{
+           if ($results['id_empleados']==$_POST["cedula"]) {/*repetida*/ 
+                echo "<script language='javascript'>alert('La cedula que intenta ingresar ya esta registrada en el sistema.');</script>";
+           }else{
               // CREATE
                $ruta = "../assets/static/contratos/";
                $archivo = $ruta.$_FILES["fileDocument"]["name"];
@@ -42,8 +44,8 @@
             }
                   try {
                     $sql = "INSERT INTO empleados 
-(id_empleados,profileimage,nombres,apellidos,direccion,nacionalidad,fecha_nacimiento,parroquia,ciudad,telefono,celular,email,sexo,estado_civil,
-nombres_conyuge,apellidos_conyuge,salario_base,horario,documentos_descripcion,fileDocument,disponible,deleted,created_at,update_at) VALUES (:id_empleados,:profileimage,:nombres,:apellidos,:direccion,:nacionalidad,:fecha_nacimiento,:parroquia,:ciudad,:telefono,:celular,:email,:sexo,:estado_civil,:nombres_conyuge,:apellidos_conyuge,:salario_base,:horario,:documentos_descripcion,:fileDocument,:disponible,:deleted,:created_at,:update_at)";
+(id_empleados,profileimage,nombres,apellidos,direccion,nacionalidad,fecha_nacimiento,parroquia,id_ciudad_emp,telefono,celular,email,sexo,estado_civil,
+nombres_conyuge,apellidos_conyuge,salario_base,horario,documentos_descripcion,fileDocument,disponible,deleted,created_at,update_at,id_area_emp,id_cargo_emp,id_personal_emp) VALUES (:id_empleados,:profileimage,:nombres,:apellidos,:direccion,:nacionalidad,:fecha_nacimiento,:parroquia,:id_ciudad_emp,:telefono,:celular,:email,:sexo,:estado_civil,:nombres_conyuge,:apellidos_conyuge,:salario_base,:horario,:documentos_descripcion,:fileDocument,:disponible,:deleted,:created_at,:update_at,:id_area_emp,:id_cargo_emp,:id_personal_emp)";
                     $stmt = $conn->prepare($sql);
                     $stmt->bindParam(':id_empleados', $_POST['cedula']);
                     $stmt->bindValue(':profileimage', null, PDO::PARAM_INT);
@@ -53,7 +55,7 @@ nombres_conyuge,apellidos_conyuge,salario_base,horario,documentos_descripcion,fi
                     $stmt->bindParam(':nacionalidad',$_POST['nacionalidad']);
                     $stmt->bindParam(':fecha_nacimiento',$_POST['fechaNacimiento']);
                     $stmt->bindParam(':parroquia',$_POST['parroquia']); 
-                    $stmt->bindParam(':ciudad',$_POST['ciudad']); 
+                    $stmt->bindParam(':id_ciudad_emp',$_POST['ciudad']); 
                     $stmt->bindParam(':telefono',$_POST['telefono']);
                     $stmt->bindParam(':celular',$_POST['celular']);
                     $stmt->bindParam(':email',$_POST['email']);
@@ -69,75 +71,91 @@ nombres_conyuge,apellidos_conyuge,salario_base,horario,documentos_descripcion,fi
                     $stmt->bindValue(':disponible', 1, PDO::PARAM_INT);
                     $stmt->bindValue(':created_at', $creacion);
                     $stmt->bindValue(':update_at', null, PDO::PARAM_INT);
+                    $stmt->bindParam(':id_area_emp',$_POST['area']);
+                    $stmt->bindParam(':id_cargo_emp',$_POST['cargo']);
+                    $stmt->bindParam(':id_personal_emp',$_POST['personal']);
+                    
                   
                       if($stmt->execute()){
-                            // for($i=1;$i<=$_POST['numeroHijos'];$i++){
-                            //   //Insertar en la tabla hijos_empleados
-                            //     $sql = "INSERT INTO estudios_aspirantes (titulo,institucion,fecha_ingreso,fecha_egreso,id_aspirante_est) VALUES (:titulo,:institucion,:fecha_ingreso,:fecha_egreso,:id_aspirante_est)";                    
-                            //     $stmt = $conn->prepare($sql);
-                            //     $stmt->bindParam(':titulo',$_POST["titulo$i"]);
-                            //     $stmt->bindParam(':institucion',$_POST["institucion$i"]);
-                            //     $stmt->bindParam(':fecha_ingreso',$_POST["anoIngreso$i"]);
-                            //     $stmt->bindParam(':fecha_egreso',$_POST["anoEgreso$i"]);
-                            //     $stmt->bindParam(':id_aspirante_est', $_POST['cedula']);
-                            //     $stmt->execute();
-                            //     // var_dump($_POST["nombreHijo$i"]);
-                            //     // var_dump($_POST["apellidoHijo$i"]);
-                            //     // var_dump($_POST["anosHijo$i"]);
-                            //     // var_dump($_POST["mesesHijo$i"]);
-                            // }
-                            // for($i=1;$i<=$_POST['antecedentesAcadem'];$i++){
-                            //   //Insertar en la tabla antecedentesAcademicos
-                            //   $sql = "INSERT INTO estudios_aspirantes (titulo,institucion,fecha_ingreso,fecha_egreso,id_aspirante_est) VALUES (:titulo,:institucion,:fecha_ingreso,:fecha_egreso,:id_aspirante_est)";                    
-                            //   $stmt = $conn->prepare($sql);
-                            //   $stmt->bindParam(':titulo',$_POST["titulo$i"]);
-                            //   $stmt->bindParam(':institucion',$_POST["institucion$i"]);
-                            //   $stmt->bindParam(':fecha_ingreso',$_POST["anoIngreso$i"]);
-                            //   $stmt->bindParam(':fecha_egreso',$_POST["anoEgreso$i"]);
-                            //   $stmt->bindParam(':id_aspirante_est', $_POST['cedula']);
-                            //   $stmt->execute();
+                            for($i=1;$i<=$_POST['numeroHijos'];$i++){
+                              //Insertar en la tabla hijos_empleados
+                                $sql = "INSERT INTO hijos_empleados 
+                                (nombres_hijo,apellidos_hijo,anos_hijo,meses_hijo,id_empleados_hijos) VALUES (:nombres_hijo,:apellidos_hijo,:anos_hijo,:meses_hijo,:id_empleados_hijos)";                    
+                                $stmt = $conn->prepare($sql);
+                                $stmt->bindParam(':nombres_hijo',$_POST["nombreHijo$i"]);
+                                $stmt->bindParam(':apellidos_hijo',$_POST["apellidoHijo$i"]);
+                                $stmt->bindParam(':anos_hijo',$_POST["anosHijo$i"]);
+                                $stmt->bindParam(':meses_hijo',$_POST["mesesHijo$i"]);
+                                $stmt->bindParam(':id_empleados_hijos',$_POST["cedula"]);
+                                $stmt->execute();
+                            }
+
+                            for($i=1;$i<=$_POST['antecedentesAcadem'];$i++){
+                              //Insertar en la tabla antecedentesAcademicos
+                              $sql = "INSERT INTO estudios_empleados 
+                              (titulo_estudiosempleados,institucion_estudiosempleados,fecha_ingreso,fecha_egreso,id_empleados_est) VALUES (:titulo_estudiosempleados,:institucion_estudiosempleados,:fecha_ingreso,:fecha_egreso,:id_empleados_est)";                    
+                              $stmt = $conn->prepare($sql);
+                              $stmt->bindParam(':titulo_estudiosempleados',$_POST["titulo$i"]);
+                              $stmt->bindParam(':institucion_estudiosempleados',$_POST["institucion$i"]);
+                              $stmt->bindParam(':fecha_ingreso',$_POST["anoIngreso$i"]);
+                              $stmt->bindParam(':fecha_egreso',$_POST["anoEgreso$i"]);
+                              $stmt->bindParam(':id_empleados_est', $_POST['cedula']);
+                              $stmt->execute();
     
-                            // }
+                            }
     
-                            // for($i=1;$i<=$_POST['experienciaLaboral'];$i++){
-                            //   //Insertar en la tabla experiencia laboral
-                            //   $sql = "INSERT INTO expe_laboral (nombre_emp,naturaleza_emp,direccion,cargo,anos,meses,id_aspirante_expe) VALUES (:nombre_emp,:naturaleza_emp,:direccion,:cargo,:anos,:meses,:id_aspirante_expe)";                    
-                            //   $stmt = $conn->prepare($sql);
-                            //   $stmt->bindParam(':nombre_emp',$_POST["titulo$i"]);
-                            //   $stmt->bindParam(':naturaleza_emp',$_POST["institucion$i"]);
-                            //   $stmt->bindParam(':direccion',$_POST["anoIngreso$i"]);
-                            //   $stmt->bindParam(':cargo',$_POST["anoEgreso$i"]);
-                            //   $stmt->bindParam(':anos',$_POST["anoEgreso$i"]);
-                            //   $stmt->bindParam(':meses',$_POST["anoEgreso$i"]);
-                            //   $stmt->bindParam(':id_aspirante_expe', $_POST['cedula']);
-                            //   $stmt->execute();
-                            // }
+                            for($i=1;$i<=$_POST['experienciaLaboral'];$i++){
+                              //Insertar en la tabla experiencia laboral
+                              $sql = "INSERT INTO expe_laboral_emp (nombre_emp,naturaleza_emp,direccion,cargo,anos,meses,id_empleados_expe) VALUES (:nombre_emp,:naturaleza_emp,:direccion,:cargo,:anos,:meses,:id_empleados_expe)";                    
+                              $stmt = $conn->prepare($sql);
+                              $stmt->bindParam(':nombre_emp',$_POST["empresa$i"]);
+                              $stmt->bindParam(':naturaleza_emp',$_POST["naturalezaEmpresa$i"]);
+                              $stmt->bindParam(':direccion',$_POST["direccion$i"]);
+                              $stmt->bindParam(':cargo',$_POST["cargo$i"]);
+                              $stmt->bindParam(':anos',$_POST["ano$i"]);
+                              $stmt->bindParam(':meses',$_POST["meses$i"]);
+                              $stmt->bindParam(':id_empleados_expe', $_POST['cedula']);
+                              $stmt->execute();
+                            }
     
-                            // for($i=1;$i<=4;$i++){
-                            //   //Insertar en la tabla antecedentesAcademicos
-                            //   $sql = "INSERT INTO referencias (tipo_refe,nombres_refe,apellidos_refe,telefono_refe,celular_refe,id_aspirante_refe) VALUES (:tipo_refe,:nombres_refe,:apellidos_refe,:telefono_refe,:celular_refe,:id_aspirante_refe)";                    
-                            //   $stmt = $conn->prepare($sql);
-                            //   if($i<=2){
-                            //     // personal
-                            //     $stmt->bindValue(':tipo_refe', 1, PDO::PARAM_INT);
-                            //   }else{
-                            //     $stmt->bindValue(':tipo_refe', 2, PDO::PARAM_INT);
-                            //   }
-                              
-                            //   $stmt->bindParam(':nombres_refe',$_POST["nombresRefe$i"]);
-                            //   $stmt->bindParam(':apellidos_refe',$_POST["apellidosRefe$i"]);
-                            //   $stmt->bindParam(':telefono_refe',$_POST["telefonoRefe$i"]);
-                            //   $stmt->bindParam(':celular_refe',$_POST["celularRefe$i"]);
-                            //   $stmt->bindParam(':id_aspirante_refe', $_POST['cedula']);
-                            //   $stmt->execute();
-                            // }
+                            for($i=1;$i<=2;$i++){
+                              //Insertar en la tabla antecedentesAcademicos
+                              $sql = "INSERT INTO contacto_emergencia (nombres_contacemergencia,apellidos_contacemergencia,telefono_contacemergencia,celular_contacemergencia,id_empleados_contac) VALUES (:nombres_contacemergencia,:apellidos_contacemergencia,:telefono_contacemergencia,:celular_contacemergencia,:id_empleados_contac)";                    
+                              $stmt = $conn->prepare($sql);                              
+                              $stmt->bindParam(':nombres_contacemergencia',$_POST["nombresContactoEmerg$i"]);
+                              $stmt->bindParam(':apellidos_contacemergencia',$_POST["apellidosContactoEmerg$i"]);
+                              $stmt->bindParam(':telefono_contacemergencia',$_POST["telefonoContactoEmerg$i"]);
+                              $stmt->bindParam(':celular_contacemergencia',$_POST["celularContactoEmerg$i"]);
+                              $stmt->bindParam(':id_empleados_contac', $_POST['cedula']);
+                              $stmt->execute();
+                            }
                             
+                            for($i=1;$i<=4;$i++){
+                              //Insertar en la tabla antecedentesAcademicos
+                              $sql = "INSERT INTO referencias_empleado (tipo_refe,nombres_refe,apellidos_refe,telefono_refe,celular_refe,id_empleados_refe) VALUES (:tipo_refe,:nombres_refe,:apellidos_refe,:telefono_refe,:celular_refe,:id_empleados_refe)";                    
+                              $stmt = $conn->prepare($sql);
+                              if($i<=2){
+                                // personal
+                                $stmt->bindValue(':tipo_refe', 1, PDO::PARAM_INT);
+                              }else{
+                                $stmt->bindValue(':tipo_refe', 2, PDO::PARAM_INT);
+                              }
+                              
+                              $stmt->bindParam(':nombres_refe',$_POST["nombresRefe$i"]);
+                              $stmt->bindParam(':apellidos_refe',$_POST["apellidosRefe$i"]);
+                              $stmt->bindParam(':telefono_refe',$_POST["telefonoRefe$i"]);
+                              $stmt->bindParam(':celular_refe',$_POST["celularRefe$i"]);
+                              $stmt->bindParam(':id_empleados_refe', $_POST['cedula']);
+                              $stmt->execute();
+                            }
+                            
+
                           header("Location:profile.php?id=$cedula");                          
                       }
                   } catch (PDOException $e) {
                       die('Problema: ' . $e->getMessage());
                   }
-            // } 
+            } 
       }
 
 ?>
@@ -235,11 +253,11 @@ nombres_conyuge,apellidos_conyuge,salario_base,horario,documentos_descripcion,fi
                     </div>
                   </div>
               <div class="form-row">
-                <div class="col-md-6 mb-3">
+                <div class="col-md-3 mb-3">
                           <label for="validationServer03">Parroquía</label>
                           <input type="text" name="parroquia" class="form-control" id="validationServer04" autocomplete="off"required>
                         </div>
-                  <div class="col-md-6 mb-3">
+                  <div class="col-md-3 mb-3">
                   <label for="validationServer14">Ciudad</label>
                   <select class="custom-select" name="ciudad" id="validationServer08" required>
                       <option selected disabled value="">Seleccione...</option>
@@ -344,62 +362,7 @@ nombres_conyuge,apellidos_conyuge,salario_base,horario,documentos_descripcion,fi
                       <input  name="numeroHijos" style="display:none;" id="numeroHijos" value="<?php echo 1;?>">
                       <!-- <button name="enviar" id="enviar">enviar</button> -->
                   </div>
-              </div>
-              <label class="font-weight-bolder mt-3">Contactos para casos de emergencia</label>
-              <hr class="mt-1 mb-4 mr-5 ">
-                <div class="form-row">
-                  <div class="col-md-8 mb-3">
-                    <label for="validationServer08">Nombres y Apellidos</label>
-                    <input type="text" name="nombresContactoEmerg" class="form-control" onkeypress="return soloLetras(event)" id="validationServer26" autocomplete="off">
-                  </div>
-                  <div class="col-md-2 mb-3">
-                      <label for="validationServer11">Teléfono Fijo</label>
-                      <input type="text" name="telefonoContactoEmerg" class="form-control" onchange="validarTelefono('validationServer27')" maxlength="7" onkeypress="return soloNumeros(event)" id="validationServer27" autocomplete="off" required>
-                      <div class="invalid-feedback">
-                        Numero fijo invalido.
-                      </div>
-                      <div class="valid-feedback">
-                        Numero fijo valido.
-                      </div>
-                  </div>
-                  <div class="col-md-2 mb-3">
-                    <label for="validationServer11">Teléfono Celular</label>
-                    <input type="text" name="celularContactoEmerg" class="form-control" onchange="validarCelular('validationServer28')" maxlength="10" onkeypress="return soloNumeros(event)" id="validationServer28" autocomplete="off" required>
-                    <div class="invalid-feedback">
-                      Numero celular invalido.
-                    </div>
-                    <div class="valid-feedback">
-                      Numero celular valido.
-                    </div>
-                  </div>
-                </div>
-                <div class="form-row">
-                  <div class="col-md-8 mb-3">
-                    <label for="validationServer08">Nombres y Apellidos</label>
-                    <input type="text" name="nombresContactoEmerg2" class="form-control" onkeypress="return soloLetras(event)" id="validationServer29" autocomplete="off">
-                  </div>
-                  <div class="col-md-2 mb-3">
-                      <label for="validationServer11">Teléfono Fijo</label>
-                      <input type="text" name="telefonoContactoEmerg2" class="form-control" onchange="validarTelefono('validationServer30')" maxlength="7" onkeypress="return soloNumeros(event)" id="validationServer30" autocomplete="off" required>
-                      <div class="invalid-feedback">
-                        Numero fijo invalido.
-                      </div>
-                      <div class="valid-feedback">
-                        Numero fijo valido.
-                      </div>
-                  </div>
-                  <div class="col-md-2 mb-3">
-                    <label for="validationServer11">Teléfono Celular</label>
-                    <input type="text" name="celularContactoEmerg2" class="form-control" onchange="validarCelular('validationServer31')" maxlength="10" onkeypress="return soloNumeros(event)" id="validationServer31" autocomplete="off" required>
-                    <div class="invalid-feedback">
-                        Numero celular invalido.
-                      </div>
-                      <div class="valid-feedback">
-                        Numero celular valido.
-                      </div>
-                  </div>
-                </div>
-          
+              </div>          
                 <label class="font-weight-bolder mt-3">Antecedentes acádemicos y profesionales</label>
                 <hr class="mt-1 mb-4 mr-5 ">
                 <div class=""id="dynamic_field_academico">
@@ -417,7 +380,7 @@ nombres_conyuge,apellidos_conyuge,salario_base,horario,documentos_descripcion,fi
                       <div class="form-row">
                         <div class="col-md-10 ml-2 mb-3">
                           <label for="validationServer16">Año de Ingreso</label>
-                          <input type="date" name="anoIngreso1" class="form-control" id="validationServer35" required>
+                          <input type="date" name="anoIngreso1" class="form-control"id="validationServer35" required>
                           <div class="invalid-feedback">
                             <!--mensaje para feedback del campo.-->
                           </div>
@@ -486,11 +449,23 @@ nombres_conyuge,apellidos_conyuge,salario_base,horario,documentos_descripcion,fi
                   </div>
                   <div class="col-md-2 mb-3">
                       <label for="validationServer11">Número de teléfono</label>
-                      <input type="text" name="telefonoRefe1" class="form-control" onkeypress="return soloNumeros(event)" maxlength="7" id="validationServer38" autocomplete="off" required>
-                  </div>
+                      <input type="text" name="telefonoRefe1" class="form-control" onchange="validarTelefono('referenciatel1')"  onkeypress="return soloNumeros(event)" maxlength="7" id="referenciatel1" autocomplete="off" required>
+                      <div class="invalid-feedback">
+                          Numero fijo invalido.
+                        </div>
+                        <div class="valid-feedback">
+                          Numero fijo valido.
+                        </div>
+                   </div>
                   <div class="col-md-2 mb-3">
                       <label for="validationServer11">Número celular</label>
-                      <input type="text" name="celularRefe1" class="form-control" onkeypress="return soloNumeros(event)" maxlength="10" id="validationServer38" autocomplete="off" required>
+                      <input type="text" name="celularRefe1" class="form-control" onchange="validarCelular('referenciacel1')" onkeypress="return soloNumeros(event)" maxlength="10" id="referenciacel1" autocomplete="off" required>
+                      <div class="invalid-feedback">
+                        Numero celular invalido.
+                      </div>
+                      <div class="valid-feedback">
+                        Numero celular valido.
+                      </div>
                   </div>
                 </div>
                 <div class="form-row">
@@ -504,13 +479,26 @@ nombres_conyuge,apellidos_conyuge,salario_base,horario,documentos_descripcion,fi
                   </div>
                   <div class="col-md-2 mb-3">
                       <label for="validationServer11">Número de teléfono</label>
-                      <input type="text" name="telefonoRefe2" class="form-control" onkeypress="return soloNumeros(event)" maxlength="7" id="validationServer38" autocomplete="off" required>
+                      <input type="text" name="telefonoRefe2" class="form-control" onchange="validarTelefono('referenciatel2')" onkeypress="return soloNumeros(event)" maxlength="7" id="referenciatel2" autocomplete="off" required>
+                      <div class="invalid-feedback">
+                          Numero fijo invalido.
+                        </div>
+                        <div class="valid-feedback">
+                          Numero fijo valido.
+                        </div>
                     </div>
                     <div class="col-md-2 mb-3">
                       <label for="validationServer11">Número celular</label>
-                      <input type="text" name="celularRefe2" class="form-control" onkeypress="return soloNumeros(event)" maxlength="10" id="validationServer38" autocomplete="off" required>
-                  </div>
+                      <input type="text" name="celularRefe2" class="form-control" onchange="validarCelular('referenciacel2')" onkeypress="return soloNumeros(event)" maxlength="10" id="referenciacel2" autocomplete="off" required>
+                      <div class="invalid-feedback">
+                        Numero celular invalido.
+                      </div>
+                      <div class="valid-feedback">
+                        Numero celular valido.
+                      </div>
+                    </div>
                 </div>
+
                 <label class="font-weight-bolder mt-3 ml-2">Laborales</label>
                 <div class="form-row">
                   <div class="col-md-4 mb-3">
@@ -523,11 +511,23 @@ nombres_conyuge,apellidos_conyuge,salario_base,horario,documentos_descripcion,fi
                   </div>
                   <div class="col-md-2 mb-3">
                       <label for="validationServer11">Número de teléfono</label>
-                      <input type="text" name="telefonoRefe3" class="form-control" onkeypress="return soloNumeros(event)" maxlength="7" id="validationServer38" autocomplete="off" required>
+                      <input type="text" name="telefonoRefe3" class="form-control" onchange="validarTelefono('referenciatel3')" onkeypress="return soloNumeros(event)" maxlength="7" id="referenciatel3" autocomplete="off" required>
+                      <div class="invalid-feedback">
+                          Numero fijo invalido.
+                        </div>
+                        <div class="valid-feedback">
+                          Numero fijo valido.
+                        </div>    
                   </div>
                   <div class="col-md-2 mb-3">
                       <label for="validationServer11">Número celular</label>
-                      <input type="text" name="celularRefe3" class="form-control" onkeypress="return soloNumeros(event)" maxlength="10" id="validationServer38" autocomplete="off" required>
+                      <input type="text" name="celularRefe3" class="form-control" onchange="validarCelular('referenciacel3')" onkeypress="return soloNumeros(event)" maxlength="10" id="referenciacel3" autocomplete="off" required>
+                      <div class="invalid-feedback">
+                        Numero celular invalido.
+                      </div>
+                      <div class="valid-feedback">
+                        Numero celular valido.
+                      </div>
                   </div>
                 </div>
                 <div class="form-row">
@@ -541,13 +541,87 @@ nombres_conyuge,apellidos_conyuge,salario_base,horario,documentos_descripcion,fi
                   </div>
                   <div class="col-md-2 mb-3">
                       <label for="validationServer11">Número de teléfono</label>
-                      <input type="text" name="telefonoRefe4" class="form-control" onkeypress="return soloNumeros(event)" maxlength="7" id="validationServer38" autocomplete="off" required>
+                      <input type="text" name="telefonoRefe4" class="form-control" onchange="validarTelefono('referenciatel4')"onkeypress="return soloNumeros(event)" maxlength="7" id="referenciatel4" autocomplete="off" required>
+                      <div class="invalid-feedback">
+                          Numero fijo invalido.
+                        </div>
+                        <div class="valid-feedback">
+                          Numero fijo valido.
+                        </div>
                   </div>
                   <div class="col-md-2 mb-3">
                       <label for="validationServer11">Número celular</label>
-                      <input type="text" name="celularRefe4" class="form-control" onkeypress="return soloNumeros(event)" maxlength="10" id="validationServer38" autocomplete="off" required>
+                      <input type="text" name="celularRefe4" class="form-control" onchange="validarCelular('referenciacel4')" onkeypress="return soloNumeros(event)" maxlength="10" id="referenciacel4" autocomplete="off" required>
+                      <div class="invalid-feedback">
+                        Numero celular invalido.
+                      </div>
+                      <div class="valid-feedback">
+                        Numero celular valido.
+                      </div>
                   </div>
                 </div>
+                <label class="font-weight-bolder mt-3">Contactos para casos de emergencia</label>
+                <hr class="mt-1 mb-4 mr-5 ">
+                  <div class="form-row">
+                    <div class="col-md-4 mb-3">
+                      <label for="validationServer08">Nombres</label>
+                      <input type="text" name="nombresContactoEmerg1" class="form-control" onkeypress="return soloLetras(event)" id="validationServer26" autocomplete="off">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                      <label for="validationServer08">Apellidos</label>
+                      <input type="text" name="apellidosContactoEmerg1" class="form-control" onkeypress="return soloLetras(event)" id="validationServer26" autocomplete="off">
+                    </div>
+                    <div class="col-md-2 mb-3">
+                        <label for="validationServer11">Teléfono Fijo</label>
+                        <input type="text" name="telefonoContactoEmerg1" class="form-control" onchange="validarTelefono('validationServer27')" maxlength="7" onkeypress="return soloNumeros(event)" id="validationServer27" autocomplete="off" required>
+                        <div class="invalid-feedback">
+                          Numero fijo invalido.
+                        </div>
+                        <div class="valid-feedback">
+                          Numero fijo valido.
+                        </div>
+                    </div>
+                    <div class="col-md-2 mb-3">
+                      <label for="validationServer11">Teléfono Celular</label>
+                      <input type="text" name="celularContactoEmerg1" class="form-control" onchange="validarCelular('validationServer28')" maxlength="10" onkeypress="return soloNumeros(event)" id="validationServer28" autocomplete="off" required>
+                      <div class="invalid-feedback">
+                        Numero celular invalido.
+                      </div>
+                      <div class="valid-feedback">
+                        Numero celular valido.
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="col-md-4 mb-3">
+                      <label for="validationServer08">Nombres</label>
+                      <input type="text" name="nombresContactoEmerg2" class="form-control" onkeypress="return soloLetras(event)" id="validationServer29" autocomplete="off">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                      <label for="validationServer08">Apellidos</label>
+                      <input type="text" name="apellidosContactoEmerg2" class="form-control" onkeypress="return soloLetras(event)" id="validationServer29" autocomplete="off">
+                    </div>
+                    <div class="col-md-2 mb-3">
+                        <label for="validationServer11">Teléfono Fijo</label>
+                        <input type="text" name="telefonoContactoEmerg2" class="form-control" onchange="validarTelefono('validationServer30')" maxlength="7" onkeypress="return soloNumeros(event)" id="validationServer30" autocomplete="off" required>
+                        <div class="invalid-feedback">
+                          Numero fijo invalido.
+                        </div>
+                        <div class="valid-feedback">
+                          Numero fijo valido.
+                        </div>
+                    </div>
+                    <div class="col-md-2 mb-3">
+                      <label for="validationServer11">Teléfono Celular</label>
+                      <input type="text" name="celularContactoEmerg2" class="form-control" onchange="validarCelular('validationServer31')" maxlength="10" onkeypress="return soloNumeros(event)" id="validationServer31" autocomplete="off" required>
+                      <div class="invalid-feedback">
+                          Numero celular invalido.
+                        </div>
+                        <div class="valid-feedback">
+                          Numero celular valido.
+                        </div>
+                    </div>
+                  </div>
                 <label class="font-weight-bolder mt-3">Información ocupacional</label>
                 <hr class="mt-1 mb-4 mr-5 ">
                 <div class="form-row">
@@ -557,7 +631,7 @@ nombres_conyuge,apellidos_conyuge,salario_base,horario,documentos_descripcion,fi
                   </div>
                   <div class="col-md-4 mb-3">
                       <label for="validationServer11">Salario base</label>
-                      <input type="text" name="salarioBase" class="form-control" onkeypress="return soloNumeros(event)" id="validationServer38" autocomplete="off" required>
+                      <input type="text" name="salarioBase" class="form-control" onkeypress="return soloSalario(event)" id="validationServer38" autocomplete="off" required>
                     </div>
                   <div class="col-md-3 mb-3">
                     <label for="validationServer09">Tipo de contrato</label>
@@ -578,31 +652,13 @@ nombres_conyuge,apellidos_conyuge,salario_base,horario,documentos_descripcion,fi
                           <label for="validationServer15">Cargo</label>
                           <select class="custom-select" name="cargo" id="validationServer41" required>
                           <option selected disabled value="">Seleccione...</option>
-                          <option>Jefe de Relaciones Humanas</option>
-                          <option>Gerente de RRHH</option>
-                          <option>Administrativo de RRHH</option>
-                          <option>Gerente de Administracion</option>
-                          <option>Secretaria de Gerencia</option>
-                          <option>Cajera</option>
-                          <option>Recepcionista Digitadora</option>
-                          <option>Auditor Medico</option>
-                          <option>Secretaria de erencia</option>
-                          <option>Director Medico</option>
-                          <option>Jefa de Enfermeria</option>
-                          <option>Enfermera Consultorios Externos</option>
-                          <option>Enfermera Clínica</option>
-                          <option>Técnicos Paramédicos</option>
-                          <option>Auxiliares de Servicio</option>
-                          <option>Asistente de Logística</option>
-                          <option>Operario de Limpieza</option>
-                          <option>Guardia</option>
-                          <option>Gerente de Finanzas</option>
-                          <option>Encargado de Contabilidad</option>
-                          <option>Administrativo Contable</option>
-                          <option>Asistente Contable</option>
-                          <option>Contador</option>
-                          <option>Medico de Cardiología</option>
-                          <option>Asistente de Cardiología</option>
+                          <?php
+                          foreach ($cargos as $cargosEmpleado):
+                          ?>
+                          <option value="<?php echo $cargosEmpleado->id_cargo;?>"><?php echo utf8_encode($cargosEmpleado->nombre_cargo);?></option>
+                          <?php 
+                          endforeach;
+                          ?>  
                           </select>
                           <div class="invalid-feedback">
                           <!--mensaje para feedback del campo.-->
@@ -612,10 +668,13 @@ nombres_conyuge,apellidos_conyuge,salario_base,horario,documentos_descripcion,fi
                           <label for="validationServer06">Personal</label>
                           <select class="custom-select" name="personal" id="validationServer42" required>
                             <option selected disabled value="">Seleccione...</option>
-                            <option>Administrativo</option>
-                            <option>Medico</option>
-                            <option>Asistencial</option>
-                            <option>Directivo</option>
+                            <?php
+                            foreach ($personal as $personalEmpleado):
+                            ?>
+                            <option value="<?php echo $personalEmpleado->id_personal;?>"><?php echo utf8_encode($personalEmpleado->nombre_personal);?></option>
+                            <?php 
+                            endforeach;
+                            ?> 
                           </select>
                           <div class="invalid-feedback">
                             <!--mensaje para feedback del campo.-->
@@ -625,13 +684,13 @@ nombres_conyuge,apellidos_conyuge,salario_base,horario,documentos_descripcion,fi
                           <label for="validationServer07">Área</label>
                           <select class="custom-select" name="area" id="validationServer43" required>
                               <option selected disabled value="">Seleccione...</option>
-                              <option>Recursos Humanos</option>
-                              <option>Administracion</option>
-                              <option>Asistencia Medica</option>
-                              <option>Suministro</option>
-                              <option>Higiene, Seguridad y Limpieza</option>
-                              <option>Finanzas y contabilidad</option>
-                              <option>Especialidades</option>
+                              <?php
+                              foreach ($areas as $areaEmpleado):
+                              ?>
+                              <option value="<?php echo $areaEmpleado->id_area;?>"><?php echo utf8_encode($areaEmpleado->nombre_area);?></option>
+                              <?php 
+                              endforeach;
+                              ?> 
                               </select>
                             <div class="invalid-feedback">
                             <!--mensaje para feedback del campo.-->
