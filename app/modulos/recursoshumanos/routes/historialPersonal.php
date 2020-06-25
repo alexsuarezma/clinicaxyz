@@ -53,10 +53,10 @@
                 </button>
             </div>
       </div>
-    <div class="container">
+    <div class="container mt-4">
       <input type="text" name="busqueda" id="busqueda" placeholder="Search for names.." title="Type in a name">
     </div>
-            <div class="container" >
+            <div class="container mt-5" >
                 <ul class="list-group">
                       <?php
                         foreach ($results as $empleados):?>
@@ -64,7 +64,7 @@
                         <span><?php echo $empleados->id_empleados?></span>
                         <span style="text-decoration: line-through;"><?php echo $empleados->nombres?> <?php echo $empleados->apellidos?></span>
                         <span>
-                        <a href="../components/view.php?id=<?php echo $empleados->id_empleados?>" ><i class="fas fa-external-link-alt" style="color:blue;" title="Ver Informacion"></i></a>
+                        <a href="../components/viewEmpleado.php?id=<?php echo $empleados->id_empleados?>" ><i class="fas fa-external-link-alt" style="color:blue;" title="Ver Informacion"></i></a>
                         <a href="../controllers/deleteFisic.php?id=<?php echo $empleados->id_empleados?>" ><i class="fas fa-trash-alt" style="color:red;" title="Eliminar Registro Fisicamente"></i></a>
                         </span>
                         </li>

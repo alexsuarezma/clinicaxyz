@@ -23,6 +23,23 @@ teclado_especial=false;
     return false;
   }
 } 
+
+function soloSalario(e){
+  key=e.keyCode||e.which;
+  teclado=String.fromCharCode(key);
+  numero="0123456789.";
+  especiales="8-37-38-46";
+  teclado_especial=false;
+    for(var i in especiales){
+      if(key==especiales[i]){
+        teclado_especial=true;
+      }
+    }
+    if (numero.indexOf(teclado)==-1 && !teclado_especial) {
+      return false;
+    }
+  } 
+
 function soloLetras(e){
 key=e.keyCode || e.which;
   teclado=String.fromCharCode(key).toLowerCase();
@@ -173,19 +190,19 @@ $(document).ready(function(){
       $('#dynamic_field').append(`<div class="form-row" id="row${i}">`+
                                       '<div class="col-md-3 mb-3">'+
                                           '<label for="validationServer04">Nombres</label>'+
-                                          `<input type="text" name="nombreHijo${i}" class="form-control" onkeypress="return soloLetras(event)" id="validationServer14" autocomplete="off">`+
+                                          `<input type="text" name="nombreHijo${i}" class="form-control" onkeypress="return soloLetras(event)" id="validationServer14" autocomplete="off" required>`+
                                       '</div>'+
                                       '<div class="col-md-3 mb-3">'+
                                           '<label for="validationServer04">Apellidos</label>'+
-                                          `<input type="text" name="apellidoHijo${i}" class="form-control" onkeypress="return soloLetras(event)" id="validationServer15" autocomplete="off">`+
+                                          `<input type="text" name="apellidoHijo${i}" class="form-control" onkeypress="return soloLetras(event)" id="validationServer15" autocomplete="off" required>`+
                                       '</div>'+
                                       '<div class="col-md-2 mb-3">'+
                                           '<label for="validationServer04">Años</label>'+
-                                          `<input type="text" name="anosHijo${i}" class="form-control" onkeypress="return soloNumeros(event)" maxlength="2" id="validationServer16" autocomplete="off">`+
+                                          `<input type="text" name="anosHijo${i}" class="form-control" onkeypress="return soloNumeros(event)" maxlength="2" id="validationServer16" autocomplete="off" required>`+
                                       '</div>'+
                                       '<div class="col-md-2 mb-3">'+
                                           '<label for="validationServer04">Meses</label>'+
-                                          `<input type="text" name="mesesHijo${i}" class="form-control" onkeypress="return soloNumeros(event)" maxlength="2" id="validationServer17" autocomplete="off">`+
+                                          `<input type="text" name="mesesHijo${i}" class="form-control" onkeypress="return soloNumeros(event)" maxlength="2" id="validationServer17" autocomplete="off" required>`+
                                       '</div>'+
                                   '</div>');
       document.getElementById("numeroHijos").value = i;

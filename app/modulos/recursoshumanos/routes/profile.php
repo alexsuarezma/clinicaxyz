@@ -59,7 +59,7 @@
                             </div>
                             <div class="author-card-details">
                                 <h5 class="author-card-name text-lg"><?php echo $results['nombres']?> <?php echo $results['apellidos'] ?> </h5><span class="author-card-position">Contratado desde el <?php echo $results["created_at"]?></span>
-                                <h5 id="ocultCedula"style="display: none"><?php echo $results['cedula']?></h5>
+                                <h5 id="ocultCedula"style="display: none"><?php echo $results['id_empleados']?></h5>
                             </div>
                         </div>
                     </div>

@@ -414,11 +414,11 @@
               </div>
               <div class="col-md-2 mb-3">
                   <label for="validationServer11">Número de teléfono</label>
-                  <input type="text" name="telefonoRefe2" class="form-control" onkeypress="return soloNumeros(event)" maxlength="7" id="validationServer38" autocomplete="off" required>
+                  <input type="text" name="telefonoRefe2" class="form-control" onchange="validarTelefono('referenciatel2')" onkeypress="return soloNumeros(event)" maxlength="7" id="referenciatel2" autocomplete="off" required>
                 </div>
                 <div class="col-md-2 mb-3">
                   <label for="validationServer11">Número celular</label>
-                  <input type="text" name="celularRefe2" class="form-control" onkeypress="return soloNumeros(event)" maxlength="10" id="validationServer38" autocomplete="off" required>
+                  <input type="text" name="celularRefe2" class="form-control" onchange="validarCelular('referenciacel2')" onkeypress="return soloNumeros(event)" maxlength="10" id="referenciacel2" autocomplete="off" required>
               </div>
             </div>
 
@@ -434,11 +434,11 @@
               </div>
               <div class="col-md-2 mb-3">
                   <label for="validationServer11">Número de teléfono</label>
-                  <input type="text" name="telefonoRefe3" class="form-control" onkeypress="return soloNumeros(event)" maxlength="7" id="validationServer38" autocomplete="off" required>
+                  <input type="text" name="telefonoRefe3" class="form-control" onchange="validarTelefono('referenciatel3')" onkeypress="return soloNumeros(event)" maxlength="7" id="referenciatel3" autocomplete="off" required>
               </div>
               <div class="col-md-2 mb-3">
                   <label for="validationServer11">Número celular</label>
-                  <input type="text" name="celularRefe3" class="form-control" onkeypress="return soloNumeros(event)" maxlength="10" id="validationServer38" autocomplete="off" required>
+                  <input type="text" name="celularRefe3" class="form-control" onchange="validarCelular('referenciacel3')" onkeypress="return soloNumeros(event)" maxlength="10" id="referenciacel3" autocomplete="off" required>
               </div>
             </div>
             <div class="form-row">
@@ -452,11 +452,11 @@
               </div>
               <div class="col-md-2 mb-3">
                   <label for="validationServer11">Número de teléfono</label>
-                  <input type="text" name="telefonoRefe4" class="form-control" onkeypress="return soloNumeros(event)" maxlength="7" id="validationServer38" autocomplete="off" required>
+                  <input type="text" name="telefonoRefe4" class="form-control" onchange="validarTelefono('referenciatel4')"onkeypress="return soloNumeros(event)" maxlength="7" id="referenciatel4" autocomplete="off" required>
               </div>
               <div class="col-md-2 mb-3">
                   <label for="validationServer11">Número celular</label>
-                  <input type="text" name="celularRefe4" class="form-control" onkeypress="return soloNumeros(event)" maxlength="10" id="validationServer38" autocomplete="off" required>
+                  <input type="text" name="celularRefe4" class="form-control" onchange="validarCelular('referenciacel4')" onkeypress="return soloNumeros(event)" maxlength="10" id="referenciacel4" autocomplete="off" required>
               </div>
             </div>
             <label class="font-weight-bolder mt-3">Datos de oferta de empleo</label>
@@ -464,7 +464,7 @@
             <div class="form-row">
               <div class="col-md-4 mb-3">
                 <label for="validationServer11">Sueldo esperado</label>
-                <input type="text" name="sueldoEspe" class="form-control" onkeypress="return soloNumeros(event)" maxlength="4" id="validationServer38" autocomplete="off" required>
+                <input type="text" name="sueldoEspe" class="form-control" onkeypress="return soloSalario(event)" maxlength="4" id="validationServer38" autocomplete="off" required>
               </div>
               <div class="col-md-4 mb-3">
                 <label for="validationServer10">Cargo al que postula</label>

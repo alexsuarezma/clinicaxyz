@@ -3,64 +3,159 @@
     session_start();
     $id = $_SESSION['cedula'];
     
+    $hora = (date("H")-7);
+    $updated = date('d')."/".date('m')."/".date('Y')." ".$hora.":".date("i").":".date("s");
+
+    $ciudades = $conn->query("SELECT * FROM ciudades ORDER BY nombre ASC")->fetchAll(PDO::FETCH_OBJ);
+    $cargos = $conn->query("SELECT * FROM cargo_empleados ORDER BY nombre_cargo ASC")->fetchAll(PDO::FETCH_OBJ);
+    $personales = $conn->query("SELECT * FROM personal_empleados ORDER BY nombre_personal ASC")->fetchAll(PDO::FETCH_OBJ);
+    $areas = $conn->query("SELECT * FROM area_empleados ORDER BY nombre_area ASC")->fetchAll(PDO::FETCH_OBJ);
+    
         if(!isset($_POST["btn-actualizar"])){
-            $records = $conn->prepare("SELECT * FROM empleados WHERE cedula = :cedula");
+            $records = $conn->prepare("SELECT * FROM empleados WHERE id_empleados = :cedula");
             $records->bindParam(':cedula', $id);
             $records->execute();
             $results = $records->fetch(PDO::FETCH_ASSOC);
-            $espe = $conn->query("SELECT * FROM especialidades")->fetchAll(PDO::FETCH_OBJ);
+            // $espe = $conn->query("SELECT * FROM especialidades")->fetchAll(PDO::FETCH_OBJ);
+
+            $idciudad = $results['id_ciudad_emp'];
+            $ciudad = $conn->query("SELECT * FROM ciudades WHERE idciudades = $idciudad");
+            $ciudad->execute();
+            $nombreCiudad = $ciudad->fetch(PDO::FETCH_ASSOC);
+
+            $idcargo = $results['id_cargo_emp'];
+            $cargo = $conn->query("SELECT * FROM cargo_empleados WHERE id_cargo = $idcargo");
+            $cargo->execute();
+            $nombreCargo = $cargo->fetch(PDO::FETCH_ASSOC);
+
+            $idarea = $results['id_area_emp'];
+            $area = $conn->query("SELECT * FROM area_empleados WHERE id_area = $idarea");
+            $area->execute();
+            $nombreArea = $area->fetch(PDO::FETCH_ASSOC);
+
+            $idpersonal = $results['id_personal_emp'];
+            $personal = $conn->query("SELECT * FROM personal_empleados WHERE id_personal = $idpersonal");
+            $personal->execute();
+            $nombrePersonal = $personal->fetch(PDO::FETCH_ASSOC);
+
+            $estudios = $conn->query("SELECT * FROM estudios_empleados WHERE id_empleados_est = $id")->fetchAll(PDO::FETCH_OBJ);
+            $experiencia = $conn->query("SELECT * FROM expe_laboral_emp WHERE id_empleados_expe = $id")->fetchAll(PDO::FETCH_OBJ);
+            $referencias = $conn->query("SELECT * FROM referencias_empleado WHERE id_empleados_refe = $id")->fetchAll(PDO::FETCH_OBJ);
+            $contactos = $conn->query("SELECT * FROM contacto_emergencia WHERE id_empleados_contac = $id")->fetchAll(PDO::FETCH_OBJ);
+            $hijos = $conn->query("SELECT * FROM hijos_empleados WHERE id_empleados_hijos = $id")->fetchAll(PDO::FETCH_OBJ);
+
        }else{   
-                // ARREGLAR LA HORA DE MODIFICACION
-                $updated = date('d')."/".date('m')."/".date('Y')." ".date("H").":".date("i").":".date("s");
-                $sql = "UPDATE empleados SET nombres=:nombres,apellidos=:apellidos,direccion=:direccion,nacionalidad=:nacionalidad,fechaNacimiento=:fechaNacimiento,distrito=:distrito,ciudad=:ciudad,telefono=:telefono,celular=:celular,email=:email,sexo=:sexo,estadoCivil=:estadoCivil,nombreHijo=:nombreHijo,apellidoHijo=:apellidoHijo,anosHijo=:anosHijo,mesesHijo=:mesesHijo,nombreHijo2=:nombreHijo2,apellidoHijo2=:apellidoHijo2,anosHijo2=:anosHijo2,mesesHijo2=:mesesHijo2,nombreHijo3=:nombreHijo3,apellidoHijo3=:apellidoHijo3,anosHijo3=:anosHijo3,mesesHijo3=:mesesHijo3,nombresContactoEmerg=:nombresContactoEmerg,telefonoContactoEmerg=:telefonoContactoEmerg,celularContactoEmerg=:celularContactoEmerg,nombresContactoEmerg2=:nombresContactoEmerg2,telefonoContactoEmerg2=:telefonoContactoEmerg2,celularContactoEmerg2=:celularContactoEmerg2,titulo=:titulo,institucion=:institucion,fechaIngresoInsti=:fechaIngresoInsti,fechaEgresoInsti=:fechaEgresoInsti,salarioBase=:salarioBase,idcontrato=:idcontrato,especialidad=:especialidad,cargo=:cargo,personal=:personal,area=:area,idhorario=:idhorario,documentosDescription=:documentosDescription,updated_at=:updated_at WHERE cedula=:cedula";
+                $sql = "UPDATE empleados SET nombres=:nombres,apellidos=:apellidos,direccion=:direccion,nacionalidad=:nacionalidad,fecha_nacimiento=:fecha_nacimiento,parroquia=:parroquia,id_ciudad_emp=:id_ciudad_emp,telefono=:telefono,celular=:celular,email=:email,sexo=:sexo,estado_civil=:estado_civil,nombres_conyuge=:nombres_conyuge,apellidos_conyuge=:apellidos_conyuge,salario_base=:salario_base,id_cargo_emp=:id_cargo_emp,id_personal_emp=:id_personal_emp,id_area_emp=:id_area_emp,horario=:horario,documentos_descripcion=:documentos_descripcion,update_at=:update_at WHERE id_empleados=:id_empleados";
                 $stmt = $conn->prepare($sql);
 
-                $stmt->bindParam(':cedula', $_POST['cedula']);
+                $stmt->bindParam(':id_empleados', $_POST['cedula']);
+                // $stmt->bindValue(':profileimage', null, PDO::PARAM_INT);
                 $stmt->bindParam(':nombres',$_POST['nombres']);
                 $stmt->bindParam(':apellidos',$_POST['apellidos']);
                 $stmt->bindParam(':direccion',$_POST['direccion']);
                 $stmt->bindParam(':nacionalidad',$_POST['nacionalidad']);
-                $stmt->bindParam(':fechaNacimiento',$_POST['fechaNacimiento']);
-                $stmt->bindParam(':distrito',$_POST['distrito']); 
-                $stmt->bindParam(':ciudad',$_POST['ciudad']); 
+                $stmt->bindParam(':fecha_nacimiento',$_POST['fechaNacimiento']);
+                $stmt->bindParam(':parroquia',$_POST['parroquia']); 
+                $stmt->bindParam(':id_ciudad_emp',$_POST['ciudad']); 
                 $stmt->bindParam(':telefono',$_POST['telefono']);
                 $stmt->bindParam(':celular',$_POST['celular']);
                 $stmt->bindParam(':email',$_POST['email']);
                 $stmt->bindParam(':sexo',$_POST['sexo']);
-                $stmt->bindParam(':estadoCivil',$_POST['estadoCivil']);
-                $stmt->bindParam(':nombreHijo',$_POST['nombreHijo']);
-                $stmt->bindParam(':apellidoHijo',$_POST['apellidoHijo']);
-                $stmt->bindParam(':anosHijo',$_POST['anosHijo']);
-                $stmt->bindParam(':mesesHijo',$_POST['mesesHijo']);
-                $stmt->bindParam(':nombreHijo2',$_POST['nombreHijo2']);
-                $stmt->bindParam(':apellidoHijo2',$_POST['apellidoHijo2']);
-                $stmt->bindParam(':anosHijo2',$_POST['anosHijo2']);
-                $stmt->bindParam(':mesesHijo2',$_POST['mesesHijo2']);
-                $stmt->bindParam(':nombreHijo3',$_POST['nombreHijo3']);
-                $stmt->bindParam(':apellidoHijo3',$_POST['apellidoHijo3']);
-                $stmt->bindParam(':anosHijo3',$_POST['anosHijo3']);
-                $stmt->bindParam(':mesesHijo3',$_POST['mesesHijo3']);
-                $stmt->bindParam(':nombresContactoEmerg',$_POST['nombresContactoEmerg']);
-                $stmt->bindParam(':telefonoContactoEmerg',$_POST['telefonoContactoEmerg']);
-                $stmt->bindParam(':celularContactoEmerg',$_POST['celularContactoEmerg']);
-                $stmt->bindParam(':nombresContactoEmerg2',$_POST['nombresContactoEmerg2']);
-                $stmt->bindParam(':telefonoContactoEmerg2',$_POST['telefonoContactoEmerg2']);
-                $stmt->bindParam(':celularContactoEmerg2',$_POST['celularContactoEmerg2']);
-                $stmt->bindParam(':titulo',$_POST['titulo']);
-                $stmt->bindParam(':institucion',$_POST['institucion']);
-                $stmt->bindParam(':fechaIngresoInsti',$_POST['fechaIngresoInsti']);
-                $stmt->bindParam(':fechaEgresoInsti',$_POST['fechaEgresoInsti']);
-                $stmt->bindParam(':salarioBase',$_POST['salarioBase']);
-                $stmt->bindParam(':idcontrato',$_POST['idcontrato']);
-                $stmt->bindParam(':especialidad',$_POST['especialidad']);
-                $stmt->bindParam(':cargo',$_POST['cargo']);
-                $stmt->bindParam(':personal',$_POST['personal']);
-                $stmt->bindParam(':area',$_POST['area']);
-                $stmt->bindParam(':idhorario',$_POST['idhorario']);
-                $stmt->bindParam(':documentosDescription',$_POST['documentosDescription']);
-                $stmt->bindValue(':updated_at', $updated);
+                $stmt->bindParam(':estado_civil',$_POST['estadoCivil']);
+                $stmt->bindParam(':nombres_conyuge',$_POST['nombresConyuge']);
+                $stmt->bindParam(':apellidos_conyuge',$_POST['apellidosConyuge']);
+                $stmt->bindParam(':salario_base',$_POST['salarioBase']);
+                $stmt->bindParam(':horario',$_POST['idhorario']);
+                $stmt->bindParam(':documentos_descripcion',$_POST['documentosDescription']);
+                $stmt->bindValue(':update_at', $updated);
+                $stmt->bindParam(':id_area_emp',$_POST['area']);
+                $stmt->bindParam(':id_cargo_emp',$_POST['cargo']);
+                $stmt->bindParam(':id_personal_emp',$_POST['personal']);
+
+
             try{
                 if($stmt->execute()){
+                    
+
+                      for($i=1;$i<=$_POST['hijosGet'];$i++){
+                        //Actualizar en la tabla hijos_empleados
+                          $sql = "UPDATE hijos_empleados SET nombres_hijo=:nombres_hijo,apellidos_hijo=:apellidos_hijo,anos_hijo=:anos_hijo,meses_hijo=:meses_hijo WHERE id_hijosemple=:id_hijosemple";
+                          $stmt = $conn->prepare($sql);
+                          $stmt->bindParam(':nombres_hijo',$_POST["nombreHijoup$i"]);
+                          $stmt->bindParam(':apellidos_hijo',$_POST["apellidoHijoup$i"]);
+                          $stmt->bindParam(':anos_hijo',$_POST["anosHijoup$i"]);
+                          $stmt->bindParam(':meses_hijo',$_POST["mesesHijoup$i"]);
+                          $stmt->bindParam(':id_hijosemple',$_POST["idHijo$i"]);
+                          $stmt->execute();
+                      }
+
+                      if($_POST['numeroHijos']>1){
+                          for($i=1;$i<$_POST['numeroHijos'];$i++){
+                            $rowHijo = $i+1;
+                            //Insertar nuevo hijo del empleado en la tabla hijos_empleados
+                            $sql = "INSERT INTO hijos_empleados 
+                            (nombres_hijo,apellidos_hijo,anos_hijo,meses_hijo,id_empleados_hijos) VALUES (:nombres_hijo,:apellidos_hijo,:anos_hijo,:meses_hijo,:id_empleados_hijos)"; 
+                              $stmt = $conn->prepare($sql);
+                              $stmt->bindParam(':nombres_hijo',$_POST["nombreHijo$rowHijo"]);
+                              $stmt->bindParam(':apellidos_hijo',$_POST["apellidoHijo$rowHijo"]);
+                              $stmt->bindParam(':anos_hijo',$_POST["anosHijo$rowHijo"]);
+                              $stmt->bindParam(':meses_hijo',$_POST["mesesHijo$rowHijo"]);
+                              $stmt->bindParam(':id_empleados_hijos',$_POST["cedula"]);
+                              $stmt->execute();
+                          }
+                      }
+
+                      for($i=1;$i<=2;$i++){
+                        //Insertar en la tabla antecedentesAcademicos
+                        $sql = "UPDATE contacto_emergencia SET nombres_contacemergencia=:nombres_contacemergencia,apellidos_contacemergencia=:apellidos_contacemergencia,telefono_contacemergencia=:telefono_contacemergencia,celular_contacemergencia=:celular_contacemergencia WHERE id_contacemergencia=:id_contacemergencia";                    
+                        $stmt = $conn->prepare($sql);                              
+                        $stmt->bindParam(':nombres_contacemergencia',$_POST["nombresContactoEmerg$i"]);
+                        $stmt->bindParam(':apellidos_contacemergencia',$_POST["apellidosContactoEmerg$i"]);
+                        $stmt->bindParam(':telefono_contacemergencia',$_POST["telefonoContactoEmerg$i"]);
+                        $stmt->bindParam(':celular_contacemergencia',$_POST["celularContactoEmerg$i"]);
+                        $stmt->bindParam(':id_contacemergencia', $_POST["idContac$i"]);
+                        $stmt->execute();
+                      }
+                      
+                      for($i=1;$i<=4;$i++){
+                        //Update en la tabla referencias_empleado
+                        $sql = "UPDATE referencias_empleado SET nombres_refe=:nombres_refe,apellidos_refe=:apellidos_refe,telefono_refe=:telefono_refe,celular_refe=:celular_refe WHERE id_refeemp=:id_refeemp";                    
+                        $stmt = $conn->prepare($sql);
+                        $stmt->bindParam(':nombres_refe',$_POST["nombresRefe$i"]);
+                        $stmt->bindParam(':apellidos_refe',$_POST["apellidosRefe$i"]);
+                        $stmt->bindParam(':telefono_refe',$_POST["telefonoRefe$i"]);
+                        $stmt->bindParam(':celular_refe',$_POST["celularRefe$i"]);
+                        $stmt->bindParam(':id_refeemp', $_POST["idRefe$i"]);
+                        $stmt->execute();
+                      }
+
+                      for($i=1;$i<=$_POST['countAcademico'];$i++){
+                        //Insertar en la tabla antecedentesAcademicos
+                        $sql = "UPDATE estudios_empleados SET titulo_estudiosempleados=:titulo_estudiosempleados,institucion_estudiosempleados=:institucion_estudiosempleados,fecha_ingreso=:fecha_ingreso,fecha_egreso=:fecha_egreso WHERE id_estudiosempleados=:id_estudiosempleados";                    
+                        $stmt = $conn->prepare($sql);
+                        $stmt->bindParam(':titulo_estudiosempleados',$_POST["titulo$i"]);
+                        $stmt->bindParam(':institucion_estudiosempleados',$_POST["institucion$i"]);
+                        $stmt->bindParam(':fecha_ingreso',$_POST["anoIngreso$i"]);
+                        $stmt->bindParam(':fecha_egreso',$_POST["anoEgreso$i"]);
+                        $stmt->bindParam(':id_estudiosempleados', $_POST["idAcadem$i"]);
+                        $stmt->execute();
+                      }
+
+                      for($i=1;$i<=$_POST["countExperiencia"];$i++){
+                        //Insertar en la tabla experiencia laboral
+                        $sql = "UPDATE expe_laboral_emp SET nombre_emp=:nombre_emp,naturaleza_emp=:naturaleza_emp,direccion=:direccion,cargo=:cargo,anos=:anos,meses=:meses WHERE id_expeemp=:id_expeemp";                    
+                        $stmt = $conn->prepare($sql);
+                        $stmt->bindParam(':nombre_emp',$_POST["empresa$i"]);
+                        $stmt->bindParam(':naturaleza_emp',$_POST["naturalezaEmpresa$i"]);
+                        $stmt->bindParam(':direccion',$_POST["direccion$i"]);
+                        $stmt->bindParam(':cargo',$_POST["cargo$i"]);
+                        $stmt->bindParam(':anos',$_POST["ano$i"]);
+                        $stmt->bindParam(':meses',$_POST["meses$i"]);
+                        $stmt->bindParam(':id_expeemp', $_POST["idExpe$i"]);
+                        $stmt->execute();
+                      }
+
+
                     header("Location:profile.php?id=$id");                          
                 }
             } catch (PDOException $e) {
@@ -76,6 +171,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">  
 </head>
 <body>
 
@@ -87,7 +183,7 @@
                     <div class="form-row">
                         <div class="col-md-6 mb-3">
                         <label for="validationServer01">Numero de cedula</label>
-                        <input type="text" name="cedula" value="<?php echo $results["cedula"]?>" class="form-control" id="validationServer01" readonly>
+                        <input type="text" name="cedula" value="<?php echo $results["id_empleados"]?>" class="form-control" id="validationServer01" readonly>
                         <div class="invalid-feedback">
                             Numero de cedula invalida.
                         </div>
@@ -117,7 +213,7 @@
                     </div>
                     <div class="col-md-3 mb-3">
                       <label for="validationServer16">Fecha de nacimiento</label>
-                      <input type="date" name="fechaNacimiento" value="<?php echo $results["fechaNacimiento"]?>"  class="form-control" id="validationServer06" required>
+                      <input type="date" name="fechaNacimiento" value="<?php echo $results["fecha_nacimiento"]?>"  class="form-control" id="validationServer06" required>
                       <div class="invalid-feedback">
                         <!--mensaje para feedback del campo.-->
                       </div>
@@ -125,17 +221,22 @@
                   </div>
               <div class="form-row">
                 <div class="col-md-6 mb-3">
-                  <label for="validationServer03">Distrito</label>
-                  <input type="text" name="distrito" class="form-control" value="<?php echo $results["distrito"]?>"  id="validationServer07" autocomplete="off" required>
+                  <label for="validationServer03">Parroquia</label>
+                  <input type="text" name="parroquia" class="form-control" value="<?php echo $results["parroquia"]?>"  id="validationServer07" autocomplete="off" required>
                 </div>
                 
                 <div class="col-md-3 mb-3">
                     <label for="validationServer14">Ciudad</label>
                     <select class="custom-select" name="ciudad" id="validationServer08" required>
-                        <option selected="true"><?php echo $results["ciudad"]?></option>
+                        <option selected="true" value="<?php echo $nombreCiudad['idciudades'];?>"><?php echo $nombreCiudad['nombre']?></option>
                         <option disabled value="">Seleccione...</option>
-                        <option>Guayaquil</option>
-                        <option>Quito</option>
+                        <?php
+                        foreach ($ciudades as $ciudadesAspirante):
+                        ?>
+                        <option value="<?php echo $ciudadesAspirante->idciudades;?>"><?php echo utf8_encode($ciudadesAspirante->nombre);?></option>
+                        <?php 
+                        endforeach;
+                        ?>  
                       </select>
                       <div class="invalid-feedback">
                         <!--mensaje para feedback del campo.-->
@@ -182,7 +283,7 @@
                 <div class="col-md-3 mb-3">
                   <label for="validationServer07">Estado Civil</label>
                   <select class="custom-select" name="estadoCivil" id="validationServer13" required>
-                    <option selected="true"><?php echo $results["estadoCivil"]?></option>
+                    <option selected="true"><?php echo $results["estado_civil"]?></option>
                     <option disabled value="">Seleccione...</option>
                     <option>Soltero</option>
                     <option>Casado</option>
@@ -196,35 +297,135 @@
               </div>
                       
               <label class="font-weight-bolder mt-3">Antecedentes acádemicos y profesionales</label>
-              <hr class="mt-1 mb-4 mr-5 ">
-              <div class="form-row">
-                <div class="col-md-6 mb-3">
-                  <label for="validationServer08">Titulo / Profesión</label>
-                  <input type="text" name="titulo" class="form-control" value="<?php echo $results["titulo"]?>" onkeypress="return soloLetras(event)" id="validationServer32" autocomplete="off">
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label for="validationServer11">Institución</label>
-                    <input type="text" name="institucion" class="form-control" value="<?php echo $results["institucion"]?>" onkeypress="return soloLetras(event)" id="validationServer33" autocomplete="off" required>
-                  </div>
-              </div>
-              
-              <div class="form-row">
-                  <div class="col-md-6 mb-3">
-                    <label for="validationServer16">Año de ingreso</label>
-                    <input type="date" name="fechaIngresoInsti" value="<?php echo $results["fechaIngresoInsti"]?>" class="form-control" id="validationServer35" required>
-                    <div class="invalid-feedback">
-                      <!--mensaje para feedback del campo.-->
+                <hr class="mt-1 mb-4 mr-5 ">
+                <?php
+                $countAcadem = 0;
+                    foreach ($estudios as $estudiosEmpleado):
+                      $countAcadem++;
+                ?>
+                    <div class="form-row">
+                      <input name="idAcadem<?php echo $countAcadem;?>" style="display:none;" id="idAcadem" value="<?php echo $estudiosEmpleado->id_estudiosempleados;?>">
+                        <div class="form-row">
+                          <div class="col-md-12 mb-3">
+                            <label for="validationServer08">Título / Profesión</label>
+                            <input type="text" name="titulo<?php echo $countAcadem;?>" class="form-control" value="<?php echo $estudiosEmpleado->titulo_estudiosempleados?>" onkeypress="return soloLetras(event)" id="validationServer32" autocomplete="off" required>
+                          </div>
+                          <div class="col-md-12 mb-3">
+                              <label for="validationServer11">Institución</label>
+                              <input type="text" name="institucion<?php echo $countAcadem;?>" class="form-control" value="<?php echo $estudiosEmpleado->institucion_estudiosempleados?>" onkeypress="return soloLetras(event)" id="validationServer33" autocomplete="off" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                          <div class="col-md-10 ml-2 mb-3">
+                            <label for="validationServer16">Año de Ingreso</label>
+                            <input type="date" name="anoIngreso<?php echo $countAcadem;?>" class="form-control" value="<?php echo $estudiosEmpleado->fecha_ingreso?>" id="validationServer35" required>
+                            <div class="invalid-feedback">
+                              <!--mensaje para feedback del campo.-->
+                            </div>
+                          </div>
+                          <div class="col-md-10 ml-2 mb-3">
+                            <label for="validationServer16">Año de Egreso</label>
+                            <input type="date" name="anoEgreso<?php echo $countAcadem;?>" class="form-control" value="<?php echo $estudiosEmpleado->fecha_egreso?>" id="validationServer36" required>
+                              <div class="invalid-feedback">
+                                  <!--mensaje para feedback del campo.-->
+                              </div>
+                          </div>    
+                        </div>
+                      </div>
+                    <hr class="mt-1 mb-4 mr-5">
+                <?php 
+                    endforeach;
+                ?>    
+                <input style="display:none;" name="countAcademico" value="<?php echo $countAcadem;?>">
+                <label class="font-weight-bolder mt-3">Experiencia laboral</label>
+                <hr class="mt-1 mb-4 mr-5 ">
+                <?php
+                $countExpe = 0;
+                    foreach ($experiencia as $expeEmpleado):
+                      $countExpe++;
+                ?>
+                    
+                    <div class="form-row">
+                    <input name="idExpe<?php echo $countExpe;?>" style="display:none;" id="idAcadem" value="<?php echo $expeEmpleado->id_expeemp;?>">
+                        <div class="col-md-4 mb-3">
+                          <label for="validationServer08">Empresa</label>
+                          <input type="text" name="empresa<?php echo $countExpe;?>" class="form-control" value="<?php echo $expeEmpleado->nombre_emp?>" onkeypress="return soloLetras(event)" id="validationServer32" autocomplete="off" required>
+                        </div>
+                        <div class="col-md-5 mb-3">
+                          <label for="validationServer16">Dirección</label>
+                          <input type="text" name="direccion<?php echo $countExpe;?>" class="form-control" value="<?php echo $expeEmpleado->direccion?>" id="validationServer35" required>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                          <label for="validationServer16">Cargo</label>
+                          <input type="text" name="cargo<?php echo $countExpe;?>" class="form-control" id="validationServer36" value="<?php echo $expeEmpleado->cargo?>" onkeypress="return soloLetras(event)" required>
+                        </div>    
+                        <div class="col-md-2 mb-3">
+                          <label for="validationServer16">Años</label>
+                          <input type="text" name="ano<?php echo $countExpe;?>" class="form-control" value="<?php echo $expeEmpleado->anos?>" onkeypress="return soloNumeros(event)" maxlength="2" id="validationServer36" required>
+                        </div>  
+                        <div class="col-md-2 mb-3">
+                          <label for="validationServer16">Meses</label>
+                          <input type="text" name="meses<?php echo $countExpe;?>" class="form-control" value="<?php echo $expeEmpleado->meses?>" onkeypress="return soloNumeros(event)" maxlength="2" id="validationServer36" required>
+                        </div>  
+                        <div class="col-md-5 mb-3 mr-3">
+                          <label for="validationServer11">Naturaleza de la Empresa</label>
+                          <input type="text" name="naturalezaEmpresa<?php echo $countExpe;?>" class="form-control" value="<?php echo $expeEmpleado->naturaleza_emp?>" onkeypress="return soloLetras(event)" id="validationServer33" autocomplete="off" required>
+                        </div>
+                    </div>
+                <hr class="mt-1 mb-4 mr-5">
+                <?php 
+                    endforeach;
+                ?>  
+                <input style="display:none;" name="countExperiencia" value="<?php echo $countExpe;?>">  
+                <label class="font-weight-bolder mt-3">Referencias</label>
+                <hr class="mt-1 mb-4 mr-5 ">
+                <?php
+                  $countRefe = 0;
+                    foreach ($referencias as $referenciasEmpleado):
+                      $countRefe++;
+                ?>
+                <?php
+                    if($referenciasEmpleado->tipo_refe == 1){
+                        echo '<label class="font-weight-bolder mt-1 ml-2">Personal</label>';
+                    }else{
+                        echo '<label class="font-weight-bolder mt-1 ml-2">Laboral</label>';
+                    }
+                ?>
+                  <div class="form-row">
+                  <input name="idRefe<?php echo $countRefe;?>" style="display:none;" id="idRefe" value="<?php echo $referenciasEmpleado->id_refeemp;?>">
+                    <div class="col-md-4 mb-3">
+                      <label for="validationServer08">Nombres</label>
+                      <input type="text" name="nombresRefe<?php echo $countRefe?>" class="form-control" value="<?php echo $referenciasEmpleado->nombres_refe?>" id="validationServer37" onkeypress="return soloLetras(event)" autocomplete="off" required>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                      <label for="validationServer08">Apellidos</label>
+                      <input type="text" name="apellidosRefe<?php echo $countRefe?>" class="form-control" id="validationServer37" value="<?php echo $referenciasEmpleado->apellidos_refe?>" onkeypress="return soloLetras(event)" autocomplete="off" required>
+                    </div>
+                    <div class="col-md-2 mb-3">
+                        <label for="validationServer11">N° de teléf.</label>
+                        <input type="text" name="telefonoRefe<?php echo $countRefe?>" class="form-control" value="<?php echo $referenciasEmpleado->telefono_refe?>" onchange="validarTelefono('referenciatel<?php echo $countRefe?>')"  onkeypress="return soloNumeros(event)" maxlength="7" id="referenciatel<?php echo $countRefe?>" autocomplete="off" required>
+                        <div class="invalid-feedback">
+                            Numero fijo invalido.
+                          </div>
+                          <div class="valid-feedback">
+                            Numero fijo valido.
+                          </div>
+                    </div>
+                    <div class="col-md-2 mb-3">
+                        <label for="validationServer11">N° celular</label>
+                        <input type="text" name="celularRefe<?php echo $countRefe?>" class="form-control" value="<?php echo $referenciasEmpleado->celular_refe?>" onchange="validarCelular('referenciacel<?php echo $countRefe?>')" onkeypress="return soloNumeros(event)" maxlength="10" id="referenciacel<?php echo $countRefe?>" autocomplete="off" required>
+                        <div class="invalid-feedback">
+                          Numero celular invalido.
+                        </div>
+                        <div class="valid-feedback">
+                          Numero celular valido.
+                        </div>
                     </div>
                   </div>
-                  <div class="col-md-6 mb-3">
-                    <label for="validationServer16">Año de Egreso</label>
-                    <input type="date" name="fechaEgresoInsti" value="<?php echo $results["fechaEgresoInsti"]?>" class="form-control" id="validationServer36" required>
-                        <div class="invalid-feedback">
-                            <!--mensaje para feedback del campo.-->
-                        </div>
-                  </div>    
-                </div>
-
+                <?php 
+                    endforeach;
+                ?>  
+                
                 <label class="font-weight-bolder mt-3">Información ocupacional</label>
                 <hr class="mt-1 mb-4 mr-5 ">
                 <div class="form-row">
@@ -234,12 +435,12 @@
                   </div>
                   <div class="col-md-4 mb-3">
                       <label for="validationServer11">Salario base</label>
-                      <input type="text" name="salarioBase" class="form-control" value="<?php echo $results["salarioBase"]?>" onkeypress="return soloNumeros(event)" id="validationServer38" autocomplete="off" required>
+                      <input type="text" name="salarioBase" class="form-control" value="<?php echo $results["salario_base"]?>" onkeypress="return soloSalario(event)" id="validationServer38" autocomplete="off" required>
                     </div>
                   <div class="col-md-3 mb-3">
                     <label for="validationServer09">Tipo de contrato</label>
                     <select class="custom-select" name="idcontrato" id="validationServer39" required>
-                      <option selected="true"><?php echo $results["idcontrato"]?></option>
+                      <option selected="true"></option>
                       <option disabled value="">Seleccione...</option>
                       <option>Contrato 1</option>
                       <option>Contrato 2</option>
@@ -249,34 +450,32 @@
                       <!--mensaje para feedback del campo.-->
                     </div>
                   </div>
-                  <div class="col-md-3 mb-3">
+                  <!-- <div class="col-md-3 mb-3">
                     <label for="validationServer10">Especialidad</label>
                     <select class="custom-select" name="especialidad" id="validationServer40" required>
-                       <option selected="true"><?php echo $results["especialidad"]?></option>
-                       <option disabled value="">Seleccione...</option>
-                        <?php
-                          foreach ($espe as $especialidad):?>
-                          <option><?php echo $especialidad->idespecialidad?></option> 
-                        <?php 
-                          endforeach;
-                        ?>      
+                       <option selected="true"></option>
+                       <option disabled value="">Seleccione...</option> 
                         <option>No aplica</option>                    
                     </select>
                     <div class="invalid-feedback">
-                      <!--mensaje para feedback del campo.-->
+                      mensaje para feedback del campo.
                     </div>
-                  </div>
+                  </div> -->
                 </div>
                 
                 <div class="form-row">
                       <div class="col-md-3 mb-3">
                           <label for="validationServer15">Cargo</label>
                           <select class="custom-select" name="cargo" id="validationServer41" required>
-                          <option selected="true"><?php echo $results["cargo"]?></option>
+                          <option selected="true" value="<?php echo $results['id_cargo_emp'];?>"><?php echo $nombreCargo['nombre_cargo']?></option>
                           <option disabled value="">Seleccione...</option>
-                          <option>Jefe de Area</option>
-                          <option>Asistente</option>
-                          <option>Otro</option>
+                          <?php
+                          foreach ($cargos as $cargosEmpleado):
+                          ?>
+                          <option value="<?php echo $cargosEmpleado->id_cargo;?>"><?php echo utf8_encode($cargosEmpleado->nombre_cargo);?></option>
+                          <?php 
+                          endforeach;
+                          ?>  
                           </select>
                           <div class="invalid-feedback">
                           <!--mensaje para feedback del campo.-->
@@ -285,11 +484,15 @@
                       <div class="col-md-3 mb-3">
                           <label for="validationServer06">Personal</label>
                           <select class="custom-select" name="personal" id="validationServer42" required>
-                          <option selected="true"><?php echo $results["personal"]?></option>
-                        <option disabled value="">Seleccione...</option>
-                            <option>Administrativo</option>
-                            <option>Medico</option>
-                            <option>Asistencial</option>
+                          <option selected="true" value="<?php echo $nombrePersonal['id_personal'];?>"><?php echo $nombrePersonal["nombre_personal"]?></option>
+                           <option disabled value="">Seleccione...</option>
+                           <?php
+                              foreach ($personales as $personalEmpleado):
+                              ?>
+                              <option value="<?php echo $personalEmpleado->id_personal;?>"><?php echo utf8_encode($personalEmpleado->nombre_personal);?></option>
+                              <?php 
+                              endforeach;
+                              ?> 
                           </select>
                           <div class="invalid-feedback">
                             <!--mensaje para feedback del campo.-->
@@ -298,11 +501,15 @@
                         <div class="col-md-3 mb-3">
                           <label for="validationServer07">Área</label>
                           <select class="custom-select" name="area" id="validationServer43" required>
-                              <option selected="true"><?php echo $results["area"]?></option>
+                              <option selected="true" value="<?php echo $nombreArea['id_area'];?>"><?php echo $nombreArea["nombre_area"]?></option>
                               <option disabled value="">Seleccione...</option>
-                              <option>Area 1</option>
-                              <option>Area 2</option>
-                              <option>Area 3</option>
+                              <?php
+                              foreach ($areas as $areaEmpleado):
+                              ?>
+                              <option value="<?php echo $areaEmpleado->id_area;?>"><?php echo utf8_encode($areaEmpleado->nombre_area);?></option>
+                              <?php 
+                              endforeach;
+                              ?> 
                               </select>
                             <div class="invalid-feedback">
                             <!--mensaje para feedback del campo.-->
@@ -311,7 +518,7 @@
                           <div class="col-md-3 mb-3">
                               <label for="validationServer07">Horario</label>
                               <select class="custom-select" name="idhorario" id="validationServer44" required>
-                                  <option selected="true"><?php echo $results["idhorario"]?></option>
+                                  <option selected="true"><?php echo $results["horario"]?></option>
                                   <option disabled value="">Seleccione...</option>
                                   <option>Matutino</option>
                                   <option>Vespertino</option>
@@ -322,62 +529,51 @@
                                 </div>
                               </div>
                   </div>  
-                  <label class="font-weight-bolder mt-3">Contactos para casos de emergencia</label>
-                  <hr class="mt-1 mb-4 mr-5 ">
-                    <div class="form-row">
-                      <div class="col-md-8 mb-3">
-                        <label for="validationServer08">Nombres y Apellidos</label>
-                        <input type="text" name="nombresContactoEmerg" class="form-control" value="<?php echo $results["nombresContactoEmerg"]?>"  onkeypress="return soloLetras(event)" id="validationServer26" autocomplete="off">
-                      </div>
-                      <div class="col-md-2 mb-3">
-                          <label for="validationServer11">Teléfono Fijo</label>
-                          <input type="text" name="telefonoContactoEmerg" class="form-control" value="<?php echo $results["telefonoContactoEmerg"]?>" onchange="validarTelefono('validationServer27')" maxlength="7" onkeypress="return soloNumeros(event)" id="validationServer27" autocomplete="off" required>
-                          <div class="invalid-feedback">
-                            Numero fijo invalido.
-                          </div>
-                          <div class="valid-feedback">
-                            Numero fijo valido.
-                          </div>
-                      </div>
-                      <div class="col-md-2 mb-3">
-                        <label for="validationServer11">Teléfono Celular</label>
-                        <input type="text" name="celularContactoEmerg" class="form-control" value="<?php echo $results["celularContactoEmerg"]?>" onchange="validarCelular('validationServer28')" maxlength="10" onkeypress="return soloNumeros(event)" id="validationServer28" autocomplete="off" required>
+                  
+                <label class="font-weight-bolder mt-3">Contactos para casos de emergencia</label>
+                <hr class="mt-1 mb-4 mr-5 ">
+                <?php
+                    $cont = 1;
+                    foreach ($contactos as $contactosEmpleado):
+                ?>
+                  <div class="form-row">
+                  <input name="idContac<?php echo $cont;?>" style="display:none;" id="idContac" value="<?php echo $contactosEmpleado->id_contacemergencia;?>">
+                    <div class="col-md-4 mb-3">
+                      <label for="validationServer08">Nombres</label>
+                      <input type="text" name="nombresContactoEmerg<?php echo $cont;?>" class="form-control" value="<?php echo $contactosEmpleado->nombres_contacemergencia?>" onkeypress="return soloLetras(event)" id="validationServer26" autocomplete="off">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                      <label for="validationServer08">Apellidos</label>
+                      <input type="text" name="apellidosContactoEmerg<?php echo $cont;?>" class="form-control" value="<?php echo $contactosEmpleado->apellidos_contacemergencia?>" onkeypress="return soloLetras(event)" id="validationServer26" autocomplete="off">
+                    </div>
+                    <div class="col-md-2 mb-3">
+                        <label for="validationServer11">Teléfono Fijo</label>
+                        <input type="text" name="telefonoContactoEmerg<?php echo $cont;?>" class="form-control" value="<?php echo $contactosEmpleado->telefono_contacemergencia?>" onchange="validarTelefono('validationServer27')" maxlength="7" onkeypress="return soloNumeros(event)" id="validationServer27" autocomplete="off" required>
                         <div class="invalid-feedback">
-                          Numero celular invalido.
+                          Numero fijo invalido.
                         </div>
                         <div class="valid-feedback">
-                          Numero celular valido.
+                          Numero fijo valido.
                         </div>
+                    </div>
+                    <div class="col-md-2 mb-3">
+                      <label for="validationServer11">Teléfono Celular</label>
+                      <input type="text" name="celularContactoEmerg<?php echo $cont;?>" class="form-control" value="<?php echo $contactosEmpleado->celular_contacemergencia?>" onchange="validarCelular('validationServer28')" maxlength="10" onkeypress="return soloNumeros(event)" id="validationServer28" autocomplete="off" required>
+                      <div class="invalid-feedback">
+                        Numero celular invalido.
+                      </div>
+                      <div class="valid-feedback">
+                        Numero celular valido.
                       </div>
                     </div>
-                    <div class="form-row">
-                      <div class="col-md-8 mb-3">
-                        <label for="validationServer08">Nombres y Apellidos</label>
-                        <input type="text" name="nombresContactoEmerg2" class="form-control" value="<?php echo $results["nombresContactoEmerg2"]?>" onkeypress="return soloLetras(event)" id="validationServer29" autocomplete="off">
-                      </div>
-                      <div class="col-md-2 mb-3">
-                          <label for="validationServer11">Teléfono Fijo</label>
-                          <input type="text" name="telefonoContactoEmerg2" class="form-control" value="<?php echo $results["telefonoContactoEmerg2"]?>" onchange="validarTelefono('validationServer30')" maxlength="7" onkeypress="return soloNumeros(event)" id="validationServer30" autocomplete="off" required>
-                          <div class="invalid-feedback">
-                            Numero fijo invalido.
-                          </div>
-                          <div class="valid-feedback">
-                            Numero fijo valido.
-                          </div>
-                      </div>
-                      <div class="col-md-2 mb-3">
-                        <label for="validationServer11">Teléfono Celular</label>
-                        <input type="text" name="celularContactoEmerg2" class="form-control" value="<?php echo $results["celularContactoEmerg2"]?>" onchange="validarCelular('validationServer31')" maxlength="10" onkeypress="return soloNumeros(event)" id="validationServer31" autocomplete="off" required>
-                        <div class="invalid-feedback">
-                            Numero celular invalido.
-                          </div>
-                          <div class="valid-feedback">
-                            Numero celular valido.
-                          </div>
-                      </div>
-                    </div> 
-                  <div class="form-row">
-                    <div class="col-md-9 mb-3">
+                  </div>
+                <?php 
+                  $cont++;
+                  endforeach;
+                ?>
+              <?php if(empty($hijos)): ?>  
+                <div class="form-row">
+                    <div class="col-md-9">
                       <label class="font-weight-bolder mt-3">¿Tiene hijos?</label>
                     </div>        
                       <div class="col-md-1 form-check form-check-inline">
@@ -390,183 +586,105 @@
                       </div>
                   </div>
                   <div id="radio-hijos" style="display: none;" class="form-group shadow-sm p-3 bg-white rounded">
+                  <div class=""id="dynamic_field">
+                  <div class="form-row">
+                            <div class="col-md-3"></div>
+                            <div class="col-md-3"></div>
+                            <div class="col-md-2"></div>
+                            <div class="col-md-2"></div>
+                            <div class="col-md-1"><i class="fa fa-plus-circle mt-4" name="add" id="add" aria-hidden="true" style="cursor:pointer; font-size:25px;" title="agregar"></i></div>   
+                            <div class="col-md-1"><i class="fa fa-minus-circle mt-4" name="remove" id="remove" aria-hidden="true" style="cursor:pointer; font-size:25px;" title="eliminar"></i></button></div>
+                  </div>                      
+                      <?php
+                          $hijoGet = 0;
+                          foreach ($hijos as $hijosEmpleado):
+                            $hijoGet++;
+                      ?>
                         <div class="form-row">
-                          <div class="col-md-4 mb-3">
-                              <label for="validationServer04">Nombres</label>
-                              <input type="text" name="nombreHijo" value="<?php echo $results["nombreHijo"]?>"  class="form-control" onkeypress="return soloLetras(event)" id="validationServer14" autocomplete="off">
-                          </div>
-                          <div class="col-md-4 mb-3">
-                              <label for="validationServer04">Apellidos</label>
-                              <input type="text" name="apellidoHijo" class="form-control" value="<?php echo $results["apellidoHijo"]?>"  onkeypress="return soloLetras(event)" id="validationServer15" autocomplete="off">
-                          </div>
-                          <div class="col-md-2 mb-3">
-                              <label for="validationServer04">Años</label>
-                              <input type="text" name="anosHijo" class="form-control" value="<?php echo $results["anosHijo"]?>"  onkeypress="return soloNumeros(event)" id="validationServer16" autocomplete="off">
-                          </div>
-                          <div class="col-md-2 mb-3">
-                              <label for="validationServer04">Meses</label>
-                              <input type="text" name="mesesHijo" class="form-control" value="<?php echo $results["mesesHijo"]?>"  onkeypress="return soloNumeros(event)" id="validationServer17" autocomplete="off">
-                          </div>
-                      </div>
+                            <div class="col-md-3 mb-3">
+                                <label for="validationServer04">Nombres</label>
+                                <input type="text" name="nombreHijo<?php echo $hijoGet;?>" class="form-control" value="<?php echo $hijosEmpleado->nombres_hijo?>" onkeypress="return soloLetras(event)" id="validationServer14" autocomplete="off">
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label for="validationServer04">Apellidos</label>
+                                <input type="text" name="apellidoHijo<?php echo $hijoGet;?>" class="form-control" value="<?php echo $hijosEmpleado->apellidos_hijo?>" onkeypress="return soloLetras(event)" id="validationServer15" autocomplete="off">
+                            </div>
+                            <div class="col-md-2 mb-3">
+                                <label for="validationServer04">Años</label>
+                                <input type="text" name="anosHijo<?php echo $hijoGet;?>" class="form-control" value="<?php echo $hijosEmpleado->anos_hijo?>" onkeypress="return soloNumeros(event)" maxlength="2" id="validationServer16" autocomplete="off">
+                            </div>
+                            <div class="col-md-2 mb-3">
+                                <label for="validationServer04">Meses</label>
+                                <input type="text" name="mesesHijo<?php echo $hijoGet;?>" class="form-control" value="<?php echo $hijosEmpleado->meses_hijo?>" onkeypress="return soloNumeros(event)" maxlength="2" id="validationServer17" autocomplete="off">
+                            </div>
+                            <div onclick="window.location='../controllers/deleteRows.php?ced=<?php echo $id;?>&id=<?php echo $hijosEmpleado->id_hijosemple;?>&table=hijos_empleados&nameId=id_hijosemple';" class="col-md-1"><i class="fa fa-trash mt-4" name="remove-deleted" id="remove-deleted" aria-hidden="true" style="cursor:pointer; font-size:25px;" title="Eliminar fila"></i></button></div>
+                        </div>
+                      <?php 
+                          endforeach;
+                      ?>   
+                        <input name="hijosGet" style="display:none;" id="hijosGet" value="<?php echo $hijoGet;?>">
+                        <input name="numeroHijos" style="display:none;" id="numeroHijos" value="<?php echo 1;?>">
+                        <!-- <button name="enviar" id="enviar">enviar</button> -->
+                  </div>
+                </div>  
+              <?php else: ?>
+                    <label class="font-weight-bolder mt-3">Hijos</label>
+                    <hr class="mt-1 mb-4 mr-5 ">
+                    <div id="radio-hijos" class="form-group shadow-sm p-3 bg-white rounded">
+                      <div class=""id="dynamic_field">
                       <div class="form-row">
-                        <div class="col-md-4 mb-3">
-                            <label for="validationServer04">Nombres</label>
-                            <input type="text" name="nombreHijo2" class="form-control" value="<?php echo $results["nombreHijo2"]?>"  onkeypress="return soloLetras(event)" id="validationServer18" autocomplete="off">
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <label for="validationServer04">Apellidos</label>
-                            <input type="text" name="apellidoHijo2" class="form-control" value="<?php echo $results["apellidoHijo2"]?>"  onkeypress="return soloLetras(event)" id="validationServer19" autocomplete="off">
-                        </div>
-                        <div class="col-md-2 mb-3">
-                            <label for="validationServer04">Años</label>
-                            <input type="text" name="anosHijo2" class="form-control" value="<?php echo $results["anosHijo2"]?>"  onkeypress="return soloNumeros(event)" id="validationServer20" autocomplete="off">
-                        </div>
-                        <div class="col-md-2 mb-3">
-                            <label for="validationServer04">Meses</label>
-                            <input type="text" name="mesesHijo2" class="form-control" value="<?php echo $results["mesesHijo2"]?>"  onkeypress="return soloNumeros(event)" id="validationServer21" autocomplete="off">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                      <div class="col-md-4 mb-3">
-                          <label for="validationServer04">Nombres</label>
-                          <input type="text" name="nombreHijo3" class="form-control" value="<?php echo $results["nombreHijo3"]?>"  onkeypress="return soloLetras(event)" id="validationServer22" autocomplete="off">
+                                <div class="col-md-3"></div>
+                                <div class="col-md-3"></div>
+                                <div class="col-md-2"></div>
+                                <div class="col-md-2"></div>
+                                <div class="col-md-1"><i class="fa fa-plus-circle mt-4" name="add" id="add" aria-hidden="true" style="cursor:pointer; font-size:25px;" title="agregar"></i></div>   
+                                <div class="col-md-1"><i class="fa fa-minus-circle mt-4" name="remove" id="remove" aria-hidden="true" style="cursor:pointer; font-size:25px;" title="eliminar"></i></button></div>
+                      </div>                      
+                          <?php
+                              $hijoGet = 0;
+                              foreach ($hijos as $hijosEmpleado):
+                                $hijoGet++;
+                          ?>
+                            <div class="form-row">
+                            <input name="idHijo<?php echo $hijoGet;?>" style="display:none;" id="idHijo" value="<?php echo $hijosEmpleado->id_hijosemple;?>">
+                                <div class="col-md-3 mb-3">
+                                    <label for="validationServer04">Nombres</label>
+                                    <input type="text" name="nombreHijoup<?php echo $hijoGet;?>" class="form-control" value="<?php echo $hijosEmpleado->nombres_hijo?>" onkeypress="return soloLetras(event)" id="validationServer14" autocomplete="off">
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="validationServer04">Apellidos</label>
+                                    <input type="text" name="apellidoHijoup<?php echo $hijoGet;?>" class="form-control" value="<?php echo $hijosEmpleado->apellidos_hijo?>" onkeypress="return soloLetras(event)" id="validationServer15" autocomplete="off">
+                                </div>
+                                <div class="col-md-2 mb-3">
+                                    <label for="validationServer04">Años</label>
+                                    <input type="text" name="anosHijoup<?php echo $hijoGet;?>" class="form-control" value="<?php echo $hijosEmpleado->anos_hijo?>" onkeypress="return soloNumeros(event)" maxlength="2" id="validationServer16" autocomplete="off">
+                                </div>
+                                <div class="col-md-2 mb-3">
+                                    <label for="validationServer04">Meses</label>
+                                    <input type="text" name="mesesHijoup<?php echo $hijoGet;?>" class="form-control" value="<?php echo $hijosEmpleado->meses_hijo?>" onkeypress="return soloNumeros(event)" maxlength="2" id="validationServer17" autocomplete="off">
+                                </div>
+                                <div onclick="window.location='../controllers/deleteRows.php?ced=<?php echo $id;?>&id=<?php echo $hijosEmpleado->id_hijosemple;?>&table=hijos_empleados&nameId=id_hijosemple';" class="col-md-1"><i class="fa fa-trash mt-4" name="remove-deleted" id="remove-deleted" aria-hidden="true" style="cursor:pointer; font-size:25px;" title="Eliminar fila"></i></button></div>
+                            </div>
+                          <?php 
+                              endforeach;
+                          ?>   
+                            <input name="hijosGet" id="hijosGet" style="display:none;" value="<?php echo $hijoGet;?>">
+                            <input name="numeroHijos" id="numeroHijos" style="display:none;" value="<?php echo 1;?>">
+                            <!-- <button name="enviar" id="enviar">enviar</button> -->
                       </div>
-                      <div class="col-md-4 mb-3">
-                          <label for="validationServer04">Apellidos</label>
-                          <input type="text" name="apellidoHijo3" class="form-control" value="<?php echo $results["apellidoHijo3"]?>"  onkeypress="return soloLetras(event)" id="validationServer23" autocomplete="off">
-                      </div>
-                      <div class="col-md-2 mb-3">
-                          <label for="validationServer04">Años</label>
-                          <input type="text" name="anosHijo3" class="form-control" value="<?php echo $results["anosHijo3"]?>"  onkeypress="return soloNumeros(event)" id="validationServer24" autocomplete="off">
-                      </div>
-                      <div class="col-md-2 mb-3">
-                          <label for="validationServer04">Meses</label>
-                          <input type="text" name="mesesHijo3" class="form-control" value="<?php echo $results["mesesHijo3"]?>" onkeypress="return soloNumeros(event)" id="validationServer25" autocomplete="off">
-                      </div>
-                    </div>
-                  </div>    
+                    </div>  
+              <?php endif; ?>
                   <label class="font-weight-bolder mt-3">Descripcion de documentos que adjuntar</label>
                   <hr class="mt-1 mb-4 mr-5 ">
                     <div class="form-row">
                       <div class="col-md-12 mb-3">
-                        <textarea name="documentosDescription" class="form-control" id="lugar" rows="3"><?php echo $results["documentosDescription"]?></textarea>
+                        <textarea name="documentosDescription" class="form-control" id="lugar" rows="3"><?php echo $results["documentos_descripcion"]?></textarea>
                       </div>        
                     </div>                            
               <hr class="mt-2 mb-3">  
-              <button class="btn btn-primary mt-5" type="submit" name="btn-actualizar" id="btn-actualizar">Registrar</button>
+              <button class="btn btn-primary mt-5" type="submit" name="btn-actualizar" id="btn-actualizar">Guardar cambios</button>
             </form>
-      </div>
-
-
-
-
-
-
-
-    <!-- fromulario de actualización -->
-    <!-- <form action="updateInformation.php" method="POST" class="row">
-    <div class="col-md-6">
-        <div class="form-group">
-            <label for="account-confirm-pass">Cedula</label>
-            <input class="form-control" type="text" name="cedula" id="account-confirm-pass" value=<?php echo $results["cedula"] ?> readonly>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="form-group">
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="form-group">
-            <label for="account-fn">First Name</label>
-            <input class="form-control" type="text" name="nombres" id="account-fn" value="<?php echo $results["nombres"] ?>">
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="form-group">
-            <label for="account-ln">Last Name</label>
-            <input class="form-control" type="text" name="apellidos" id="account-ln" value="<?php echo $results["apellidos"] ?>">
-        </div>
-    </div> 
-    <div class="col-md-6">
-        <div class="form-group">
-            <label for="account-pass">Sexo</label>
-            <input class="form-control" type="text" name="sexo" id="account-pass" value="<?php echo $results["sexo"] ?>" readonly>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="form-group">
-            <label for="account-phone">Phone Number</label>
-            <input class="form-control" type="text" name="telefono" id="account-phone" value="<?php echo $results["telefono"] ?>">
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="form-group">
-            <label for="account-email">E-mail Address</label>
-            <input class="form-control" type="email" name="email" id="account-email" value="<?php echo $results["email"] ?>">
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="form-group">
-            <label for="account-confirm-pass">Dirección</label>
-            <input class="form-control" type="text" name="direccion" id="account-confirm-pass" value="<?php echo $results["direccion"] ?>">
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="form-group">
-            <label for="account-confirm-pass">Nacionalidad</label>
-            <input class="form-control" type="text" name="nacionalidad" id="account-confirm-pass" value="<?php echo $results["nacionalidad"] ?>" readonly>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="form-group">
-            <label for="account-confirm-pass">Ciudad</label>
-            <input class="form-control" type="text" name="ciudad" id="account-confirm-pass" value="<?php echo $results["ciudad"] ?>">
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="form-group">
-            <label for="account-confirm-pass">Fecha de nacimiento</label>
-            <input class="form-control" type="text" name="fechaNacimiento" id="account-confirm-pass" value="<?php echo $results["fechaNacimiento"] ?>" readonly>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="form-group">
-            <label for="account-confirm-pass">Estado Civil</label>
-            <input class="form-control" type="text" name="estadoCivil" id="account-confirm-pass" value="<?php echo $results["estadoCivil"] ?>">
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="form-group">
-            <label for="account-confirm-pass">Horario</label>
-            <input class="form-control" type="text" name="horario" id="account-confirm-pass" value="<?php echo $results["idhorario"] ?>">
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="form-group">
-            <label for="account-confirm-pass">N° de contrato</label>
-            <input class="form-control" type="text" name="contrato" id="account-confirm-pass" value="<?php echo $results["idcontrato"] ?>" readonly>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="form-group">
-            <label for="account-confirm-pass">Salario Base</label>
-            <input class="form-control" type="text" name="salarioBase" id="account-confirm-pass" value="<?php echo $results["salarioBase"] ?>">
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="form-group">
-            <label for="account-confirm-pass">Personal</label>
-            <input class="form-control" type="text" name="personal" id="account-confirm-pass" value="<?php echo $results["personal"] ?>">
-        </div>
-    </div>    
-            <div class="col-12">
-                <hr class="mt-2 mb-3">
-                <div class="d-flex flex-wrap justify-content-between align-items-center">
-                    <div class="custom-control custom-checkbox d-block"></div>
-                    <button class="btn btn-style-1 btn-primary" type="submit" name="btn-actualizar" id="btn-actualizar">Guardar</button>
-                </div>
-            </div>
-    </form> -->
+      </div>  
 <script src="../controllers/validation/validation.js"></script>     
 </body>
 </html>

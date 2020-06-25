@@ -10,12 +10,13 @@
       }
 
     $salida = "";
-	$p = $conn->real_escape_string($_POST['personal']);
-    $query = "SELECT * FROM empleados WHERE (nombres NOT LIKE '') AND (deleted=0) ORDER By id_empleados LIMIT 25";
+	// $p = $conn->real_escape_string($_POST['personal']);
+	$query = "SELECT * FROM empleados WHERE (nombres NOT LIKE '') AND (deleted=0) ORDER By id_empleados LIMIT 25";
+	
 
     if (isset($_POST['consulta'])) {
 		$q = $conn->real_escape_string($_POST['consulta']);
-    	$query = "SELECT * FROM empleados WHERE (id_empleados LIKE '%$q%' OR nombres LIKE '%$q%' OR apellidos LIKE '%$q%' OR sexo LIKE '%$q%' OR ciudad LIKE '$q') AND (deleted=0)";
+    	$query = "SELECT * FROM empleados WHERE (id_empleados LIKE '%$q%' OR nombres LIKE '%$q%' OR apellidos LIKE '%$q%' OR sexo LIKE '%$q%' OR sexo LIKE '%$q%' OR ciudad LIKE '$q') AND (deleted=0)";
     }
 
     $resultado = $conn->query($query);
@@ -30,15 +31,15 @@
 								<img src='https://bootdey.com/img/Content/avatar/avatar1.png' alt='Milestone Admin' class='profile'>
 								
 								<h5>".$fila['nombres']." ".$fila['apellidos']."</h5>
-								<h6>".$fila['cedula']."</h6>
-								<p>Personal ".$fila['personal'].". ".$fila['cargo']."Capacitado en la especialidad de ".$fila['especialidad']."</p>
+								<h6>".$fila['id_empleados']."</h6>
+								<p>Personal ".$fila['id_personal_emp'].". Cargo".$fila['id_cargo_emp'].". Capacitado en la especialidad de </p>
 								<ul class='contacts'>
 									<li>
 											".$fila['email']."
 									</li>
 									<li>
 										<!-- Para concatenar variables usamos & y luego todo se repite-->
-										<a href='profile.php?id=".$fila['cedula']."'>
+										<a href='profile.php?id=".$fila['id_empleados']."'>
 											Dirigete al perfil!!->
 										</a>
 									</li>
