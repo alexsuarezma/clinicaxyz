@@ -368,7 +368,13 @@
                       </div>  
                       <div class="col-md-2 mb-3">
                         <label for="validationServer16">Meses</label>
-                        <input type="text" name="meses1" class="form-control" onkeypress="return soloNumeros(event)" maxlength="2" id="validationServer36" required>
+                        <input type="text" name="meses1" class="form-control"  onchange="soloMeses(this);" onkeypress="return soloNumeros(event)" maxlength="2" id="validationServer36" required>
+                        <div class="invalid-feedback">
+                            Debes colocar un rango de 12 meses.
+                        </div>
+                        <div class="valid-feedback">
+                            Correcto.
+                        </div> 
                       </div>  
                       <div class="col-md-5 mb-3 mr-3">
                         <label for="validationServer11">Naturaleza de la Empresa</label>

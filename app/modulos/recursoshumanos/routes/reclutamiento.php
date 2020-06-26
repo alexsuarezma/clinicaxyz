@@ -54,7 +54,7 @@
             </div>
       </div>
     <div class="container mt-4">
-      <input type="text" name="busqueda" id="busqueda" placeholder="Search for names.." title="Type in a name">
+      <input type="text" name="busqueda" id="busqueda" placeholder="Busca por cedula, nombres, apellidos, cargo al que postula..." title="Type in a name">
     </div>
             <div class="container mt-5" >
                 <ul class="list-group">
@@ -63,8 +63,11 @@
                         foreach ($results as $aspirante):?>
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                         <span id="cedulaAspirante"><?php echo $aspirante->id_aspirante?></span>
-                        <span >Aspirante: <?php echo $aspirante->nombres?> <?php echo $aspirante->apellidos?></span>
-                        <span >Enviado: <?php echo $aspirante->created_at?></span>
+                        <span class='font-weight-bold'>Aspirante: <span class="font-weight-light"><?php echo $aspirante->nombres?> <?php echo $aspirante->apellidos?></span></span>
+                        <span>
+                          <span class='font-weight-bold'>Cargo al que postula: <span class="font-weight-light"><?php echo $aspirante->cargo_postula?></span></span>
+                        </span>
+                        <span class='font-weight-bold'>|Enviado desde: <span class="font-weight-light"><?php echo $aspirante->created_at?></span>|</span>
                         <span>
                         <a href="../components/viewDocuments.php?contrato=<?php echo $aspirante->fileDocument?>" ><i class="fas fa-file-contract" style="color:black;" title="Ver Curriculum" ></i></a>
                         <a href="../components/viewAspirante.php?id=<?php echo $aspirante->id_aspirante?>" ><i class="fas fa-external-link-alt" style="color:blue;" title="Ver Informacion"></i></a>

@@ -48,7 +48,7 @@
             </div>
       </div>
     <div class="container">
-      <input type="text" name="busqueda" id="busqueda" placeholder="Search for names.." title="Type in a name">
+    <input type="text" name="busqueda" id="busqueda" placeholder="Busca por cedula, nombres, apellidos, cargo, personal, area..." title="Type in a name">
     </div>
         <div class="container page-container">
             <div id="datos" class="row gutters">            

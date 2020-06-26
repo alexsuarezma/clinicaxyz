@@ -48,7 +48,7 @@ $(document).ready(function(){
         $("#modal-delete").modal('show');
         $('#btn-delete').click(function(){
            location.href=`../controllers/lockScreen.php?id=${$('#ocultCedula').text()}`;
-        });
-        
+        });  
     });
+
 });
