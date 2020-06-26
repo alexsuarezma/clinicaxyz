@@ -41,8 +41,7 @@
                       <div class="content">
                           <h3>
                               <a href="create.php">Registro de empleado</a>
-                          </h3>
-                          <i class="fa fa-arrow-circle-right" aria-hidden="true"></i>                         
+                          </h3>                     
                       </div>
                   </div>
               </div>

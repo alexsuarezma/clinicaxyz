@@ -77,6 +77,7 @@ nombres_conyuge,apellidos_conyuge,salario_base,horario,documentos_descripcion,fi
                     
                   
                       if($stmt->execute()){
+
                             for($i=1;$i<=$_POST['numeroHijos'];$i++){
                               //Insertar en la tabla hijos_empleados
                                 $sql = "INSERT INTO hijos_empleados 
@@ -354,7 +355,13 @@ nombres_conyuge,apellidos_conyuge,salario_base,horario,documentos_descripcion,fi
                           </div>
                           <div class="col-md-2 mb-3">
                               <label for="validationServer04">Meses</label>
-                              <input type="text" name="mesesHijo1" class="form-control" onkeypress="return soloNumeros(event)" maxlength="2" id="validationServer17" autocomplete="off">
+                              <input type="text" name="mesesHijo1" class="form-control" onchange="soloMeses(this);" onkeypress="return soloNumeros(event)" maxlength="2" id="validationServer17" autocomplete="off">
+                              <div class="invalid-feedback">
+                                  Debes colocar un rango de 12 meses.
+                              </div>
+                              <div class="valid-feedback">
+                                  Correcto.
+                              </div> 
                           </div>
                           <div class="col-md-1"><i class="fa fa-plus-circle ml-5 mt-4" name="add" id="add" aria-hidden="true" style="cursor:pointer; font-size:25px;" title="agregar"></i></div>   
                           <div class="col-md-1"><i class="fa fa-minus-circle mt-4" name="remove" id="remove" aria-hidden="true" style="cursor:pointer; font-size:25px;" title="eliminar"></i></button></div>
@@ -422,7 +429,13 @@ nombres_conyuge,apellidos_conyuge,salario_base,horario,documentos_descripcion,fi
                             </div>  
                             <div class="col-md-2 mb-3">
                               <label for="validationServer16">Meses</label>
-                              <input type="text" name="meses1" class="form-control" onkeypress="return soloNumeros(event)" maxlength="2" id="validationServer36" required>
+                              <input type="text" name="meses1" class="form-control" onchange="soloMeses(this);" onkeypress="return soloNumeros(event)" maxlength="2" id="validationServer36" required>
+                              <div class="invalid-feedback">
+                                  Debes colocar un rango de 12 meses.
+                              </div>
+                              <div class="valid-feedback">
+                                  Correcto.
+                              </div> 
                             </div>  
                             <div class="col-md-5 mb-3 mr-3">
                               <label for="validationServer11">Naturaleza de la Empresa</label>

@@ -3,30 +3,30 @@
     session_start();
 
     $id = $_SESSION['cedula'];    
-            $records = $conn->prepare("SELECT * FROM empleados WHERE id_empleados = :cedula");
+            $records = $conn->prepare("SELECT * FROM empleados AS e, cargo_empleados AS c, personal_empleados AS p, area_empleados AS a, ciudades AS ci WHERE (c.id_cargo = e.id_cargo_emp AND p.id_personal = e.id_personal_emp AND a.id_area = e.id_area_emp AND ci.idciudades = e.id_ciudad_emp) AND id_empleados = :cedula");
             $records->bindParam(':cedula', $id);
             $records->execute();
             $results = $records->fetch(PDO::FETCH_ASSOC);
             
-            $idciudad = $results['id_ciudad_emp'];
-            $ciudad = $conn->query("SELECT * FROM ciudades WHERE idciudades = $idciudad");
-            $ciudad->execute();
-            $nombreCiudad = $ciudad->fetch(PDO::FETCH_ASSOC);
+            // $idciudad = $results['id_ciudad_emp'];
+            // $ciudad = $conn->query("SELECT * FROM ciudades WHERE idciudades = $idciudad");
+            // $ciudad->execute();
+            // $nombreCiudad = $ciudad->fetch(PDO::FETCH_ASSOC);
 
-            $idcargo = $results['id_cargo_emp'];
-            $cargo = $conn->query("SELECT * FROM cargo_empleados WHERE id_cargo = $idcargo");
-            $cargo->execute();
-            $nombreCargo = $cargo->fetch(PDO::FETCH_ASSOC);
+            // $idcargo = $results['id_cargo_emp'];
+            // $cargo = $conn->query("SELECT * FROM cargo_empleados WHERE id_cargo = $idcargo");
+            // $cargo->execute();
+            // $nombreCargo = $cargo->fetch(PDO::FETCH_ASSOC);
 
-            $idarea = $results['id_area_emp'];
-            $area = $conn->query("SELECT * FROM area_empleados WHERE id_area = $idarea");
-            $area->execute();
-            $nombreArea = $area->fetch(PDO::FETCH_ASSOC);
+            // $idarea = $results['id_area_emp'];
+            // $area = $conn->query("SELECT * FROM area_empleados WHERE id_area = $idarea");
+            // $area->execute();
+            // $nombreArea = $area->fetch(PDO::FETCH_ASSOC);
 
-            $idpersonal = $results['id_personal_emp'];
-            $personal = $conn->query("SELECT * FROM personal_empleados WHERE id_personal = $idpersonal");
-            $personal->execute();
-            $nombrePersonal = $personal->fetch(PDO::FETCH_ASSOC);
+            // $idpersonal = $results['id_personal_emp'];
+            // $personal = $conn->query("SELECT * FROM personal_empleados WHERE id_personal = $idpersonal");
+            // $personal->execute();
+            // $nombrePersonal = $personal->fetch(PDO::FETCH_ASSOC);
 
             $estudios = $conn->query("SELECT * FROM estudios_empleados WHERE id_empleados_est = $id")->fetchAll(PDO::FETCH_OBJ);
             $experiencia = $conn->query("SELECT * FROM expe_laboral_emp WHERE id_empleados_expe = $id")->fetchAll(PDO::FETCH_OBJ);
@@ -83,7 +83,7 @@
                 </div>
                 <div class="col-md-3 mb-3">
                     <label for="validationServer02">Ciudad</label>
-                    <input type="text" name="apellidos" class="form-control"  value="<?php echo $nombreCiudad['nombre'] ?>" disabled="">
+                    <input type="text" name="apellidos" class="form-control"  value="<?php echo $results['nombre'] ?>" disabled="">
                 </div>
                 <div class="col-md-3 mb-3">
                     <label for="validationServer02">Telefono fijo</label>
@@ -160,15 +160,15 @@
             <div class="form-row">
                 <div class="col-md-3 mb-3">
                     <label for="validationServer02">Cargo</label>
-                    <input type="text" name="apellidos" class="form-control" value="<?php echo utf8_encode($nombreCargo['nombre_cargo'])?>" disabled="">
+                    <input type="text" name="apellidos" class="form-control" value="<?php echo utf8_encode($results['nombre_cargo'])?>" disabled="">
                 </div>
                 <div class="col-md-3 mb-3">
                     <label for="validationServer02">Personal</label>
-                    <input type="text" name="apellidos" class="form-control" value="<?php echo utf8_encode($nombrePersonal['nombre_personal'])?>" disabled="">
+                    <input type="text" name="apellidos" class="form-control" value="<?php echo utf8_encode($results['nombre_personal'])?>" disabled="">
                 </div>
                 <div class="col-md-3 mb-3">
                     <label for="validationServer02">Área</label>
-                    <input type="text" name="apellidos" class="form-control" value="<?php echo utf8_encode($nombreArea['nombre_area'])?>" disabled="">
+                    <input type="text" name="apellidos" class="form-control" value="<?php echo utf8_encode($results['nombre_area'])?>" disabled="">
                 </div>
                 <div class="col-md-3 mb-3">
                     <label for="validationServer02">Horario</label>

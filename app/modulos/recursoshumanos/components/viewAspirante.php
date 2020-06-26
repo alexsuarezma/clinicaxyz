@@ -3,16 +3,10 @@
     require 'layout.php';
     $id = $_GET['id'];    
 
-            $records = $conn->prepare("SELECT * FROM aspirantes WHERE id_aspirante = :cedula");
+            $records = $conn->prepare("SELECT * FROM aspirantes AS a, ciudades AS ci WHERE (ci.idciudades = a.ciudad) AND id_aspirante = :cedula");
             $records->bindParam(':cedula', $id);
             $records->execute();
             $results = $records->fetch(PDO::FETCH_ASSOC);
-            
-            $idciudad = $results['ciudad'];
-            
-            $ciudad = $conn->query("SELECT * FROM ciudades WHERE idciudades = $idciudad");
-            $ciudad->execute();
-            $nombreCiudad = $ciudad->fetch(PDO::FETCH_ASSOC);
 
             $estudios = $conn->query("SELECT * FROM estudios_aspirantes WHERE id_aspirante_est = $id")->fetchAll(PDO::FETCH_OBJ);
             $experiencia = $conn->query("SELECT * FROM expe_laboral WHERE id_aspirante_expe = $id")->fetchAll(PDO::FETCH_OBJ);
@@ -99,7 +93,7 @@
                     </div>
                     <div class="col-md-4 mb-3">
                         <label for="validationServer02">Ciudad</label>
-                        <input type="text" name="apellidos" class="form-control"  value="<?php echo $nombreCiudad['nombre'] ?>" disabled="">
+                        <input type="text" name="apellidos" class="form-control"  value="<?php echo $results['nombre'] ?>" disabled="">
                     </div>
                     <div class="col-md-4 mb-3">
                         <label for="validationServer02">Telefono fijo</label>

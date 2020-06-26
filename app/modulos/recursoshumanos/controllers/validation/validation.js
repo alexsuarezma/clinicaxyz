@@ -24,6 +24,17 @@ teclado_especial=false;
   }
 } 
 
+function soloMeses(input){
+  var tempValue = input.value;
+    if(tempValue >= 0 && tempValue <= 11){
+      input.className = "form-control is-valid"
+    }else{
+      input.className = input.className+" is-invalid"
+      input.value = "";
+      input.focus();
+    }
+}
+
 function filterFloat(evt,input){
   // Barraespaciadora = 8, Enter = 13, ‘0′ = 48, ‘9′ = 57, ‘.’ = 46, ‘-’ = 43
   var key = window.Event ? evt.which : evt.keyCode;    
@@ -223,7 +234,13 @@ $(document).ready(function(){
                                       '</div>'+
                                       '<div class="col-md-2 mb-3">'+
                                           '<label for="validationServer04">Meses</label>'+
-                                          `<input type="text" name="mesesHijo${i}" class="form-control" onkeypress="return soloNumeros(event)" maxlength="2" id="validationServer17" autocomplete="off" required>`+
+                                          `<input type="text" name="mesesHijo${i}" onchange="soloMeses(this);" class="form-control" onkeypress="return soloNumeros(event)" maxlength="2" id="validationServer17" autocomplete="off" required>`+
+                                          '<div class="invalid-feedback">'+
+                                              'Debes colocar un rango de 12 meses.'+
+                                          '</div>'+
+                                          '<div class="valid-feedback">'+
+                                              'Correcto.'+
+                                          '</div> '+
                                       '</div>'+
                                   '</div>');
       document.getElementById("numeroHijos").value = i;
@@ -277,7 +294,13 @@ $(document).ready(function(){
                                       '</div>'+
                                       '<div class="col-md-2 mb-3">'+
                                         '<label for="validationServer16">Meses</label>'+
-                                        `<input type="text" name="meses${laboral}" class="form-control" onkeypress="return soloNumeros(event)" maxlength="2" id="validationServer36" required>`+
+                                        `<input type="text" name="meses${laboral}" onchange="soloMeses(this);" class="form-control" onkeypress="return soloNumeros(event)" maxlength="2" id="validationServer36" required>`+
+                                        '<div class="invalid-feedback">'+
+                                            'Debes colocar un rango de 12 meses.'+
+                                        '</div>'+
+                                        '<div class="valid-feedback">'+
+                                            'Correcto.'+
+                                        '</div> '+
                                       '</div>'+
                                         '<div class="col-md-5 mb-3 mr-3">'+
                                           '<label for="validationServer11">Naturaleza de la empresa</label>'+

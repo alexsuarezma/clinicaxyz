@@ -1,7 +1,9 @@
 <?php 
     require '../../../../database.php'; 
     require '../components/layout.php';
-        $results = $conn->query("SELECT * FROM empleados WHERE deleted = 1")->fetchAll(PDO::FETCH_OBJ);
+    require '../components/modal.php';
+
+        $results = $conn->query("SELECT * FROM empleados AS e, cargo_empleados AS c, personal_empleados AS p, area_empleados AS a WHERE (c.id_cargo = e.id_cargo_emp AND p.id_personal = e.id_personal_emp AND a.id_area = e.id_area_emp) AND (deleted=1) ORDER By id_empleados LIMIT 25")->fetchAll(PDO::FETCH_OBJ);
 
 ?>
 <!DOCTYPE html>
@@ -54,18 +56,24 @@
             </div>
       </div>
     <div class="container mt-4">
-      <input type="text" name="busqueda" id="busqueda" placeholder="Search for names.." title="Type in a name">
+        <input type="text" name="busqueda" id="busqueda" placeholder="Busca por cedula, nombres, apellidos, cargo, personal, area..." title="Type in a name">
     </div>
             <div class="container mt-5" >
                 <ul class="list-group">
                       <?php
                         foreach ($results as $empleados):?>
                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <span><?php echo $empleados->id_empleados?></span>
+                        <span id="cedula"><?php echo $empleados->id_empleados?></span>
                         <span style="text-decoration: line-through;"><?php echo $empleados->nombres?> <?php echo $empleados->apellidos?></span>
                         <span>
+                          <span class='font-weight-bold'>Cargo: <span class="font-weight-light"><?php echo $empleados->nombre_cargo?></span>-</span>
+                          <span class='font-weight-bold'>Personal: <span class="font-weight-light"><?php echo $empleados->nombre_personal?></span>-</span>
+                          <span class='font-weight-bold'>Area: <span class="font-weight-light"><?php echo $empleados->nombre_area?></span></span>
+                        </span>
+                        <span class='font-weight-bold'>|Descontratado desde: <span class="font-weight-light"><?php echo $empleados->update_at?></span>|</span>
+                        <span>
                         <a href="../components/viewEmpleado.php?id=<?php echo $empleados->id_empleados?>" ><i class="fas fa-external-link-alt" style="color:blue;" title="Ver Informacion"></i></a>
-                        <a href="../controllers/deleteFisic.php?id=<?php echo $empleados->id_empleados?>" ><i class="fas fa-trash-alt" style="color:red;" title="Eliminar Registro Fisicamente"></i></a>
+                        <a name="delete-fisic" id="delete-fisic" href="#" ><i class="fas fa-trash-alt" style="color:red;" title="Eliminar Registro Fisicamente"></i></a>
                         </span>
                         </li>
                       <?php 
@@ -76,6 +84,10 @@
                     
                 </ul>
             </div>
+            <?php
+                printModal('Borrar registro fisicamente','btn-delete-fisic','modal-delete-fisic','¡Hey!. Estas apunto de ELIMINAR información sensible. ¿Realmente desea eliminar todo los historial de registros fisicos del empleado?');
+            ?>
+          
      </main>
    </div>
   </div>
@@ -84,7 +96,17 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
-  <script src="../components/scripts/dashboard.js"></script>      
+  <script src="../components/scripts/dashboard.js"></script>
+  <script>
+    $(document).ready(function(){
+          $('#delete-fisic').click(function(){
+            $("#modal-delete-fisic").modal('show');
+            $('#btn-delete-fisic').click(function(){
+              location.href=`../controllers/deleteFisic.php?id=${$('#cedula').text()}`;
+            });  
+        });
+    });
+  </script>         
   <!-- <script type="text/javascript" src="../components/scripts/jquery.min.js"></script>    
   <script type="text/javascript" src="../components/scripts/searchFilter.js"></script>       -->
   

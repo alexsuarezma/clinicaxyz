@@ -12,31 +12,11 @@
     $areas = $conn->query("SELECT * FROM area_empleados ORDER BY nombre_area ASC")->fetchAll(PDO::FETCH_OBJ);
     
         if(!isset($_POST["btn-actualizar"])){
-            $records = $conn->prepare("SELECT * FROM empleados WHERE id_empleados = :cedula");
+            $records = $conn->prepare("SELECT * FROM empleados AS e, cargo_empleados AS c, personal_empleados AS p, area_empleados AS a, ciudades AS ci WHERE (c.id_cargo = e.id_cargo_emp AND p.id_personal = e.id_personal_emp AND a.id_area = e.id_area_emp AND ci.idciudades = e.id_ciudad_emp) AND id_empleados = :cedula");
             $records->bindParam(':cedula', $id);
             $records->execute();
             $results = $records->fetch(PDO::FETCH_ASSOC);
             // $espe = $conn->query("SELECT * FROM especialidades")->fetchAll(PDO::FETCH_OBJ);
-
-            $idciudad = $results['id_ciudad_emp'];
-            $ciudad = $conn->query("SELECT * FROM ciudades WHERE idciudades = $idciudad");
-            $ciudad->execute();
-            $nombreCiudad = $ciudad->fetch(PDO::FETCH_ASSOC);
-
-            $idcargo = $results['id_cargo_emp'];
-            $cargo = $conn->query("SELECT * FROM cargo_empleados WHERE id_cargo = $idcargo");
-            $cargo->execute();
-            $nombreCargo = $cargo->fetch(PDO::FETCH_ASSOC);
-
-            $idarea = $results['id_area_emp'];
-            $area = $conn->query("SELECT * FROM area_empleados WHERE id_area = $idarea");
-            $area->execute();
-            $nombreArea = $area->fetch(PDO::FETCH_ASSOC);
-
-            $idpersonal = $results['id_personal_emp'];
-            $personal = $conn->query("SELECT * FROM personal_empleados WHERE id_personal = $idpersonal");
-            $personal->execute();
-            $nombrePersonal = $personal->fetch(PDO::FETCH_ASSOC);
 
             $estudios = $conn->query("SELECT * FROM estudios_empleados WHERE id_empleados_est = $id")->fetchAll(PDO::FETCH_OBJ);
             $experiencia = $conn->query("SELECT * FROM expe_laboral_emp WHERE id_empleados_expe = $id")->fetchAll(PDO::FETCH_OBJ);
@@ -228,7 +208,7 @@
                 <div class="col-md-3 mb-3">
                     <label for="validationServer14">Ciudad</label>
                     <select class="custom-select" name="ciudad" id="validationServer08" required>
-                        <option selected="true" value="<?php echo $nombreCiudad['idciudades'];?>"><?php echo $nombreCiudad['nombre']?></option>
+                        <option selected="true" value="<?php echo $results['idciudades'];?>"><?php echo $results['nombre']?></option>
                         <option disabled value="">Seleccione...</option>
                         <?php
                         foreach ($ciudades as $ciudadesAspirante):
@@ -365,7 +345,13 @@
                         </div>  
                         <div class="col-md-2 mb-3">
                           <label for="validationServer16">Meses</label>
-                          <input type="text" name="meses<?php echo $countExpe;?>" class="form-control" value="<?php echo $expeEmpleado->meses?>" onkeypress="return soloNumeros(event)" maxlength="2" id="validationServer36" required>
+                          <input type="text" name="meses<?php echo $countExpe;?>" class="form-control" value="<?php echo $expeEmpleado->meses?>" onchange="soloMeses(this);" onkeypress="return soloNumeros(event)" maxlength="2" id="validationServer36" required>
+                          <div class="invalid-feedback">
+                              Debes colocar un rango de 12 meses.
+                          </div>
+                          <div class="valid-feedback">
+                              Correcto.
+                          </div> 
                         </div>  
                         <div class="col-md-5 mb-3 mr-3">
                           <label for="validationServer11">Naturaleza de la Empresa</label>
@@ -467,7 +453,7 @@
                       <div class="col-md-3 mb-3">
                           <label for="validationServer15">Cargo</label>
                           <select class="custom-select" name="cargo" id="validationServer41" required>
-                          <option selected="true" value="<?php echo $results['id_cargo_emp'];?>"><?php echo utf8_encode($nombreCargo['nombre_cargo'])?></option>
+                          <option selected="true" value="<?php echo $results['id_cargo_emp'];?>"><?php echo utf8_encode($results['nombre_cargo'])?></option>
                           <option disabled value="">Seleccione...</option>
                           <?php
                           foreach ($cargos as $cargosEmpleado):
@@ -484,7 +470,7 @@
                       <div class="col-md-3 mb-3">
                           <label for="validationServer06">Personal</label>
                           <select class="custom-select" name="personal" id="validationServer42" required>
-                          <option selected="true" value="<?php echo $nombrePersonal['id_personal'];?>"><?php echo $nombrePersonal["nombre_personal"]?></option>
+                          <option selected="true" value="<?php echo $results['id_personal_emp'];?>"><?php echo $results["nombre_personal"]?></option>
                            <option disabled value="">Seleccione...</option>
                            <?php
                               foreach ($personales as $personalEmpleado):
@@ -501,7 +487,7 @@
                         <div class="col-md-3 mb-3">
                           <label for="validationServer07">Área</label>
                           <select class="custom-select" name="area" id="validationServer43" required>
-                              <option selected="true" value="<?php echo $nombreArea['id_area'];?>"><?php echo $nombreArea["nombre_area"]?></option>
+                              <option selected="true" value="<?php echo $results['id_area_emp'];?>"><?php echo $results["nombre_area"]?></option>
                               <option disabled value="">Seleccione...</option>
                               <?php
                               foreach ($areas as $areaEmpleado):
@@ -615,7 +601,13 @@
                             </div>
                             <div class="col-md-2 mb-3">
                                 <label for="validationServer04">Meses</label>
-                                <input type="text" name="mesesHijo<?php echo $hijoGet;?>" class="form-control" value="<?php echo $hijosEmpleado->meses_hijo?>" onkeypress="return soloNumeros(event)" maxlength="2" id="validationServer17" autocomplete="off">
+                                <input type="text" name="mesesHijo<?php echo $hijoGet;?>" onchange="soloMeses(this);" class="form-control" value="<?php echo $hijosEmpleado->meses_hijo?>" onkeypress="return soloNumeros(event)" maxlength="2" id="validationServer17" autocomplete="off">
+                                <div class="invalid-feedback">
+                                    Debes colocar un rango de 12 meses.
+                                </div>
+                                <div class="valid-feedback">
+                                    Correcto.
+                                </div> 
                             </div>
                             <div onclick="window.location='../controllers/deleteRows.php?ced=<?php echo $id;?>&id=<?php echo $hijosEmpleado->id_hijosemple;?>&table=hijos_empleados&nameId=id_hijosemple';" class="col-md-1"><i class="fa fa-trash mt-4" name="remove-deleted" id="remove-deleted" aria-hidden="true" style="cursor:pointer; font-size:25px;" title="Eliminar fila"></i></button></div>
                         </div>
@@ -661,7 +653,13 @@
                                 </div>
                                 <div class="col-md-2 mb-3">
                                     <label for="validationServer04">Meses</label>
-                                    <input type="text" name="mesesHijoup<?php echo $hijoGet;?>" class="form-control" value="<?php echo $hijosEmpleado->meses_hijo?>" onkeypress="return soloNumeros(event)" maxlength="2" id="validationServer17" autocomplete="off">
+                                    <input type="text" name="mesesHijoup<?php echo $hijoGet;?>" onchange="soloMeses(this);" class="form-control" value="<?php echo $hijosEmpleado->meses_hijo?>" onkeypress="return soloNumeros(event)" maxlength="2" id="validationServer17" autocomplete="off">
+                                    <div class="invalid-feedback">
+                                        Debes colocar un rango de 12 meses.
+                                    </div>
+                                    <div class="valid-feedback">
+                                        Correcto.
+                                    </div> 
                                 </div>
                                 <div onclick="window.location='../controllers/deleteRows.php?ced=<?php echo $id;?>&id=<?php echo $hijosEmpleado->id_hijosemple;?>&table=hijos_empleados&nameId=id_hijosemple';" class="col-md-1"><i class="fa fa-trash mt-4" name="remove-deleted" id="remove-deleted" aria-hidden="true" style="cursor:pointer; font-size:25px;" title="Eliminar fila"></i></button></div>
                             </div>
