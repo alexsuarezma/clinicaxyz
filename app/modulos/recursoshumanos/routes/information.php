@@ -160,15 +160,15 @@
             <div class="form-row">
                 <div class="col-md-3 mb-3">
                     <label for="validationServer02">Cargo</label>
-                    <input type="text" name="apellidos" class="form-control" value="<?php echo $nombreCargo['nombre_cargo']?>" disabled="">
+                    <input type="text" name="apellidos" class="form-control" value="<?php echo utf8_encode($nombreCargo['nombre_cargo'])?>" disabled="">
                 </div>
                 <div class="col-md-3 mb-3">
                     <label for="validationServer02">Personal</label>
-                    <input type="text" name="apellidos" class="form-control" value="<?php echo $nombrePersonal['nombre_personal']?>" disabled="">
+                    <input type="text" name="apellidos" class="form-control" value="<?php echo utf8_encode($nombrePersonal['nombre_personal'])?>" disabled="">
                 </div>
                 <div class="col-md-3 mb-3">
                     <label for="validationServer02">Área</label>
-                    <input type="text" name="apellidos" class="form-control" value="<?php echo $nombreArea['nombre_area']?>" disabled="">
+                    <input type="text" name="apellidos" class="form-control" value="<?php echo utf8_encode($nombreArea['nombre_area'])?>" disabled="">
                 </div>
                 <div class="col-md-3 mb-3">
                     <label for="validationServer02">Horario</label>

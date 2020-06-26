@@ -464,7 +464,7 @@
             <div class="form-row">
               <div class="col-md-4 mb-3">
                 <label for="validationServer11">Sueldo esperado</label>
-                <input type="text" name="sueldoEspe" class="form-control" onkeypress="return soloSalario(event)" maxlength="4" id="validationServer38" autocomplete="off" required>
+                <input type="text" name="sueldoEspe" class="form-control" onkeypress="return filterFloat(event,this);" maxlength="7" id="validationServer38" autocomplete="off" required>
               </div>
               <div class="col-md-4 mb-3">
                 <label for="validationServer10">Cargo al que postula</label>

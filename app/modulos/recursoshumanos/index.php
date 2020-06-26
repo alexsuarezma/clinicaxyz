@@ -17,7 +17,7 @@
   <body>
 <?php
   require 'components/layout.php';
-  printLayout('index.php', '../../../index.html', 'routes/contrato.php', 'routes/selectPersonal.php', 'routes/reclutamiento.php', 'routes/historialPersonal.php');
+  printLayout('index.php', '../../../index.html', 'routes/contrato.php', 'routes/personal.php', 'routes/reclutamiento.php', 'routes/historialPersonal.php');
 ?>
 <div class="container-fluid">
   <div class="row">

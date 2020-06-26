@@ -303,6 +303,7 @@
                     foreach ($estudios as $estudiosEmpleado):
                       $countAcadem++;
                 ?>
+<<<<<<< HEAD
                     <div class="form-row">
                       <input name="idAcadem<?php echo $countAcadem;?>" style="display:none;" id="idAcadem" value="<?php echo $estudiosEmpleado->id_estudiosempleados;?>">
                         <div class="form-row">
@@ -311,19 +312,37 @@
                             <input type="text" name="titulo<?php echo $countAcadem;?>" class="form-control" value="<?php echo $estudiosEmpleado->titulo_estudiosempleados?>" onkeypress="return soloLetras(event)" id="validationServer32" autocomplete="off" required>
                           </div>
                           <div class="col-md-12 mb-3">
+=======
+                    
+                      <input name="idAcadem<?php echo $countAcadem;?>" style="display:none;" id="idAcadem" value="<?php echo $estudiosEmpleado->id_estudiosempleados;?>">
+                        <div class="form-row">
+                          <div class="col-md-6 mb-3">
+                            <label for="validationServer08">Título / Profesión</label>
+                            <input type="text" name="titulo<?php echo $countAcadem;?>" class="form-control" value="<?php echo $estudiosEmpleado->titulo_estudiosempleados?>" onkeypress="return soloLetras(event)" id="validationServer32" autocomplete="off" required>
+                          </div>
+                          <div class="col-md-6 mb-3">
+>>>>>>> dev
                               <label for="validationServer11">Institución</label>
                               <input type="text" name="institucion<?php echo $countAcadem;?>" class="form-control" value="<?php echo $estudiosEmpleado->institucion_estudiosempleados?>" onkeypress="return soloLetras(event)" id="validationServer33" autocomplete="off" required>
                             </div>
                         </div>
                         <div class="form-row">
+<<<<<<< HEAD
                           <div class="col-md-10 ml-2 mb-3">
+=======
+                          <div class="col-md-6 mb-3">
+>>>>>>> dev
                             <label for="validationServer16">Año de Ingreso</label>
                             <input type="date" name="anoIngreso<?php echo $countAcadem;?>" class="form-control" value="<?php echo $estudiosEmpleado->fecha_ingreso?>" id="validationServer35" required>
                             <div class="invalid-feedback">
                               <!--mensaje para feedback del campo.-->
                             </div>
                           </div>
+<<<<<<< HEAD
                           <div class="col-md-10 ml-2 mb-3">
+=======
+                          <div class="col-md-6 mb-3">
+>>>>>>> dev
                             <label for="validationServer16">Año de Egreso</label>
                             <input type="date" name="anoEgreso<?php echo $countAcadem;?>" class="form-control" value="<?php echo $estudiosEmpleado->fecha_egreso?>" id="validationServer36" required>
                               <div class="invalid-feedback">
@@ -331,7 +350,11 @@
                               </div>
                           </div>    
                         </div>
+<<<<<<< HEAD
                       </div>
+=======
+                      
+>>>>>>> dev
                     <hr class="mt-1 mb-4 mr-5">
                 <?php 
                     endforeach;
@@ -435,7 +458,11 @@
                   </div>
                   <div class="col-md-4 mb-3">
                       <label for="validationServer11">Salario base</label>
+<<<<<<< HEAD
                       <input type="text" name="salarioBase" class="form-control" value="<?php echo $results["salario_base"]?>" onkeypress="return soloSalario(event)" id="validationServer38" autocomplete="off" required>
+=======
+                      <input type="text" name="salarioBase" class="form-control" value="<?php echo $results["salario_base"]?>" onkeypress="return filterFloat(event,this);" maxlength="7" id="validationServer38" autocomplete="off" required>
+>>>>>>> dev
                     </div>
                   <div class="col-md-3 mb-3">
                     <label for="validationServer09">Tipo de contrato</label>
@@ -467,7 +494,11 @@
                       <div class="col-md-3 mb-3">
                           <label for="validationServer15">Cargo</label>
                           <select class="custom-select" name="cargo" id="validationServer41" required>
+<<<<<<< HEAD
                           <option selected="true" value="<?php echo $results['id_cargo_emp'];?>"><?php echo $nombreCargo['nombre_cargo']?></option>
+=======
+                          <option selected="true" value="<?php echo $results['id_cargo_emp'];?>"><?php echo utf8_encode($nombreCargo['nombre_cargo'])?></option>
+>>>>>>> dev
                           <option disabled value="">Seleccione...</option>
                           <?php
                           foreach ($cargos as $cargosEmpleado):
@@ -522,7 +553,7 @@
                                   <option disabled value="">Seleccione...</option>
                                   <option>Matutino</option>
                                   <option>Vespertino</option>
-                                  <option>Nocturno</option>
+                                  <option>Jornada Completa</option>
                                   </select>
                                 <div class="invalid-feedback">
                                 <!--mensaje para feedback del campo.-->
@@ -629,7 +660,7 @@
                 </div>  
               <?php else: ?>
                     <label class="font-weight-bolder mt-3">Hijos</label>
-                    <hr class="mt-1 mb-4 mr-5 ">
+                    <hr class="mt-1 mr-5 ">
                     <div id="radio-hijos" class="form-group shadow-sm p-3 bg-white rounded">
                       <div class=""id="dynamic_field">
                       <div class="form-row">
