@@ -179,7 +179,7 @@ nombres_conyuge,apellidos_conyuge,salario_base,horario,documentos_descripcion,fi
   </head>
   <body>
 <?php
-  printLayout('../index.php', '../../../../index.html', 'contrato.php', 'selectPersonal.php', 'reclutamiento.php', 'historialPersonal.php');
+  printLayout('../index.php', '../../../../index.html', 'contrato.php', 'personal.php', 'reclutamiento.php', 'historialPersonal.php');
 ?>
 <div class="container-fluid">
   <div class="row">
@@ -631,7 +631,7 @@ nombres_conyuge,apellidos_conyuge,salario_base,horario,documentos_descripcion,fi
                   </div>
                   <div class="col-md-4 mb-3">
                       <label for="validationServer11">Salario base</label>
-                      <input type="text" name="salarioBase" class="form-control" onkeypress="return soloSalario(event)" id="validationServer38" autocomplete="off" required>
+                      <input type="text" onkeypress="return filterFloat(event,this);" name="salarioBase" class="form-control" maxlength="7" id="validationServer38" autocomplete="off" required/>
                     </div>
                   <div class="col-md-3 mb-3">
                     <label for="validationServer09">Tipo de contrato</label>
@@ -702,6 +702,7 @@ nombres_conyuge,apellidos_conyuge,salario_base,horario,documentos_descripcion,fi
                                   <option selected disabled value="">Seleccione...</option>
                                   <option>Matutino</option>
                                   <option>Vespertino</option>
+                                  <option>Jornada Completa</option>
                                   </select>
                                 <div class="invalid-feedback">
                                 <!--mensaje para feedback del campo.-->
