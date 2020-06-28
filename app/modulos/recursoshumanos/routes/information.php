@@ -8,25 +8,13 @@
             $records->execute();
             $results = $records->fetch(PDO::FETCH_ASSOC);
             
-            // $idciudad = $results['id_ciudad_emp'];
-            // $ciudad = $conn->query("SELECT * FROM ciudades WHERE idciudades = $idciudad");
-            // $ciudad->execute();
-            // $nombreCiudad = $ciudad->fetch(PDO::FETCH_ASSOC);
-
-            // $idcargo = $results['id_cargo_emp'];
-            // $cargo = $conn->query("SELECT * FROM cargo_empleados WHERE id_cargo = $idcargo");
-            // $cargo->execute();
-            // $nombreCargo = $cargo->fetch(PDO::FETCH_ASSOC);
-
-            // $idarea = $results['id_area_emp'];
-            // $area = $conn->query("SELECT * FROM area_empleados WHERE id_area = $idarea");
-            // $area->execute();
-            // $nombreArea = $area->fetch(PDO::FETCH_ASSOC);
-
-            // $idpersonal = $results['id_personal_emp'];
-            // $personal = $conn->query("SELECT * FROM personal_empleados WHERE id_personal = $idpersonal");
-            // $personal->execute();
-            // $nombrePersonal = $personal->fetch(PDO::FETCH_ASSOC);
+            
+            if($results['medico']==1){    
+                $medico = $conn->prepare("SELECT * FROM empleados_medico AS m, especialidades AS e WHERE (m.id_especialidad_medico = e.idespecialidades) AND id_empleados_medico = :cedula");
+                $medico->bindParam(':cedula', $id);
+                $medico->execute();
+                $resultMedico = $medico->fetch(PDO::FETCH_ASSOC);
+            }
 
             $estudios = $conn->query("SELECT * FROM estudios_empleados WHERE id_empleados_est = $id")->fetchAll(PDO::FETCH_OBJ);
             $experiencia = $conn->query("SELECT * FROM expe_laboral_emp WHERE id_empleados_expe = $id")->fetchAll(PDO::FETCH_OBJ);
@@ -137,6 +125,17 @@
                 <?php 
                     endforeach;
                 ?>    
+                <?php if($results['medico']==1): ?>  
+                    <label class="font-weight-bolder mt-3">MEDICO ESPECIALISTA <span class="badge badge-info"> #MEDICO</span></label>
+                    <hr class="mt-1 mb-4 mr-5">
+                    <div class="form-row">
+                        <div class="col-md-4 mb-3">
+                            <label for="validationServer02">Especialidad</label>
+                            <input type="text" name="apellidos" class="form-control" value="<?php echo utf8_encode($resultMedico["descripcion"])?>" disabled="">
+                        </div>
+                    </div>          
+                <?php endif; ?>
+         
             <label class="font-weight-bolder mt-3">Información ocupacional</label>
             <hr class="mt-1 mb-4 mr-5">
             <div class="form-row">
@@ -152,10 +151,6 @@
                     <label for="validationServer02">Contrato</label>
                     <input type="text" name="apellidos" class="form-control" value="<?php echo $results["idcontrato"]?>" disabled="">
                 </div>
-                <!-- <div class="col-md-4 mb-3">
-                    <label for="validationServer02">Especialidad</label>
-                    <input type="text" name="apellidos" class="form-control" value="" value="php echo $results" disabled="">
-                </div> -->
             </div>
             <div class="form-row">
                 <div class="col-md-3 mb-3">

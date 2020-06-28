@@ -28,14 +28,25 @@
 
 
     	while ($fila = $resultado->fetch_assoc()) {
+			if($fila['medico']==1){ 
+				$medico = "<span class='badge badge-pill badge-info'>#MEDICO</span>";
+				$id = $fila['id_empleados'];
+				$sql= "SELECT * FROM empleados_medico AS m, especialidades AS e WHERE (m.id_especialidad_medico = e.idespecialidades) AND id_empleados_medico = $id";	
+				$especialidad = $conn->query($sql);
+				$resultadoEspecialidad = $especialidad->fetch_assoc();				
+				$nombreEspecialidad = "<span class='font-weight-bold'>Medico, especialista: </span>".utf8_encode($resultadoEspecialidad['descripcion']).".</br>";
+			}else{ 
+				$medico = "";
+				$nombreEspecialidad="";
+			}
 			$salida.="<div class='col-xl-3 col-lg-3 col-md-3 col-sm-4 col-12'>
 						<figure class='user-card green'>
 							<figcaption>
-								<img src='https://bootdey.com/img/Content/avatar/avatar1.png' alt='Milestone Admin' class='profile'>
+								<img src=".$fila['profileimage']." alt='Imagen de perfil' class='profile'>
 								
 								<h5>".$fila['nombres']." ".$fila['apellidos']."</h5>
 								<h6>".$fila['id_empleados']."</h6>
-								<p><span class='font-weight-bold'>Personal: </span>".$fila['nombre_personal'].".</br> <span class='font-weight-bold'>Cargo: </span> ".utf8_encode($fila['nombre_cargo']).".</br> <span class='font-weight-bold'>Area: </span> ".utf8_encode($fila['nombre_area']).".</br> Capacitado en la especialidad de </p>
+								<p><span class='font-weight-bold'>Personal: </span>".$fila['nombre_personal'].".</br> <span class='font-weight-bold'>Cargo: </span> ".utf8_encode($fila['nombre_cargo']).".</br> <span class='font-weight-bold'>Area: </span> ".utf8_encode($fila['nombre_area']).".</br> ".$nombreEspecialidad."</p>
 								<ul class='contacts'>
 									<li>
 											".$fila['email']."
@@ -50,6 +61,7 @@
 								<div class='clearfix'>
 									<span class='badge badge-pill badge-success'>DISPONIBLE</span>
 									<span class='badge badge-pill badge-orange'>En jornada</span>
+									".$medico."
 								</div>
 							</figcaption>
 						</figure>

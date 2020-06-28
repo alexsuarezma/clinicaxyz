@@ -9,10 +9,18 @@
       echo "    <span class='navbar-toggler-icon'></span>";
       echo "</button>";
       echo "<ul class='navbar-nav px-3'>";
-      echo "<li class='nav-item text-nowrap'>";
-      echo "<a class='nav-link' href='#'>Cerrar sesión</a>";
-      echo "</li>";
+      // echo "<li class='nav-item text-nowrap'>";
+      // echo "<a class='nav-link' href='#'>Cerrar sesión</a>";
+      // echo "</li>";
       echo "</ul>";
+      echo "<a class='nav-link dropdown-toggle' style='color: white;' href='#' id='navbarDropdownMenuLink' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>";
+      // PONER EL USER NAME!!
+      echo "Nombre de usuario";
+      echo "</a>";
+      echo "<div class='dropdown-menu dropdown-menu-right mr-1' aria-labelledby='navbarDropdownMenuLink'>";
+      echo "<a class='dropdown-item' href='#'>Ajustes</a>";
+      echo "<a class='dropdown-item' href='#'>Another action</a>";
+      echo "<a class='dropdown-item' href='#'>Cerrar sesión</a></div>";
       echo "</nav>";
 
       echo "<nav id='sidebarMenu' class='col-md-3 col-lg-2 d-md-block bg-light sidebar collapse'>";
