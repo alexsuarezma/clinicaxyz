@@ -44,6 +44,10 @@ class ComposerStaticInit24d8829d7555a69f26ff30657f7095c0
         array (
             'JsonSchema\\' => 11,
         ),
+        'G' => 
+        array (
+            'Gravatar\\' => 9,
+        ),
         'D' => 
         array (
             'Dotenv\\' => 7,
@@ -130,6 +134,10 @@ class ComposerStaticInit24d8829d7555a69f26ff30657f7095c0
         'JsonSchema\\' => 
         array (
             0 => __DIR__ . '/..' . '/justinrainbow/json-schema/src/JsonSchema',
+        ),
+        'Gravatar\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/gravatarphp/gravatar/src',
         ),
         'Dotenv\\' => 
         array (

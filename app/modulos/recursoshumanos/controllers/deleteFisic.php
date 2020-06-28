@@ -3,7 +3,12 @@
     $id=$_GET["id"];
     $aspirante=$_GET["aspirante"];
        if($aspirante==""){
-      
+        
+        $sql = "DELETE FROM empleados_medico WHERE id_empleados_medico=:cedula";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':cedula', $id);
+        $stmt->execute();
+
         $sql = "DELETE FROM estudios_empleados WHERE id_empleados_est = :cedula";
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':cedula', $id);

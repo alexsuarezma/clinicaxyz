@@ -35,6 +35,20 @@ function soloMeses(input){
     }
 }
 
+
+function isMedic(input,especialidad){
+  var tempValue = input.value;
+    if(tempValue == 2){     
+      document.getElementById(especialidad).disabled = false;
+      document.getElementById(especialidad).className = "custom-select is-valid";
+      document.getElementById(especialidad).focus();
+    }else{
+      document.getElementById(especialidad).disabled = true;
+      document.getElementById(especialidad).className = "custom-select"
+    }
+}
+
+
 function filterFloat(evt,input){
   // Barraespaciadora = 8, Enter = 13, ‘0′ = 48, ‘9′ = 57, ‘.’ = 46, ‘-’ = 43
   var key = window.Event ? evt.which : evt.keyCode;    

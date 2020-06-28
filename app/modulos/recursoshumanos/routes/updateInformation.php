@@ -10,14 +10,21 @@
     $cargos = $conn->query("SELECT * FROM cargo_empleados ORDER BY nombre_cargo ASC")->fetchAll(PDO::FETCH_OBJ);
     $personales = $conn->query("SELECT * FROM personal_empleados ORDER BY nombre_personal ASC")->fetchAll(PDO::FETCH_OBJ);
     $areas = $conn->query("SELECT * FROM area_empleados ORDER BY nombre_area ASC")->fetchAll(PDO::FETCH_OBJ);
+    $especialidades = $conn->query("SELECT * FROM especialidades ORDER BY descripcion ASC")->fetchAll(PDO::FETCH_OBJ);
     
         if(!isset($_POST["btn-actualizar"])){
             $records = $conn->prepare("SELECT * FROM empleados AS e, cargo_empleados AS c, personal_empleados AS p, area_empleados AS a, ciudades AS ci WHERE (c.id_cargo = e.id_cargo_emp AND p.id_personal = e.id_personal_emp AND a.id_area = e.id_area_emp AND ci.idciudades = e.id_ciudad_emp) AND id_empleados = :cedula");
             $records->bindParam(':cedula', $id);
             $records->execute();
             $results = $records->fetch(PDO::FETCH_ASSOC);
-            // $espe = $conn->query("SELECT * FROM especialidades")->fetchAll(PDO::FETCH_OBJ);
 
+                if($results['medico']==1){    
+                    $medico = $conn->prepare("SELECT * FROM empleados_medico AS m, especialidades AS e WHERE (m.id_especialidad_medico = e.idespecialidades) AND id_empleados_medico = :cedula");
+                    $medico->bindParam(':cedula', $id);
+                    $medico->execute();
+                    $resultMedico = $medico->fetch(PDO::FETCH_ASSOC);     
+                }
+            
             $estudios = $conn->query("SELECT * FROM estudios_empleados WHERE id_empleados_est = $id")->fetchAll(PDO::FETCH_OBJ);
             $experiencia = $conn->query("SELECT * FROM expe_laboral_emp WHERE id_empleados_expe = $id")->fetchAll(PDO::FETCH_OBJ);
             $referencias = $conn->query("SELECT * FROM referencias_empleado WHERE id_empleados_refe = $id")->fetchAll(PDO::FETCH_OBJ);
@@ -25,6 +32,56 @@
             $hijos = $conn->query("SELECT * FROM hijos_empleados WHERE id_empleados_hijos = $id")->fetchAll(PDO::FETCH_OBJ);
 
        }else{   
+            $records = $conn->prepare("SELECT medico FROM empleados WHERE id_empleados = :cedula");
+            $records->bindParam(':cedula', $_POST['cedula']);
+            $records->execute();
+            $results = $records->fetch(PDO::FETCH_ASSOC);
+
+                  if($results['medico']==1){
+                      
+                      if($_POST['personal']==2){
+                        //update
+                          $sql = "UPDATE empleados_medico SET id_especialidad_medico=:id_especialidad_medico WHERE id_empleados_medico=:id_empleados";
+                          $stmt = $conn->prepare($sql);
+                          $stmt->bindParam(':id_empleados', $_POST['cedula']);
+                          $stmt->bindParam(':id_especialidad_medico', $_POST['especialidad']);
+                          $stmt->execute();
+                      }else{
+                            //delete
+                            $sql = "DELETE FROM empleados_medico WHERE id_empleados_medico=:id_empleados";
+                            $stmt = $conn->prepare($sql);
+                            $stmt->bindParam(':id_empleados', $_POST['cedula']);
+                            $stmt->execute();
+
+                            $sql = "UPDATE empleados SET medico=:medico WHERE id_empleados=:id_empleados";
+                            $stmt = $conn->prepare($sql);
+                            $stmt->bindParam(':id_empleados', $_POST['cedula']);
+                            $stmt->bindValue(':medico', 0, PDO::PARAM_INT);
+                            $stmt->execute();
+
+                        }
+                      
+                  }else{
+                      //INSERT
+                      if($_POST['personal'] == 2){
+                          $sql = "INSERT INTO empleados_medico 
+                          (id_empleados_medico,id_especialidad_medico) VALUES (:id_empleados_medico,:id_especialidad_medico)";                    
+                          $stmt = $conn->prepare($sql);
+                          $stmt->bindParam(':id_especialidad_medico',$_POST["especialidad"]);
+                          $stmt->bindParam(':id_empleados_medico',$_POST["cedula"]);
+                          $stmt->execute();
+                          
+                          //medico = 1
+                          $sql = "UPDATE empleados SET medico=:medico WHERE id_empleados=:id_empleados";
+                          $stmt = $conn->prepare($sql);
+                          $stmt->bindParam(':id_empleados', $_POST['cedula']);
+                          $stmt->bindValue(':medico', 1, PDO::PARAM_INT);
+                          $stmt->execute();
+                      }
+                  }
+              
+                  
+              //UPDATE EMPLEADO
                 $sql = "UPDATE empleados SET nombres=:nombres,apellidos=:apellidos,direccion=:direccion,nacionalidad=:nacionalidad,fecha_nacimiento=:fecha_nacimiento,parroquia=:parroquia,id_ciudad_emp=:id_ciudad_emp,telefono=:telefono,celular=:celular,email=:email,sexo=:sexo,estado_civil=:estado_civil,nombres_conyuge=:nombres_conyuge,apellidos_conyuge=:apellidos_conyuge,salario_base=:salario_base,id_cargo_emp=:id_cargo_emp,id_personal_emp=:id_personal_emp,id_area_emp=:id_area_emp,horario=:horario,documentos_descripcion=:documentos_descripcion,update_at=:update_at WHERE id_empleados=:id_empleados";
                 $stmt = $conn->prepare($sql);
 
@@ -55,7 +112,6 @@
 
             try{
                 if($stmt->execute()){
-                    
 
                       for($i=1;$i<=$_POST['hijosGet'];$i++){
                         //Actualizar en la tabla hijos_empleados
@@ -411,6 +467,50 @@
                 <?php 
                     endforeach;
                 ?>  
+                 <?php if($results['medico']==1): ?>  
+                    <label class="font-weight-bolder mt-3">MEDICO ESPECIALISTA <span class="badge badge-info"> #MEDICO</span></label>
+                    <hr class="mt-1 mb-4 mr-5">
+                      <div class="form-row">
+                          <div class="col-md-4 mb-3">
+                              <label for="validationServer02">Especialidad</label>
+                              <select class="custom-select" name="especialidad" id="row-especialidad" required>
+                              <option selected="true" value="<?php echo $resultMedico['idespecialidades'];?>"><?php echo utf8_encode($resultMedico["descripcion"]);?></option>  
+                              <option disabled value="">Seleccione...</option>
+                              <?php
+                              foreach ($especialidades as $especialidadEmpleado):
+                              ?>
+                                <option value="<?php echo $especialidadEmpleado->idespecialidades;?>"><?php echo utf8_encode($especialidadEmpleado->descripcion);?></option>
+                              <?php 
+                                endforeach;
+                              ?>  
+                              </select>
+                              <div class="valid-feedback">
+                                  EL PERSONAL ES MEDICO. PORFAVOR, ESCOGE UNA ESPECIALIDAD...
+                              </div>
+                        </div>
+                      </div>   
+                 <?php else: ?>
+                    <label class="font-weight-bolder mt-3">Especialidad <span class="badge badge-warning"> #NO ES MEDICO, si actualizas a personal Medico deberas escoger especialidad *</span></label>
+                        <hr class="mt-1 mb-4 mr-5">
+                        <div class="form-row">
+                          <div class="col-md-4 mb-3">
+                            <label for="validationServer09">Especialidad</label>
+                            <select class="custom-select" name="especialidad" id="row-especialidad" required disabled="true">
+                              <option selected disabled value="">Seleccione...</option>
+                              <?php
+                              foreach ($especialidades as $especialidadEmpleado):
+                              ?>
+                                <option value="<?php echo $especialidadEmpleado->idespecialidades;?>"><?php echo utf8_encode($especialidadEmpleado->descripcion);?></option>
+                              <?php 
+                                endforeach;
+                              ?>  
+                            </select>
+                            <div class="valid-feedback">
+                                EL EMPLEADO AHORA SERA MEDICO. PORFAVOR, ESCOGE UNA ESPECIALIDAD...
+                            </div>
+                          </div>
+                        </div>
+                <?php endif; ?>
                 
                 <label class="font-weight-bolder mt-3">Información ocupacional</label>
                 <hr class="mt-1 mb-4 mr-5 ">
@@ -436,17 +536,7 @@
                       <!--mensaje para feedback del campo.-->
                     </div>
                   </div>
-                  <!-- <div class="col-md-3 mb-3">
-                    <label for="validationServer10">Especialidad</label>
-                    <select class="custom-select" name="especialidad" id="validationServer40" required>
-                       <option selected="true"></option>
-                       <option disabled value="">Seleccione...</option> 
-                        <option>No aplica</option>                    
-                    </select>
-                    <div class="invalid-feedback">
-                      mensaje para feedback del campo.
-                    </div>
-                  </div> -->
+  
                 </div>
                 
                 <div class="form-row">
@@ -469,7 +559,7 @@
                       </div>
                       <div class="col-md-3 mb-3">
                           <label for="validationServer06">Personal</label>
-                          <select class="custom-select" name="personal" id="validationServer42" required>
+                          <select class="custom-select" onchange="isMedic(this,'row-especialidad')" name="personal" id="validationServer42" required>
                           <option selected="true" value="<?php echo $results['id_personal_emp'];?>"><?php echo $results["nombre_personal"]?></option>
                            <option disabled value="">Seleccione...</option>
                            <?php

@@ -8,6 +8,13 @@
             $records->execute();
             $results = $records->fetch(PDO::FETCH_ASSOC);
 
+            if($results['medico']==1){    
+                $medico = $conn->prepare("SELECT * FROM empleados_medico AS m, especialidades AS e WHERE (m.id_especialidad_medico = e.idespecialidades) AND id_empleados_medico = :cedula");
+                $medico->bindParam(':cedula', $id);
+                $medico->execute();
+                $resultMedico = $medico->fetch(PDO::FETCH_ASSOC);
+            }
+
             $estudios = $conn->query("SELECT * FROM estudios_empleados WHERE id_empleados_est = $id")->fetchAll(PDO::FETCH_OBJ);
             $experiencia = $conn->query("SELECT * FROM expe_laboral_emp WHERE id_empleados_expe = $id")->fetchAll(PDO::FETCH_OBJ);
             $referencias = $conn->query("SELECT * FROM referencias_empleado WHERE id_empleados_refe = $id")->fetchAll(PDO::FETCH_OBJ);
@@ -148,7 +155,18 @@
                         <hr class="mt-1 mb-4 mr-5">
                     <?php 
                         endforeach;
-                    ?>    
+                    ?> 
+                <?php if($results['medico']==1): ?>  
+                    <label class="font-weight-bolder mt-3">MEDICO ESPECIALISTA <span class="badge badge-info"> #MEDICO</span></label>
+                    <hr class="mt-1 mb-4 mr-5">
+                    <div class="form-row">
+                        <div class="col-md-4 mb-3">
+                            <label for="validationServer02">Especialidad</label>
+                            <input type="text" name="apellidos" class="form-control" value="<?php echo utf8_encode($resultMedico["descripcion"])?>" disabled="">
+                        </div>
+                    </div>          
+                <?php endif; ?>
+                  
                 <label class="font-weight-bolder mt-3">Información ocupacional</label>
                 <hr class="mt-1 mb-4 mr-5">
                 <div class="form-row">
