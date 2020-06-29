@@ -30,12 +30,10 @@ body
 
     & ul
     {
-      display: flex;
       list-style: none;
       padding: 0;
-      align-items: center;
-      justify-content: center;
-      flex-direction: row;
+
+      display: flex;
 
       & li.product , & li.provider
       {
@@ -71,6 +69,10 @@ body
       {
         & ul
         {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          
           & .register_pro, & .register_provee
           {
             display: none;
@@ -104,6 +106,19 @@ body
               & select
               {
                 width: 90%;
+              }
+
+              & .precios
+              {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-direction: column;
+
+                & label
+                {
+                  margin: 5% auto;
+                }
               }
             }
 

@@ -11,12 +11,9 @@ body {
   .container .content_nav {
     width: 100%; }
     .container .content_nav ul {
-      display: flex;
       list-style: none;
       padding: 0;
-      align-items: center;
-      justify-content: center;
-      flex-direction: row; }
+      display: flex; }
       .container .content_nav ul li.product, .container .content_nav ul li.provider {
         width: 60%;
         margin: 10% auto;
@@ -32,38 +29,49 @@ body {
         .container .content_nav ul li.product span .fas, .container .content_nav ul li.provider span .fas {
           margin: 0% 5% 0% 0%;
           color: #1e1e1e; }
-      .container .content_nav ul li.product ul .register_pro, .container .content_nav ul li.product ul .register_provee, .container .content_nav ul li.provider ul .register_pro, .container .content_nav ul li.provider ul .register_provee {
-        display: none; }
-        .container .content_nav ul li.product ul .register_pro form, .container .content_nav ul li.product ul .register_provee form, .container .content_nav ul li.provider ul .register_pro form, .container .content_nav ul li.provider ul .register_provee form {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          flex-direction: column; }
-          .container .content_nav ul li.product ul .register_pro form span, .container .content_nav ul li.product ul .register_provee form span, .container .content_nav ul li.provider ul .register_pro form span, .container .content_nav ul li.provider ul .register_provee form span {
-            margin: 7% 0%;
-            color: #adadad; }
-          .container .content_nav ul li.product ul .register_pro form input, .container .content_nav ul li.product ul .register_pro form select, .container .content_nav ul li.product ul .register_pro form textarea, .container .content_nav ul li.product ul .register_provee form input, .container .content_nav ul li.product ul .register_provee form select, .container .content_nav ul li.product ul .register_provee form textarea, .container .content_nav ul li.provider ul .register_pro form input, .container .content_nav ul li.provider ul .register_pro form select, .container .content_nav ul li.provider ul .register_pro form textarea, .container .content_nav ul li.provider ul .register_provee form input, .container .content_nav ul li.provider ul .register_provee form select, .container .content_nav ul li.provider ul .register_provee form textarea {
-            padding: 1%;
-            border: 0;
-            border-bottom: 1px solid #adadad;
-            background: none;
-            font-weight: bold;
-            color: #1e1e1e; }
-          .container .content_nav ul li.product ul .register_pro form select, .container .content_nav ul li.product ul .register_provee form select, .container .content_nav ul li.provider ul .register_pro form select, .container .content_nav ul li.provider ul .register_provee form select {
-            width: 90%; }
-        .container .content_nav ul li.product ul .register_pro .buttons, .container .content_nav ul li.product ul .register_provee .buttons, .container .content_nav ul li.provider ul .register_pro .buttons, .container .content_nav ul li.provider ul .register_provee .buttons {
-          margin: 10% 0%;
-          width: 100%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          flex-direction: row; }
-          .container .content_nav ul li.product ul .register_pro .buttons .btn, .container .content_nav ul li.product ul .register_provee .buttons .btn, .container .content_nav ul li.provider ul .register_pro .buttons .btn, .container .content_nav ul li.provider ul .register_provee .buttons .btn {
-            background-color: transparent;
-            border: 0;
-            width: 30%; }
-            .container .content_nav ul li.product ul .register_pro .buttons .btn .far, .container .content_nav ul li.product ul .register_pro .buttons .btn .fas, .container .content_nav ul li.product ul .register_provee .buttons .btn .far, .container .content_nav ul li.product ul .register_provee .buttons .btn .fas, .container .content_nav ul li.provider ul .register_pro .buttons .btn .far, .container .content_nav ul li.provider ul .register_pro .buttons .btn .fas, .container .content_nav ul li.provider ul .register_provee .buttons .btn .far, .container .content_nav ul li.provider ul .register_provee .buttons .btn .fas {
-              font-size: 1.5rem; }
+      .container .content_nav ul li.product ul, .container .content_nav ul li.provider ul {
+        display: flex;
+        align-items: center;
+        justify-content: center; }
+        .container .content_nav ul li.product ul .register_pro, .container .content_nav ul li.product ul .register_provee, .container .content_nav ul li.provider ul .register_pro, .container .content_nav ul li.provider ul .register_provee {
+          display: none; }
+          .container .content_nav ul li.product ul .register_pro form, .container .content_nav ul li.product ul .register_provee form, .container .content_nav ul li.provider ul .register_pro form, .container .content_nav ul li.provider ul .register_provee form {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column; }
+            .container .content_nav ul li.product ul .register_pro form span, .container .content_nav ul li.product ul .register_provee form span, .container .content_nav ul li.provider ul .register_pro form span, .container .content_nav ul li.provider ul .register_provee form span {
+              margin: 7% 0%;
+              color: #adadad; }
+            .container .content_nav ul li.product ul .register_pro form input, .container .content_nav ul li.product ul .register_pro form select, .container .content_nav ul li.product ul .register_pro form textarea, .container .content_nav ul li.product ul .register_provee form input, .container .content_nav ul li.product ul .register_provee form select, .container .content_nav ul li.product ul .register_provee form textarea, .container .content_nav ul li.provider ul .register_pro form input, .container .content_nav ul li.provider ul .register_pro form select, .container .content_nav ul li.provider ul .register_pro form textarea, .container .content_nav ul li.provider ul .register_provee form input, .container .content_nav ul li.provider ul .register_provee form select, .container .content_nav ul li.provider ul .register_provee form textarea {
+              padding: 1%;
+              border: 0;
+              border-bottom: 1px solid #adadad;
+              background: none;
+              font-weight: bold;
+              color: #1e1e1e; }
+            .container .content_nav ul li.product ul .register_pro form select, .container .content_nav ul li.product ul .register_provee form select, .container .content_nav ul li.provider ul .register_pro form select, .container .content_nav ul li.provider ul .register_provee form select {
+              width: 90%; }
+            .container .content_nav ul li.product ul .register_pro form .precios, .container .content_nav ul li.product ul .register_provee form .precios, .container .content_nav ul li.provider ul .register_pro form .precios, .container .content_nav ul li.provider ul .register_provee form .precios {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              flex-direction: column; }
+              .container .content_nav ul li.product ul .register_pro form .precios label, .container .content_nav ul li.product ul .register_provee form .precios label, .container .content_nav ul li.provider ul .register_pro form .precios label, .container .content_nav ul li.provider ul .register_provee form .precios label {
+                margin: 5% auto; }
+          .container .content_nav ul li.product ul .register_pro .buttons, .container .content_nav ul li.product ul .register_provee .buttons, .container .content_nav ul li.provider ul .register_pro .buttons, .container .content_nav ul li.provider ul .register_provee .buttons {
+            margin: 10% 0%;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: row; }
+            .container .content_nav ul li.product ul .register_pro .buttons .btn, .container .content_nav ul li.product ul .register_provee .buttons .btn, .container .content_nav ul li.provider ul .register_pro .buttons .btn, .container .content_nav ul li.provider ul .register_provee .buttons .btn {
+              background-color: transparent;
+              border: 0;
+              width: 30%; }
+              .container .content_nav ul li.product ul .register_pro .buttons .btn .far, .container .content_nav ul li.product ul .register_pro .buttons .btn .fas, .container .content_nav ul li.product ul .register_provee .buttons .btn .far, .container .content_nav ul li.product ul .register_provee .buttons .btn .fas, .container .content_nav ul li.provider ul .register_pro .buttons .btn .far, .container .content_nav ul li.provider ul .register_pro .buttons .btn .fas, .container .content_nav ul li.provider ul .register_provee .buttons .btn .far, .container .content_nav ul li.provider ul .register_provee .buttons .btn .fas {
+                font-size: 1.5rem; }
       .container .content_nav ul td {
         width: 30%; }
   .container footer span {

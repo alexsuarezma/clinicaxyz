@@ -4,7 +4,7 @@
 	$password="a16e5057";
 	$bd_big="heroku_fe7e002859673b2";
 
-	$conexion = mysqli_connect($servername,$user,$password,$bd_big) or die("error de coneccion"); 
+	$conexion= mysqli_connect($servername,$user,$password,$bd_big) or die("error de coneccion"); 
 
 
 ?>

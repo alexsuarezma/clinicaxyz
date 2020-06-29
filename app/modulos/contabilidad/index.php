@@ -46,20 +46,20 @@
 				<div class="modal-body">
 					<form id="frmnuevo">
 						<label>Codigo</label>
-						<input type="text" class="form-control input-sm" id="cod_cta" name="cod_cta">
+						<input type="text" class="form-control input-sm" id="cod_cta" name="cod_cta" onkeypress="SoloNumeros()"> 
 						<label>Nombre de la cuenta</label>
-						<input type="text" class="form-control input-sm" id="nom_cta" name="nom_cta">
+						<input type="text" class="form-control input-sm"  id="nom_cta" name="nom_cta" required onKeyPress="return soloLetras(event);">
 						<label>Tipo de Cuenta</label><br>
 
 						 <select  id="tip_cta"  onchange="ddlselect();">
           						<option >Pasivo</option>
           						<option >Activo</option>
                			 </select>
-						<input type="text"  class="form-control input-sm" id="tipo_cta" name="tipo_cta">
+						<input type="text"  class="form-control input-sm" id="tipo_cta" name="tipo_cta" >
 					 	<label>Ingresos</label>
-						<input type="number" class="form-control input-sm" id="ing_cta" name="ing_cta">
+						<input type="number" class="form-control input-sm" id="ing_cta" name="ing_cta" >
 						<label>Egresos</label>
-						<input type="number" class="form-control input-sm" id="egre_cta" name="egre_cta">
+						<input type="number" class="form-control input-sm" id="egre_cta" name="egre_cta" >
 										
 					</form>
 			
@@ -71,7 +71,7 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-					<button type="button" id="btnAgregarnuevo" class="btn btn-primary">Agregar nuevo</button>
+					<button type="button" on click="validar();" id="btnAgregarnuevo" class="btn btn-primary">Agregar nuevo</button>
 				</div>
 			</div>
 		</div>
@@ -92,9 +92,9 @@
 					<form id="frmnuevoU">
 						<input type="text" hidden="" id="idcta" name="idcta">
 						<label>Codigo</label>
-						<input type="text" class="form-control input-sm" id="cod_ctaU" name="cod_ctaU">
+						<input type="text" class="form-control input-sm"  id="cod_ctaU" name="cod_ctaU">
 						<label>Nombre de la cuenta</label>
-						<input type="text" class="form-control input-sm" id="nom_ctaU" name="nom_ctaU">
+						<input type="text" class="form-control input-sm"  id="nom_ctaU" name="nom_ctaU">
 						<label>Tipo de Cuenta</label><br>
 						<select  id="tip_ctaU"  onchange="ddlselectU();">
           						<option >Pasivo</option>
@@ -192,6 +192,8 @@
 		});
 	}
 
+	
+
 	function eliminarDatos(idcta){
 		alertify.confirm('Eliminar una cta', '¿Seguro de eliminar esta cta :(?', function(){ 
 
@@ -214,6 +216,34 @@
 
 		});
 	}
+
+//Agregue esto--------------------------------------------------------
+	function soloLetras(e) {
+      key = e.keyCode || e.which;
+      tecla = String.fromCharCode(key).toLowerCase();
+      letras = " áéíóúabcdefghijklmnñopqrstuvwxyz";
+      especiales = [8, 37, 39, 46];
+  
+      tecla_especial = false
+      for(var i in especiales) {
+          if(key == especiales[i]) {
+              tecla_especial = true;
+              break;
+          }
+      }
+  
+      if(letras.indexOf(tecla) == -1 && !tecla_especial)
+
+          return false;
+  }
+
+ //SOLO NUMEROS
+function SoloNumeros() {
+ if ((event.keyCode < 46) || (event.keyCode > 57)) 
+  event.returnValue = false;
+}//---------------------------------------------------------------------
+
+
 </script>
  <script type="text/javascript">
 						
@@ -236,3 +266,5 @@
 					}
 
 					</script>
+
+ 
