@@ -60,7 +60,6 @@ $resultado = $conexion->query($query);
                 <input type="date" name="fecha_caducidad" id="">
                 <div class="buttons">
                   <input type="submit" class="btn" value="GUARDAR"></input> 
-                  <button type="submit" class="btn"><i class="far fa-trash-alt"></i></button> 
                   <button class="btn"><i class="fas fa-arrow-up"></i></button>
                 </div>
               </form>
@@ -80,7 +79,7 @@ $resultado = $conexion->query($query);
                 <input type="text" name="numero_identificacion_pro" id="ruc" maxlength="13" onKeyPress="return soloNumeros(event)">
                 <input type = "button" value = "Validar RUC" onclick="validar()">
                 <span>Razon Social</span>
-                <input type="text" name="razon_social_empresa_pro" id="" maxlength="30">
+                <input type="text" name="razon_social_empresa_pro" onkeypress="return soloLetras(event)" id="" maxlength="30">
                 <span>Nombre Representante Legal</span>
                 <input type="text" name="nombre_representante_legal_pro" id="" maxlength="30">
                 <span>Ciudad</span>
