@@ -54,7 +54,7 @@
             </div>
       </div>
     <div class="container mt-4">
-      <input type="text" name="busqueda" id="busqueda" placeholder="Busca por cedula, nombres, apellidos, cargo al que postula..." title="Type in a name">
+      <input type="search" name="busqueda" id="busqueda" placeholder="Busca por cedula, nombres, apellidos, cargo al que postula..." title="Type in a name">
     </div>
             <div class="container mt-5" >
                 <ul class="list-group">

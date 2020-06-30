@@ -13,6 +13,7 @@ $resultado = $conexion->query($query);
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <meta name="copyright" content="Todos los derechos reservados DEPARTAMENTO SUMINISTRO">
   <link href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
   <meta name="description" content="Suministro del Departamento Farmaceutico">
   <link rel="icon" type=".ico" href="ico/farma.ico">
   <script src="js/jquery-3.4.1.min.js"></script>
@@ -27,8 +28,11 @@ $resultado = $conexion->query($query);
         <li class="product td"><span><i class="fas fa-box-open"></i></span><a href="#" class="pr">Productos</a>
           <ul>
             <li class="register_pro">
-              <span>Busquedad</span>
-              <input type="search" name="" id="">
+              <form onsubmit="onSubmit(event)"method="POST">
+                  <span>Busquedad</span>
+                  <input type="search" name="busqueda" id="busqueda" required>
+                  <button class="btn"><i style="font-size:12px;" class="fas fa-search" title="Buscar"></i></button>
+              </form>
               <form action="php/data.php" method="POST" >    
                 <span>Codigo de Barra</span>
                 <input type="text" name="serie_pr" id="" maxlength="30">
@@ -41,7 +45,7 @@ $resultado = $conexion->query($query);
                   <?php
                     while($catenom = $resultado->fetch_assoc()):
                   ?>
-                  <option><?php echo $catenom["nombre_cate"];?></option>
+                  <option value="<?php echo $catenom["idcategoria"];?>"><?php echo $catenom["nombre_cate"];?></option>
                   <?php 
                     endwhile;
                   ?> 
@@ -49,11 +53,11 @@ $resultado = $conexion->query($query);
                 <span>Stock</span>
                 <input type="number" name="stock_pr" id="" onKeyPress="return soloNumeros(event)" maxlength="6">
                 <span>Precio</span>
-                <input type="number" name="stock_pr" id="" onKeyPress="return soloNumeros(event)" maxlength="6">
+                <input type="number" name="precio_pr" id="" onKeyPress="return soloNumeros(event)" maxlength="6">
                 <span>Fecha de Elaboracion</span>
-                <input type="datetime" name="fecha_elaboracion" id="">
+                <input type="date" name="fecha_elaboracion" id="">
                 <span>Fecha de Caducidad</span>
-                <input type="datetime" name="fecha_caducidad" id="">
+                <input type="date" name="fecha_caducidad" id="">
                 <div class="buttons">
                   <input type="submit" class="btn" value="GUARDAR"></input> 
                   <button type="submit" class="btn"><i class="far fa-trash-alt"></i></button> 
@@ -128,6 +132,10 @@ $resultado = $conexion->query($query);
     </footer>
   </div>
 <script>
+    onSubmit = (event) => {
+        event.preventDefault()
+        location.href=`php/buscar.php?p=${document.getElementById('busqueda').value}`;        
+    }
     // enter text only
     function soloLetras(e){
        key = e.keyCode || e.which;
