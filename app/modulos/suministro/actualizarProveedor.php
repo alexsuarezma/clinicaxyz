@@ -1,8 +1,10 @@
 <?php 
 require 'php/conexion.php'; 
+$id = $_GET['id'];
+    $sql= "SELECT * FROM proveedores WHERE idproveedor = $id";	
+    $producto = $conexion->query($sql);
+    $producto = $producto->fetch_assoc();
 
-$query= "SELECT * FROM categoria";	
-$resultado = $conexion->query($query);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -25,66 +27,22 @@ $resultado = $conexion->query($query);
   <div class="container">
     <div class="content_nav">
       <ul>
-        <li class="product td"><span><i class="fas fa-box-open"></i></span><a href="#" class="pr">Productos</a>
-          <ul>
-            <li class="register_pro">
-              <form onsubmit="onSubmit(event)"method="POST">
-                  <span>Busquedad</span>
-                  <input type="search" name="busqueda" id="busqueda" required>
-                  <button class="btn"><i style="font-size:12px;" class="fas fa-search" title="Buscar"></i></button>
-              </form>
-              <form action="php/data.php" method="POST" >    
-                <span>Codigo de Barra</span>
-                <input type="text" name="serie_pr" id="" maxlength="30">
-                <span>Nombre</span>
-                <input type="text" name="nombre_pr" id="" onkeypress="return soloLetras(event)" maxlength="30">
-                <span>Descripcion</span>
-                <textarea name="descripcion_pr" id="" cols="30" rows="10"></textarea>
-                <span>Categoria - Insumos</span>
-                <select name="categoria_pr" id="" maxlength="20">
-                  <?php
-                    while($catenom = $resultado->fetch_assoc()):
-                  ?>
-                  <option value="<?php echo $catenom["idcategoria"];?>"><?php echo $catenom["nombre_cate"];?></option>
-                  <?php 
-                    endwhile;
-                  ?> 
-                </select>
-                <span>Stock</span>
-                <input type="number" name="stock_pr" id="" onKeyPress="return soloNumeros(event)" maxlength="6">
-                <span>Precio</span>
-                <input type="number" name="precio_pr" id="" onKeyPress="return soloNumeros(event)" maxlength="6">
-                <span>Fecha de Elaboracion</span>
-                <input type="date" name="fecha_elaboracion" id="">
-                <span>Fecha de Caducidad</span>
-                <input type="date" name="fecha_caducidad" id="">
-                <div class="buttons">
-                  <input type="submit" class="btn" value="GUARDAR"></input> 
-                  <button type="submit" class="btn"><i class="far fa-trash-alt"></i></button> 
-                  <button class="btn"><i class="fas fa-arrow-up"></i></button>
-                </div>
-              </form>
-            </li>
-          </ul>
-        </li>
-        <li class="provider td"><span><i class="fas fa-dolly"></i></span><a href="#" class="provee">Proveedores</a>
+        <li class="provider td"><span><i class="fas fa-dolly"></i></span><a href="#" class="provee">Actualizar Proveedor</a>
           <ul>
             <li class="register_provee">
-              <form onsubmit="onSubmitPro(event)"method="POST">
-                  <span>Busquedad</span>
-                  <input type="search" name="busqueda-pro" id="busqueda-pro" required>
-                  <button class="btn"><i style="font-size:12px;" class="fas fa-search" title="Buscar"></i></button>
-              </form>
-              <form action="php/data_2.php" method="POST">
+              <form action="php/updateProveedor.php" method="POST">
+              <input style="display:none;" type="text" name="idproveedor" value="<?php echo $producto['idproveedor'];?>">
                 <span>N° Identifiacion</span>
-                <input type="text" name="numero_identificacion_pro" id="ruc" maxlength="13" onKeyPress="return soloNumeros(event)">
+                <input type="text" name="numero_identificacion_pro" id="ruc" maxlength="13" onKeyPress="return soloNumeros(event)" value="<?php echo $producto['numero_identificacion_pro'];?>">
                 <input type = "button" value = "Validar RUC" onclick="validar()">
                 <span>Razon Social</span>
-                <input type="text" name="razon_social_empresa_pro" id="" maxlength="30">
+                <input type="text" name="razon_social_empresa_pro" id="" maxlength="30" value="<?php echo $producto['razon_social_empresa_pro'];?>">
                 <span>Nombre Representante Legal</span>
-                <input type="text" name="nombre_representante_legal_pro" id="" maxlength="30">
+                <input type="text" name="nombre_representante_legal_pro" id="" maxlength="30" value="<?php echo $producto['nombre_representante_legal_pro'];?>">
                 <span>Ciudad</span>
                 <select name="ciudad" id="" maxlength="60">
+                <option selected="true" ><?php echo utf8_encode($producto['ciudad_pro'])?></option>
+                <option disabled value="">Seleccione...</option>
                   <option>Azuay, Cuenca</option>
                   <option>Bolívar, Guaranda</option>
                   <option>Cañar, Azogues</option>
@@ -111,15 +69,15 @@ $resultado = $conexion->query($query);
                   <option>Zamora Chinchipe, Zamora</option>
                 </select>
                 <span>Direccion</span>
-                <input type="text" name="direccion_pro" id="" maxlength="60">
+                <input type="text" name="direccion_pro" id="" maxlength="60" value="<?php echo $producto['direccion_pro'];?>">
                 <span>Telefono Fijo 1</span>
-                <input type="text" name="telefono_1_pro" id="" maxlength="30">
+                <input type="text" name="telefono_1_pro" id="" maxlength="30" value="<?php echo $producto['telefono_1_pro'];?>">
                 <span>Telefono Fijo 2</span>
-                <input type="text" name="telefono_2_pro" id="" maxlength="30">
+                <input type="text" name="telefono_2_pro" id="" maxlength="30" value="<?php echo $producto['telefono_2_pro'];?>">
                 <span>Correo Electronico</span>
-                <input type="email" name="email_1_pro" id="" maxlength="50">
+                <input type="email" name="email_1_pro" id="" maxlength="50" value="<?php echo $producto['email_1_pro'];?>">
                 <span>Correo Electronico 2</span>
-                <input type="email" name="email_2_pro" id="" maxlength="50">
+                <input type="email" name="email_2_pro" id="" maxlength="50" value="<?php echo $producto['email_2_pro'];?>">
                 <div class="buttons">
                   <button type="submit" class="btn"><i class="far fa-save"></i></button> 
                   <button class="btn"><i class="fas fa-arrow-up"></i></button>
@@ -135,14 +93,6 @@ $resultado = $conexion->query($query);
     </footer>
   </div>
 <script>
-    onSubmit = (event) => {
-        event.preventDefault()
-        location.href=`php/buscar.php?p=${document.getElementById('busqueda').value}`;        
-    }
-    onSubmitPro = (event) => {
-        event.preventDefault()
-        location.href=`php/buscarProveedores.php?p=${document.getElementById('busqueda-pro').value}`;        
-    }
     // enter text only
     function soloLetras(e){
        key = e.keyCode || e.which;

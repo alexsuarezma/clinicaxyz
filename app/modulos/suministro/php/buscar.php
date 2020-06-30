@@ -53,7 +53,7 @@ $q = $conexion->real_escape_string($_GET['p']);
                     <td><?php echo $productos["idcategoria_pr"];?></td>
                     <td>
                         <a href="../actualizar.php?id=<?php echo $productos["idproducto"];?>"><i class="fas fa-edit" style="color:blue;" title="Editar"></i></a>
-                        <a id="delete" href="php/delete.php?id=<?php echo $productos["idproducto"];?>" class="mr-3"><i class="fas fa-trash-alt" style="color:red;" title="Eliminar"></i></a>
+                        <a id="delete" href="delete.php?id=<?php echo $productos["idproducto"];?>&proveedor=0" class="mr-3"><i class="fas fa-trash-alt" style="color:red;" title="Eliminar"></i></a>
                     </td>
                 </tr>
             <?php 

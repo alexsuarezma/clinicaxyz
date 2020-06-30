@@ -4,7 +4,7 @@ require 'php/conexion.php';
   $query= "SELECT * FROM categoria";	
   $resultado = $conexion->query($query);
   
-      $sql= "SELECT * FROM productos AS p, categoria AS c WHERE (p.idcategoria_pr = c.idcategoria)";	
+      $sql= "SELECT * FROM productos AS p, categoria AS c WHERE (p.idcategoria_pr = c.idcategoria) AND idproducto = $id";	
       $producto = $conexion->query($sql);
       $producto = $producto->fetch_assoc();
     
