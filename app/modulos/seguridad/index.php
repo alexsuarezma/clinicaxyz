@@ -25,8 +25,12 @@ if (isset($_SESSION['user_id'])) {
 
           if($results['modulo_rrhh'] == 1){
               header("Location: ../recursoshumanos/");
-          }if($results['modulo_suministros'] == 1){
+          }
+          if($results['modulo_suministros'] == 1){
               header("Location: ../suministro/");
+          }
+          if($results['modulo_pacientes'] == 1){
+            header("Location: ../pacientes/");
           }
       }else{
         $message = 'Lo sentimos el usuario o contraseña no son correctos';
