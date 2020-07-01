@@ -9,7 +9,7 @@ $message = '';
       $stmt->bindParam(':username', $_POST['user']);
       $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
       $stmt->bindParam(':pass', $password);
-      $stmt->bindParam(':id_tipo_prueba', $_POST['tipoUsuario']);
+      $stmt->bindValue(':id_tipo_prueba', 3, PDO::PARAM_INT);
 
       if($stmt->execute()){
         $message = 'Usuario creado exitosamente';
