@@ -29,7 +29,10 @@
     <div class="collapse navbar-collapse" id="navbarCollapse">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item active">
-        <a class="nav-link" href="#">Citas medicas<span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="app/modulos/citasmedicas/index.php">Citas medicas<span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="app/modulos/citasmedicas/citas.php">Citas Agendadas</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="app/modulos/pacientes/index copy 2.html">Pacientes</a>
