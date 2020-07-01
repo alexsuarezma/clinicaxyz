@@ -43,16 +43,23 @@
         <li class="nav-item">
           <a class="nav-link" href="app/modulos/contabilidad/index.php">Contabilidad</a>
         </li>
-        <!-- <li class="nav-item">
-          <a class="nav-link" >Seguridad</a>
-        </li> -->
         <li class="nav-item">
           <a class="nav-link" href="formAspirantes.php">Postulate</a>
         </li>
       </ul>  
-      <span class="navbar-text">
-        <a class='' href="app/modulos/seguridad/index.php">Iniciar sesión</a>
-      </span>
+      <?php 
+        session_start();
+          if(!empty($_SESSION['user_id'])): 
+      ?>
+        <span class="navbar-text">
+          <a class='' href='app/modulos/seguridad/logout.php'>Cerrar sesión</a>
+        </span>
+      <?php else: ?>
+        <span class="navbar-text">
+          <a class='' href='app/modulos/seguridad/index.php'>Iniciar sesión</a>
+        </span>
+      <?php endif; ?>
+      
       <!-- <li class='justify-content-end'>
         
       </li> -->

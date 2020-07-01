@@ -1,27 +1,37 @@
 <?php
+require '../../../database.php';
+
 session_start();
-
+// var_dump($_SESSION['user_id']);
 if (isset($_SESSION['user_id'])) {
-    header('Location: /prueba');
-  }
+      header("Location: ../../../");
 
-require 'database.php';
-
-if(!empty($_POST['user']) && !empty($_POST['password'])){
-	$consulta = $conn->prepare('SELECT id, user, password FROM user WHERE user=:user LIMIT 1');
-	$consulta->bindParam(':user', $_POST['user']);
-	$consulta->execute();
-	$resultado = $consulta->fetch(PDO::FETCH_ASSOC);
-
-	$message = '';
-
-	if (count($resultado) > 0 && ($_POST['password'] == $resultado['password'])) {
-		$_SESSION['user_id'] = $resultado['id'];
-		header("Location: /prueba/prueba.html");
-	}else{
-		$message = 'Lo sentimos el usuario o contraseña no son correctos';
-	}
 }
+
+    if(!empty($_POST['user']) && !empty($_POST['password'])){
+      $consulta = $conn->prepare('SELECT * FROM prueba WHERE username=:username');
+      $consulta->bindParam(':username', $_POST['user']);
+      $consulta->execute();
+      $resultado = $consulta->fetch(PDO::FETCH_ASSOC);
+
+      $message = '';
+
+      if (password_verify($_POST['password'], $resultado['pass'])) {
+        $_SESSION['user_id'] = $resultado['id'];
+          $records = $conn->prepare("SELECT * FROM prueba AS p, tipo_prueba AS t WHERE (p.id_tipo_prueba = t.id_tipo) AND id = :id");
+          $records->bindParam(':id', $_SESSION['user_id']);
+          $records->execute();
+          $results = $records->fetch(PDO::FETCH_ASSOC);
+
+          if($results['modulo_rrhh'] == 1){
+              header("Location: ../recursoshumanos/");
+          }if($results['modulo_suministros'] == 1){
+              header("Location: ../suministro/");
+          }
+      }else{
+        $message = 'Lo sentimos el usuario o contraseña no son correctos';
+      }
+    }
 ?>
 <!doctype html>
 <html lang="en">
@@ -33,10 +43,9 @@ if(!empty($_POST['user']) && !empty($_POST['password'])){
     <meta name="generator" content="Jekyll v4.0.1">
     <title>Seguridad</title>
 
-    <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/sign-in/">
+  
 
     <!-- Bootstrap core CSS -->
-<link href="../assets/dist/css/bootstrap.css" rel="stylesheet">
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" 
 integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 
@@ -82,26 +91,25 @@ integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7
    
 
     <form class="form-signin" method="POST" action="index.php">
+      <?php if(!empty($message)): ?>
+        <h5 style="text-align: center;"><?php echo $message ?></h5>
+      <?php endif; ?>
     
-    
-  <img class="mb-4" src="../assets/brand/bootstrap-solid.svg" alt="" width="72" height="72">
-  <h1 class="h3 mb-3 font-weight-normal">Login</h1>
-  <label for="cedula" class="sr-only">Ingrese Cedula</label>
-  <input type="text" name="user" id="cedula" maxlength="10" onkeypress="return soloNumeros(event)" class="form-control" placeholder="User" required autofocus>
-  <label for="inputPassword" class="sr-only">Password</label>
-  <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required>
-  <!-- <div class="checkbox mb-3">
-    {Recuerdame} 
-    <label>
-      <input type="checkbox" value="remember-me"> Remember me
-    </label>
-  </div> -->
-  <button class="btn btn-lg btn-primary btn-block" type="submit">Iniciar</button>
-  <a href="registro.php">Registrarse</a>
-  <p class="mt-5 mb-3 text-muted">&copy; 2019-2020</p>
-</form>
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+      <img class="mb-4" src="../assets/brand/bootstrap-solid.svg" alt="" width="72" height="72">
+      <h1 class="h3 mb-3 font-weight-normal">Login</h1>
+      <label for="cedula" class="sr-only">Ingrese Cedula</label>
+      <input type="text" name="user" id="cedula"  class="form-control" placeholder="User" required autofocus>
+      <label for="inputPassword" class="sr-only">Password</label>
+      <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required>
+      <!-- <div class="checkbox mb-3">
+        {Recuerdame} 
+        <label>
+          <input type="checkbox" value="remember-me"> Remember me
+        </label>
+      </div> -->
+      <button class="btn btn-lg btn-primary btn-block" type="submit">Iniciar</button>
+      <a href="registro.php">Registrarse</a>
+      <p class="mt-5 mb-3 text-muted">&copy; 2019-2020</p>
+    </form>
 </body>
 </html>

@@ -2,6 +2,7 @@
 require 'database.php';
 
 $message = '';
+$tipoUsuario = $conn->query("SELECT * FROM tipo_prueba ORDER BY nombre_tipo_prueba ASC")->fetchAll(PDO::FETCH_OBJ);
 
   if(!empty($_POST['user']) && !empty($_POST['password'])){
       $sql = "INSERT INTO prueba (username, pass, id_tipo_prueba) VALUES (:username, :pass, :id_tipo_prueba)";
@@ -58,10 +59,21 @@ $message = '';
 	<!-- <h1>Registrate</h1> -->
 
 	<form class="form-signin" action="registro.php" method="POST">
-  <h1 class="h3 mb-3 font-weight-normal">Registrate</h1>
+  <h1 class="h3 mb-3 font-weight-normal">Registro Usuarios de Empleados</h1>
 		<input type="text" class="form-control" name="user" placeholder="Ingrese tu Nombre de Usuario" require>
 		<input type="password" class="form-control mt-2" name="password" placeholder="Ingrese su contraseña" require>
     <input type="password" class="form-control" name="confirm_password" placeholder="Confirmar su contraseña" require>
+      <label>Tipo Usuario</label>
+        <select class="custom-select mb-3" name="tipoUsuario" id="validationServer42" required>
+          <option selected disabled value="">Seleccione...</option>
+          <?php
+          foreach ($tipoUsuario as $usuarios):
+          ?>
+             <option value="<?php echo $usuarios->id_tipo;?>"><?php echo utf8_encode($usuarios->nombre_tipo_prueba);?></option>
+          <?php 
+          endforeach;
+          ?> 
+        </select>
 		<button class="btn btn-lg btn-primary btn-block" type="submit">Registrar</button>
 	</form>
 

@@ -1,3 +1,21 @@
+<?php
+require '../../../database.php';
+session_start();
+// var_dump($_SESSION["user_id"]."Usuario");    
+  if (isset($_SESSION['user_id'])) {
+      
+        $records = $conn->prepare("SELECT * FROM prueba AS p, tipo_prueba AS t WHERE (p.id_tipo_prueba = t.id_tipo) AND id = :id");
+        $records->bindParam(':id', $_SESSION['user_id']);
+        $records->execute();
+        $results = $records->fetch(PDO::FETCH_ASSOC);
+        
+        if($results['modulo_rrhh'] != 1){
+          header("Location: ../../../");
+        }
+  }elseif(!isset($_SESSION["user_id"])){
+      header("Location: ../../../");
+  }
+?>
 <!doctype html>
 <html lang="en">
   <head>
@@ -17,7 +35,7 @@
   <body>
 <?php
   require 'components/layout.php';
-  printLayout('index.php', '../../../index.html', 'routes/contrato.php', 'routes/personal.php', 'routes/reclutamiento.php', 'routes/historialPersonal.php');
+  printLayout('index.php', '../../../index.php', 'routes/contrato.php', 'routes/personal.php', 'routes/reclutamiento.php', 'routes/historialPersonal.php');
 ?>
 <div class="container-fluid">
   <div class="row">
