@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -9,6 +10,7 @@
     <title>Clinica Vitalia</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/carousel/">
+    <link href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" rel="stylesheet">
 
     <!-- Bootstrap core CSS -->
     <link href="../assets/dist/css/bootstrap.css" rel="stylesheet">
@@ -20,47 +22,106 @@
     <header>
   <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
     <a class="navbar-brand" href="index.html">
-      <span className="font-weight-bold">Clinica</span>
-      <span className="font-weight-ligth">Vitalia</span>
+      <span style="font-weight:normal;">Clinica</span>
+      <span style="font-weight:bold;">Vitalia</span>
     </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarCollapse">
       <ul class="navbar-nav mr-auto">
-        <li class="nav-item active">
-        <a class="nav-link" href="app/modulos/citasmedicas/index.php">Citas medicas<span class="sr-only">(current)</span></a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="app/modulos/citasmedicas/citas.php">Citas Agendadas</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="app/modulos/pacientes/index copy 2.html">Pacientes</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="app/modulos/recursoshumanos/index.php">Recursos humanos<span class="sr-only">(current)</span></a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="app/modulos/suministro/index.php">Suministros</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="app/modulos/contabilidad/index.php">Contabilidad</a>
-        </li>
         <li class="nav-item">
           <a class="nav-link" href="formAspirantes.php">Postulate</a>
         </li>
-      </ul>  
+      </ul>
+
       <?php 
         session_start();
+        
           if(!empty($_SESSION['user_id'])): 
+            require 'database.php';
+                $credenciales = $conn->query("SELECT * FROM usuario_credencial WHERE id_usuario_uc =".$_SESSION['user_id'])->fetchAll(PDO::FETCH_OBJ);
+                $_SESSION['modulo_rrhh'] = 0;
+                $_SESSION['modulo_suministros'] = 0;
+                $_SESSION['modulo_contabilidad'] = 0;
+                $_SESSION['modulo_ctas_medicas'] = 0;
+                $_SESSION['modulo_pacientes'] = 0;
+                $_SESSION['paciente'] = 0;
+                $_SESSION['nombre_credencial'] = "";
+                
+                foreach ($credenciales as $idCredencial){ 
+
+                    $records = $conn->prepare("SELECT * FROM usuario_credencial AS uc, credencial_base AS c, usuario AS u WHERE (uc.id_credencialbase_uc = c.id_credencial AND uc.id_usuario_uc = u.id_usuario) AND id_usuario_credencial = :id_usuario_credencial");
+                    $records->bindParam(':id_usuario_credencial', $idCredencial->id_usuario_credencial);
+                    $records->execute();
+                    $results = $records->fetch(PDO::FETCH_ASSOC); 
+                    if($results['modulo_rrhh'] == 1){
+                      $_SESSION['modulo_rrhh'] = 1;
+                    }
+                    if($results['modulo_suministros'] == 1){
+                      $_SESSION['modulo_suministros'] = 1;
+                    }
+                    if($results['modulo_contabilidad'] == 1){
+                      $_SESSION['modulo_contabilidad'] = 1;
+                    }
+                    if($results['modulo_ctas_medicas'] == 1){
+                      $_SESSION['modulo_ctas_medicas'] = 1;
+                    }
+                    if($results['modulo_pacientes'] == 1){
+                      $_SESSION['modulo_pacientes'] = 1;
+                    }
+                    if($results['paciente'] == 1){
+                      $_SESSION['paciente'] = 1;
+                    }
+                    if($_SESSION['nombre_credencial'] == ""){
+                      $_SESSION['nombre_credencial'] = strtoupper($results['nombre_credencial']);
+                    }else{
+                      $_SESSION['nombre_credencial'] = $_SESSION['nombre_credencial'].", ".strtoupper($results['nombre_credencial']);
+                    }
+                }
+                
+                $_SESSION['username'] = ucwords($results['username']);
+                
+
       ?>
-        <span class="navbar-text">
-          <a class='' href='app/modulos/seguridad/logout.php'>Cerrar sesión</a>
-        </span>
+          
+          <span class="navbar-text mr-4"><?php echo $_SESSION['username']?></span>
+          <a class='nav-link dropdown-toggle' style='color: white;' href='#' id='navbarDropdownMenuLink' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+            <i class="fas fa-th-large" ></i>
+          </a>  
+          <div class='dropdown-menu dropdown-menu-right mr-1 mb-2' style="width:400px;" aria-labelledby='navbarDropdownMenuLink'>
+            <span class="dropdown-item font-weight-bold border-bottom border-info mb-2" style="text-align:center;"><?php echo $_SESSION['nombre_credencial']?></span>
+            <?php
+              if($_SESSION['modulo_rrhh'] == 1){
+                echo "<a class='dropdown-item mt-2' href='app/modulos/recursoshumanos/'><i class='fas fa-people-carry mr-2'></i> Recursos Humanos</a>";
+              }
+              if($_SESSION['modulo_suministros'] == 1){
+                echo "<a class='dropdown-item' href='app/modulos/suministro/index.php'><i class='fas fa-dolly-flatbed mr-2'></i> Suministros</a>";
+              }
+              if($_SESSION['modulo_contabilidad'] == 1){
+                echo "<a class='dropdown-item' href='app/modulos/contabilidad/index.php'><i class='fas fa-balance-scale mr-2'></i> Contabilidad</a>";
+              }
+              if($_SESSION['modulo_ctas_medicas'] == 1){
+                echo "<a class='dropdown-item' href='app/modulos/citasmedicas/index.php'><i class='fas fa-notes-medical mr-3'></i> Citas Medicas</a>";
+              }
+              if($_SESSION['modulo_pacientes'] == 1){
+                echo "<a class='dropdown-item' href='app/modulos/pacientes/index copy 2.html'><i class='fas fa-procedures mr-2'></i> Modulo Pacientes</a>";
+              }
+              if($_SESSION['paciente'] == 1){
+                echo "<a class='dropdown-item' href='app/modulos/pacientes/index copy 2.html'><i class='fas fa-procedures mr-2'></i> Paciente</a>";
+              }
+            ?>            
+            <!-- <a class='dropdown-item' href='#'><i class='fas fa-file-medical-alt mr-3'></i> Historial Clinico</a> -->
+            <hr class="ml-4 mr-4 mt-2">
+            <a class='dropdown-item mt-2' style="float:right;" href='#'><span class="float-right">Ajustes de Usuario</span></a>
+            <a class='dropdown-item' style="float:right;" href='#'><span class="float-right">Another</span></a>
+            <a class='dropdown-item' style="float:right;" href='app/modulos/seguridad/controllers/logout.php'><span class="float-right">Cerrar Sesión</span></a>
+          </div>
+       
       <?php else: ?>
         <span class="navbar-text">
-          <a class='' href='app/modulos/seguridad/index.php'>Iniciar sesión</a>
-        </span>
+          <a class='' href='app/modulos/seguridad/routes/login.php'>Iniciar sesión</a>
+        </span>   
       <?php endif; ?>
       
       <!-- <li class='justify-content-end'>

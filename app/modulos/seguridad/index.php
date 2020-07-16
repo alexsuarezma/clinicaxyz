@@ -1,42 +1,3 @@
-<?php
-require '../../../database.php';
-
-session_start();
-// var_dump($_SESSION['user_id']);
-if (isset($_SESSION['user_id'])) {
-      header("Location: ../../../");
-
-}
-
-    if(!empty($_POST['user']) && !empty($_POST['password'])){
-      $consulta = $conn->prepare('SELECT * FROM prueba WHERE username=:username');
-      $consulta->bindParam(':username', $_POST['user']);
-      $consulta->execute();
-      $resultado = $consulta->fetch(PDO::FETCH_ASSOC);
-
-      $message = '';
-
-      if (password_verify($_POST['password'], $resultado['pass'])) {
-        $_SESSION['user_id'] = $resultado['id'];
-          $records = $conn->prepare("SELECT * FROM prueba AS p, tipo_prueba AS t WHERE (p.id_tipo_prueba = t.id_tipo) AND id = :id");
-          $records->bindParam(':id', $_SESSION['user_id']);
-          $records->execute();
-          $results = $records->fetch(PDO::FETCH_ASSOC);
-
-          if($results['modulo_rrhh'] == 1){
-              header("Location: ../recursoshumanos/");
-          }
-          if($results['modulo_suministros'] == 1){
-              header("Location: ../suministro/");
-          }
-          if($results['modulo_pacientes'] == 1){
-            header("Location: ../pacientes/");
-          }
-      }else{
-        $message = 'Lo sentimos el usuario o contraseña no son correctos';
-      }
-    }
-?>
 <!doctype html>
 <html lang="en">
   <head>
@@ -46,74 +7,45 @@ if (isset($_SESSION['user_id'])) {
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Jekyll v4.0.1">
     <title>Seguridad</title>
-
-  
-
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/dashboard/">
     <!-- Bootstrap core CSS -->
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" 
-integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-
-    <style>
-      .bd-placeholder-img {
-        font-size: 1.125rem;
-        text-anchor: middle;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-      }
-
-      @media (min-width: 768px) {
-        .bd-placeholder-img-lg {
-          font-size: 3.5rem;
-        }
-      }
-      
-    </style>
+    <link href="../assets/dist/css/bootstrap.css" rel="stylesheet">
     <!-- Custom styles for this template -->
-    <link href="signin.css" rel="stylesheet">
+    <link href="assets/styles/dashboard.css" rel="stylesheet">
   </head>
-  <body class="text-center">
-    <script type="text/javascript">
-    function soloNumeros(e){
-        key=e.keyCode||e.which;
-        teclado=String.fromCharCode(key);
-        numero="0123456789";
-        especiales="8-37-38-46";
-        teclado_especial=false;
-        for(var i in especiales){
-          if(key==especiales[i]){
-            teclado_especial=true;
-          }
-        }
+  <body>
+<?php
+  require 'components/layout.php';
+  printLayout('index.php', '../../../index.php', 'routes/credencial.php', 'routes/scopes.php', 'routes/usuarios.php', 'routes/historialPersonal.php');
+?>
+<div class="container-fluid">
+  <div class="row">
 
-        if (numero.indexOf(teclado)==-1 && !teclado_especial) {
-          return false;
-        }
-      }
-    </script>
-   
-
-    <form class="form-signin" method="POST" action="index.php">
-      <?php if(!empty($message)): ?>
-        <h5 style="text-align: center;"><?php echo $message ?></h5>
-      <?php endif; ?>
-    
-      <img class="mb-4" src="../assets/brand/bootstrap-solid.svg" alt="" width="72" height="72">
-      <h1 class="h3 mb-3 font-weight-normal">Login</h1>
-      <label for="cedula" class="sr-only">Ingrese Cedula</label>
-      <input type="text" name="user" id="cedula"  class="form-control" placeholder="User" required autofocus>
-      <label for="inputPassword" class="sr-only">Password</label>
-      <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required>
-      <!-- <div class="checkbox mb-3">
-        {Recuerdame} 
-        <label>
-          <input type="checkbox" value="remember-me"> Remember me
-        </label>
-      </div> -->
-      <button class="btn btn-lg btn-primary btn-block" type="submit">Iniciar</button>
-      <a href="registro.php">Registrarse</a>
-      <p class="mt-5 mb-3 text-muted">&copy; 2019-2020</p>
-    </form>
-</body>
+    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Dashboard</h1>
+        <div class="btn-toolbar mb-2 mb-md-0">
+          <div class="btn-group mr-2">
+            <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
+          </div>
+          <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
+            <span data-feather="calendar"></span>
+            This week
+          </button>
+        </div>
+      </div>
+      <div class="container mt-5">
+      </div>
+    </main>
+  </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+      <script>window.jQuery || document.write('<script src="../assets/js/vendor/jquery.slim.min.js"><\/script>')</script><script src="../assets/dist/js/bootstrap.bundle.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+        <script src="components/scripts/dashboard.js"></script>          
+      </body>
 </html>

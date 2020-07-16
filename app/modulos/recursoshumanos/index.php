@@ -1,20 +1,17 @@
 <?php
+require 'components/layout.php';
 require '../../../database.php';
-session_start();
-// var_dump($_SESSION["user_id"]."Usuario");    
-  if (isset($_SESSION['user_id'])) {
-      
-        $records = $conn->prepare("SELECT * FROM prueba AS p, tipo_prueba AS t WHERE (p.id_tipo_prueba = t.id_tipo) AND id = :id");
-        $records->bindParam(':id', $_SESSION['user_id']);
-        $records->execute();
-        $results = $records->fetch(PDO::FETCH_ASSOC);
-        
-        if($results['modulo_rrhh'] != 1){
-          header("Location: ../../../");
-        }
-  }elseif(!isset($_SESSION["user_id"])){
-      header("Location: ../../../");
-  }
+require '../seguridad/controllers/functions/credenciales.php';
+
+verificarAcceso("../../../", "modulo_rrhh");
+
+//  if(verificarAccion($conn, "modulo_rrhh", "borrado_fisico") == true){
+//     echo "<script language='javascript'>alert('Tienes permisos suficientes.');</script>";
+//  }else{
+//     echo "<script language='javascript'>alert('No tienes permisos suficientes para esta acción.');</script>";
+//  }
+  
+
 ?>
 <!doctype html>
 <html lang="en">
@@ -27,6 +24,7 @@ session_start();
     <title>Recursos Humanos</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/dashboard/">
+    <link href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" rel="stylesheet">
     <!-- Bootstrap core CSS -->
     <link href="../assets/dist/css/bootstrap.css" rel="stylesheet">
     <!-- Custom styles for this template -->
@@ -34,7 +32,6 @@ session_start();
   </head>
   <body>
 <?php
-  require 'components/layout.php';
   printLayout('index.php', '../../../index.php', 'routes/contrato.php', 'routes/personal.php', 'routes/reclutamiento.php', 'routes/historialPersonal.php');
 ?>
 <div class="container-fluid">

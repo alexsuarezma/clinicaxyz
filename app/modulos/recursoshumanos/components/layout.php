@@ -9,18 +9,40 @@
       echo "    <span class='navbar-toggler-icon'></span>";
       echo "</button>";
       echo "<ul class='navbar-nav px-3'>";
-      // echo "<li class='nav-item text-nowrap'>";
-      // echo "<a class='nav-link' href='#'>Cerrar sesión</a>";
-      // echo "</li>";
+
       echo "</ul>";
       echo "<a class='nav-link dropdown-toggle' style='color: white;' href='#' id='navbarDropdownMenuLink' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>";
-      // PONER EL USER NAME!!
-      echo "Nombre de usuario";
-      echo "</a>";
-      echo "<div class='dropdown-menu dropdown-menu-right mr-1' aria-labelledby='navbarDropdownMenuLink'>";
-      echo "<a class='dropdown-item' href='#'>Ajustes</a>";
-      echo "<a class='dropdown-item' href='#'>Another action</a>";
-      echo "<a class='dropdown-item' href='#'>Cerrar sesión</a></div>";
+      echo "<i class='fas fa-th-large' ></i>";
+      echo "</a>" ;
+      echo "<div class='dropdown-menu dropdown-menu-right mr-1 mb-2' style='width:400px;' aria-labelledby='navbarDropdownMenuLink'>";
+      echo "<span class='dropdown-item font-weight-bold mb-2' style='text-align:center;'>".$_SESSION['username']."</span>";
+      echo "<hr class='ml-4 mr-4 mt-2'>";
+      echo "<span class='dropdown-item font-weight-bold border-bottom border-info mb-2' style='text-align:center;'>".$_SESSION['nombre_credencial']."</span>";
+        if($_SESSION['modulo_rrhh'] == 1){
+          echo "<a class='dropdown-item mt-2' href='app/modulos/recursoshumanos/'><i class='fas fa-people-carry mr-2'></i> Recursos Humanos</a>";
+        }
+        if($_SESSION['modulo_suministros'] == 1){
+          echo "<a class='dropdown-item' href='app/modulos/suministro/index.php'><i class='fas fa-dolly-flatbed mr-2'></i> Suministros</a>";
+        }
+        if($_SESSION['modulo_contabilidad'] == 1){
+          echo "<a class='dropdown-item' href='app/modulos/contabilidad/index.php'><i class='fas fa-balance-scale mr-2'></i> Contabilidad</a>";
+        }
+        if($_SESSION['modulo_ctas_medicas'] == 1){
+          echo "<a class='dropdown-item' href='app/modulos/citasmedicas/index.php'><i class='fas fa-notes-medical mr-3'></i> Citas Medicas</a>";
+        }
+        if($_SESSION['modulo_pacientes'] == 1){
+          echo "<a class='dropdown-item' href='app/modulos/pacientes/index copy 2.html'><i class='fas fa-procedures mr-2'></i> Modulo Pacientes</a>";
+        }
+        if($_SESSION['paciente'] == 1){
+          echo "<a class='dropdown-item' href='app/modulos/pacientes/index copy 2.html'><i class='fas fa-procedures mr-2'></i> Paciente</a>";
+        }
+      
+      // <a class='dropdown-item' href='#'><i class='fas fa-file-medical-alt mr-3'></i> Historial Clinico</a>
+      echo "<hr class='ml-4 mr-4 mt-2'>";
+      echo "<a class='dropdown-item mt-2' style='float:right;' href='#'><span class='float-right'>Ajustes de Usuario</span></a>";
+      echo "<a class='dropdown-item' style='float:right;' href='#'><span class='float-right'>Another</span></a>";
+      echo "<a class='dropdown-item' style='float:right;' href='app/modulos/seguridad/controllers/logout.php'><span class='float-right'>Cerrar Sesión</span></a>";
+      echo "</div>";
       echo "</nav>";
 
       echo "<nav id='sidebarMenu' class='col-md-3 col-lg-2 d-md-block bg-light sidebar collapse'>";

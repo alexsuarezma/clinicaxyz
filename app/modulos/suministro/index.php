@@ -1,20 +1,10 @@
 <?php 
 require 'php/conexion.php'; 
-session_start();
+require '../seguridad/controllers/functions/credenciales.php';
 
-    if (isset($_SESSION['user_id'])) {          
-      require '../../../database.php';
-          $records = $conn->prepare("SELECT * FROM prueba AS p, tipo_prueba AS t WHERE (p.id_tipo_prueba = t.id_tipo) AND id = :id");
-          $records->bindParam(':id', $_SESSION['user_id']);
-          $records->execute();
-          $results = $records->fetch(PDO::FETCH_ASSOC);
-          
-          if($results['modulo_suministros'] != 1){
-            header("Location: ../../../");
-          }
-    }elseif(!isset($_SESSION["user_id"])){
-        header("Location: ../../../");
-    }
+verificarAcceso("../../../", "modulo_suministros");
+
+    
 
     $query= "SELECT * FROM categoria";	
     $resultado = $conexion->query($query);

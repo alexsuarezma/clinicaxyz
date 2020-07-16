@@ -1,4 +1,3 @@
-// $(personal($('#personal').text()));
 $(buscar_datos());
 
 function buscar_datos(consulta){
@@ -17,23 +16,6 @@ function buscar_datos(consulta){
 		console.log("error");
 	});
 }
-
-// function personal(personal){
-// 	$.ajax({
-// 		url: '../controllers/searchFilter.php' ,
-// 		type: 'POST' ,
-// 		dataType: 'html',
-// 		data: {
-// 			personal: personal
-// 		},
-// 	})
-// 	.done(function(respuesta){
-// 		$("#datos").html(respuesta);
-// 	})
-// 	.fail(function(){
-// 		console.log("error");
-// 	});
-// }
 
 $(document).on('keyup','#busqueda', function(){
 	var valor = $(this).val();

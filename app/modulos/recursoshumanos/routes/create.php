@@ -10,7 +10,6 @@
     $creacion = date('d')."/".date('m')."/".date('Y')." ".$hora.":".date("i").":".date("s");
     
     $ciudades = $conn->query("SELECT * FROM ciudades ORDER BY nombre ASC")->fetchAll(PDO::FETCH_OBJ);
-    $cargos = $conn->query("SELECT * FROM cargo_empleados ORDER BY nombre_cargo ASC")->fetchAll(PDO::FETCH_OBJ);
     $personal = $conn->query("SELECT * FROM personal_empleados ORDER BY nombre_personal ASC")->fetchAll(PDO::FETCH_OBJ);
     $areas = $conn->query("SELECT * FROM area_empleados ORDER BY nombre_area ASC")->fetchAll(PDO::FETCH_OBJ);
     $especialidades = $conn->query("SELECT * FROM especialidades ORDER BY descripcion ASC")->fetchAll(PDO::FETCH_OBJ);
@@ -18,167 +17,198 @@
    
 
 
-      if(!isset($_POST["btn-submit"])){
-        // $results = $conn->query("SELECT * FROM especialidades")->fetchAll(PDO::FETCH_OBJ);
-      }else{   
+      if(isset($_POST["btn-submit"])){   
+
           $cedula = $_POST['cedula'];
           $records = $conn->prepare('SELECT id_empleados FROM empleados WHERE id_empleados = :ced');
           $records->bindParam(':ced',$cedula);
           $records->execute();
           $results = $records->fetch(PDO::FETCH_ASSOC);
 
-           if ($results['id_empleados']==$_POST["cedula"]) {/*repetida*/ 
+           if ($results['id_empleados']==$_POST["cedula"]) {
+                //CEDULA REPETIDA EN EL SISTEMA
                 echo "<script language='javascript'>alert('La cedula que intenta ingresar ya esta registrada en el sistema.');</script>";
            }else{
-              // CREATE
-               $ruta = "../assets/static/contratos/";
-               $archivo = $ruta.$_FILES["fileDocument"]["name"];
-            if(!file_exists($ruta)){
-              mkdir($ruta);
-            }
+              //CREAR USUARIO Y CREDENCIALES DEL EMPLEADO
+              $sql = "INSERT INTO usuario (username, password) VALUES (:username,:password)";
+              $stmt = $conn->prepare($sql);
+              $stmt->bindParam(':username', $_POST['nombres']);
+              $password = password_hash(123, PASSWORD_BCRYPT);
+              $stmt->bindParam(':password', $password);
+              
+                if($stmt->execute()){
+                  //recupero el id insertado generado*
+                    $id = $conn->lastInsertId();
+                    
+                    //BUSCAR CREDENCIALBASE DEL CARGO 
+                    $records = $conn->prepare('SELECT id_credencialbase_cargo FROM cargo_empleados WHERE id_cargo = :id_cargo');
+                    $records->bindParam(':id_cargo',$_POST['cargo']);
+                    $records->execute();
+                    $results = $records->fetch(PDO::FETCH_ASSOC);
 
-            if(!file_exists($archivo)){
-              $resultado = @move_uploaded_file($_FILES["fileDocument"]["tmp_name"],$archivo);
-              if($resultado){
-                //seguardo
-              }else{
-                //nose guardo
-              }
-            }else{
-              echo "ya existe";
-            }
-                  try {
+                    //INSERTAR USUARIO/CREDENCIAL
+                    $sql = "INSERT INTO usuario_credencial (id_usuario_uc,id_credencialbase_uc) VALUES 
+                    (:id_usuario_uc,:id_credencialbase_uc)";
+                    $stmt = $conn->prepare($sql);
+                    $stmt->bindParam(':id_usuario_uc', $id);
+                    $stmt->bindParam(':id_credencialbase_uc', $results['id_credencialbase_cargo']);
 
-                        
-                        $name= $_POST["nombres"]." ".$_POST["apellidos"];
-                        $gravatar = "https://ui-avatars.com/api/?name=$name&size=160";
-
-                        $sql = "INSERT INTO empleados 
-    (id_empleados,profileimage,medico,nombres,apellidos,direccion,nacionalidad,fecha_nacimiento,parroquia,id_ciudad_emp,telefono,celular,email,sexo,estado_civil,
-    nombres_conyuge,apellidos_conyuge,salario_base,horario,documentos_descripcion,fileDocument,disponible,deleted,created_at,update_at,id_area_emp,id_cargo_emp,id_personal_emp) VALUES (:id_empleados,:profileimage,:medico,:nombres,:apellidos,:direccion,:nacionalidad,:fecha_nacimiento,:parroquia,:id_ciudad_emp,:telefono,:celular,:email,:sexo,:estado_civil,:nombres_conyuge,:apellidos_conyuge,:salario_base,:horario,:documentos_descripcion,:fileDocument,:disponible,:deleted,:created_at,:update_at,:id_area_emp,:id_cargo_emp,:id_personal_emp)";
-                        $stmt = $conn->prepare($sql);
-                        $stmt->bindParam(':id_empleados', $_POST['cedula']);
-                        $stmt->bindParam(':profileimage', $gravatar);
-                        $stmt->bindParam(':nombres',$_POST['nombres']);
-                        $stmt->bindParam(':apellidos',$_POST['apellidos']);
-                        $stmt->bindParam(':direccion',$_POST['direccion']);
-                        $stmt->bindParam(':nacionalidad',$_POST['nacionalidad']);
-                        $stmt->bindParam(':fecha_nacimiento',$_POST['fechaNacimiento']);
-                        $stmt->bindParam(':parroquia',$_POST['parroquia']); 
-                        $stmt->bindParam(':id_ciudad_emp',$_POST['ciudad']); 
-                        $stmt->bindParam(':telefono',$_POST['telefono']);
-                        $stmt->bindParam(':celular',$_POST['celular']);
-                        $stmt->bindParam(':email',$_POST['email']);
-                        $stmt->bindParam(':sexo',$_POST['sexo']);
-                        $stmt->bindParam(':estado_civil',$_POST['estadoCivil']);
-                        $stmt->bindParam(':nombres_conyuge',$_POST['nombresConyuge']);
-                        $stmt->bindParam(':apellidos_conyuge',$_POST['apellidosConyuge']);
-                        $stmt->bindParam(':salario_base',$_POST['salarioBase']);
-                        $stmt->bindParam(':horario',$_POST['idhorario']);
-                        $stmt->bindParam(':documentos_descripcion',$_POST['documentosDescription']);
-                        $stmt->bindParam(':fileDocument', $archivo);
-                        $stmt->bindValue(':deleted', 0, PDO::PARAM_INT);
-                        $stmt->bindValue(':disponible', 1, PDO::PARAM_INT);
-                        $stmt->bindValue(':created_at', $creacion);
-                        $stmt->bindValue(':update_at', null, PDO::PARAM_INT);
-                        $stmt->bindParam(':id_area_emp',$_POST['area']);
-                        $stmt->bindParam(':id_cargo_emp',$_POST['cargo']);
-                        $stmt->bindParam(':id_personal_emp',$_POST['personal']);
-                        if($_POST['personal'] == 2){
-                            $stmt->bindValue(':medico', 1, PDO::PARAM_INT);
-                        }else{
-                            $stmt->bindValue(':medico', 0, PDO::PARAM_INT);
-                        }
-                      
-                          if($stmt->execute()){
-
-                                if($_POST['personal'] == 2){
-                                    $sql = "INSERT INTO empleados_medico 
-                                    (id_empleados_medico,id_especialidad_medico) VALUES (:id_empleados_medico,:id_especialidad_medico)";                    
-                                    $stmt = $conn->prepare($sql);
-                                    $stmt->bindParam(':id_especialidad_medico',$_POST["especialidad"]);
-                                    $stmt->bindParam(':id_empleados_medico',$_POST["cedula"]);
-                                    $stmt->execute();
-                                }
-
-                                for($i=1;$i<=$_POST['numeroHijos'];$i++){
-                                  //Insertar en la tabla hijos_empleados
-                                    $sql = "INSERT INTO hijos_empleados 
-                                    (nombres_hijo,apellidos_hijo,anos_hijo,meses_hijo,id_empleados_hijos) VALUES (:nombres_hijo,:apellidos_hijo,:anos_hijo,:meses_hijo,:id_empleados_hijos)";                    
-                                    $stmt = $conn->prepare($sql);
-                                    $stmt->bindParam(':nombres_hijo',$_POST["nombreHijo$i"]);
-                                    $stmt->bindParam(':apellidos_hijo',$_POST["apellidoHijo$i"]);
-                                    $stmt->bindParam(':anos_hijo',$_POST["anosHijo$i"]);
-                                    $stmt->bindParam(':meses_hijo',$_POST["mesesHijo$i"]);
-                                    $stmt->bindParam(':id_empleados_hijos',$_POST["cedula"]);
-                                    $stmt->execute();
-                                }
-
-                                for($i=1;$i<=$_POST['antecedentesAcadem'];$i++){
-                                  //Insertar en la tabla antecedentesAcademicos
-                                  $sql = "INSERT INTO estudios_empleados 
-                                  (titulo_estudiosempleados,institucion_estudiosempleados,fecha_ingreso,fecha_egreso,id_empleados_est) VALUES (:titulo_estudiosempleados,:institucion_estudiosempleados,:fecha_ingreso,:fecha_egreso,:id_empleados_est)";                    
-                                  $stmt = $conn->prepare($sql);
-                                  $stmt->bindParam(':titulo_estudiosempleados',$_POST["titulo$i"]);
-                                  $stmt->bindParam(':institucion_estudiosempleados',$_POST["institucion$i"]);
-                                  $stmt->bindParam(':fecha_ingreso',$_POST["anoIngreso$i"]);
-                                  $stmt->bindParam(':fecha_egreso',$_POST["anoEgreso$i"]);
-                                  $stmt->bindParam(':id_empleados_est', $_POST['cedula']);
-                                  $stmt->execute();
-        
-                                }
-        
-                                for($i=1;$i<=$_POST['experienciaLaboral'];$i++){
-                                  //Insertar en la tabla experiencia laboral
-                                  $sql = "INSERT INTO expe_laboral_emp (nombre_emp,naturaleza_emp,direccion,cargo,anos,meses,id_empleados_expe) VALUES (:nombre_emp,:naturaleza_emp,:direccion,:cargo,:anos,:meses,:id_empleados_expe)";                    
-                                  $stmt = $conn->prepare($sql);
-                                  $stmt->bindParam(':nombre_emp',$_POST["empresa$i"]);
-                                  $stmt->bindParam(':naturaleza_emp',$_POST["naturalezaEmpresa$i"]);
-                                  $stmt->bindParam(':direccion',$_POST["direccion$i"]);
-                                  $stmt->bindParam(':cargo',$_POST["cargo$i"]);
-                                  $stmt->bindParam(':anos',$_POST["ano$i"]);
-                                  $stmt->bindParam(':meses',$_POST["meses$i"]);
-                                  $stmt->bindParam(':id_empleados_expe', $_POST['cedula']);
-                                  $stmt->execute();
-                                }
-        
-                                for($i=1;$i<=2;$i++){
-                                  //Insertar en la tabla antecedentesAcademicos
-                                  $sql = "INSERT INTO contacto_emergencia (nombres_contacemergencia,apellidos_contacemergencia,telefono_contacemergencia,celular_contacemergencia,id_empleados_contac) VALUES (:nombres_contacemergencia,:apellidos_contacemergencia,:telefono_contacemergencia,:celular_contacemergencia,:id_empleados_contac)";                    
-                                  $stmt = $conn->prepare($sql);                              
-                                  $stmt->bindParam(':nombres_contacemergencia',$_POST["nombresContactoEmerg$i"]);
-                                  $stmt->bindParam(':apellidos_contacemergencia',$_POST["apellidosContactoEmerg$i"]);
-                                  $stmt->bindParam(':telefono_contacemergencia',$_POST["telefonoContactoEmerg$i"]);
-                                  $stmt->bindParam(':celular_contacemergencia',$_POST["celularContactoEmerg$i"]);
-                                  $stmt->bindParam(':id_empleados_contac', $_POST['cedula']);
-                                  $stmt->execute();
-                                }
-                                
-                                for($i=1;$i<=4;$i++){
-                                  //Insertar en la tabla antecedentesAcademicos
-                                  $sql = "INSERT INTO referencias_empleado (tipo_refe,nombres_refe,apellidos_refe,telefono_refe,celular_refe,id_empleados_refe) VALUES (:tipo_refe,:nombres_refe,:apellidos_refe,:telefono_refe,:celular_refe,:id_empleados_refe)";                    
-                                  $stmt = $conn->prepare($sql);
-                                  if($i<=2){
-                                    // personal
-                                    $stmt->bindValue(':tipo_refe', 1, PDO::PARAM_INT);
-                                  }else{
-                                    $stmt->bindValue(':tipo_refe', 2, PDO::PARAM_INT);
-                                  }
-                                  
-                                  $stmt->bindParam(':nombres_refe',$_POST["nombresRefe$i"]);
-                                  $stmt->bindParam(':apellidos_refe',$_POST["apellidosRefe$i"]);
-                                  $stmt->bindParam(':telefono_refe',$_POST["telefonoRefe$i"]);
-                                  $stmt->bindParam(':celular_refe',$_POST["celularRefe$i"]);
-                                  $stmt->bindParam(':id_empleados_refe', $_POST['cedula']);
-                                  $stmt->execute();
-                                }
-                                
-
-                              header("Location:profile.php?id=$cedula");                          
+                      if($stmt->execute()){
+                        //crear al empleado
+                        $ruta = "../assets/static/contratos/";
+                        $archivo = $ruta.$_FILES["fileDocument"]["name"];
+                          if(!file_exists($ruta)){
+                            mkdir($ruta);
                           }
-                      } catch (PDOException $e) {
-                          die('Problema: ' . $e->getMessage());
+
+                          if(!file_exists($archivo)){
+                              $resultado = @move_uploaded_file($_FILES["fileDocument"]["tmp_name"],$archivo);
+                                if($resultado){
+                                  //seguardo
+                                }else{
+                                  //nose guardo
+                                }
+                          }else{
+                                echo "ya existe";
+                          }
+
+                            try {
+                                    $name= $_POST["nombres"]." ".$_POST["apellidos"];
+                                    $gravatar = "https://ui-avatars.com/api/?name=$name&size=160";
+            
+                                    $sql = "INSERT INTO empleados 
+                                        (id_empleados,profileimage,medico,nombres,apellidos,direccion,nacionalidad,fecha_nacimiento,parroquia,id_ciudad_emp,telefono,celular,email,sexo,estado_civil,
+                                        nombres_conyuge,apellidos_conyuge,salario_base,horario,documentos_descripcion,fileDocument,disponible,deleted,created_at,update_at,id_area_emp,id_cargo_emp,id_personal_emp,id_usuario_emp) VALUES (:id_empleados,:profileimage,:medico,:nombres,:apellidos,:direccion,:nacionalidad,:fecha_nacimiento,:parroquia,:id_ciudad_emp,:telefono,:celular,:email,:sexo,:estado_civil,:nombres_conyuge,:apellidos_conyuge,:salario_base,:horario,:documentos_descripcion,:fileDocument,:disponible,:deleted,:created_at,:update_at,:id_area_emp,:id_cargo_emp,:id_personal_emp,:id_usuario_emp)";
+                                    $stmt = $conn->prepare($sql);
+                                    $stmt->bindParam(':id_empleados', $_POST['cedula']);
+                                    $stmt->bindParam(':profileimage', $gravatar);
+                                    $stmt->bindParam(':nombres',$_POST['nombres']);
+                                    $stmt->bindParam(':apellidos',$_POST['apellidos']);
+                                    $stmt->bindParam(':direccion',$_POST['direccion']);
+                                    $stmt->bindParam(':nacionalidad',$_POST['nacionalidad']);
+                                    $stmt->bindParam(':fecha_nacimiento',$_POST['fechaNacimiento']);
+                                    $stmt->bindParam(':parroquia',$_POST['parroquia']); 
+                                    $stmt->bindParam(':id_ciudad_emp',$_POST['ciudad']); 
+                                    $stmt->bindParam(':telefono',$_POST['telefono']);
+                                    $stmt->bindParam(':celular',$_POST['celular']);
+                                    $stmt->bindParam(':email',$_POST['email']);
+                                    $stmt->bindParam(':sexo',$_POST['sexo']);
+                                    $stmt->bindParam(':estado_civil',$_POST['estadoCivil']);
+                                    $stmt->bindParam(':nombres_conyuge',$_POST['nombresConyuge']);
+                                    $stmt->bindParam(':apellidos_conyuge',$_POST['apellidosConyuge']);
+                                    $stmt->bindParam(':salario_base',$_POST['salarioBase']);
+                                    $stmt->bindParam(':horario',$_POST['idhorario']);
+                                    $stmt->bindParam(':documentos_descripcion',$_POST['documentosDescription']);
+                                    $stmt->bindParam(':fileDocument', $archivo);
+                                    $stmt->bindValue(':deleted', 0, PDO::PARAM_INT);
+                                    $stmt->bindValue(':disponible', 1, PDO::PARAM_INT);
+                                    $stmt->bindValue(':created_at', $creacion);
+                                    $stmt->bindValue(':update_at', null, PDO::PARAM_INT);
+                                    $stmt->bindParam(':id_area_emp',$_POST['area']);
+                                    $stmt->bindParam(':id_cargo_emp',$_POST['cargo']);
+                                    $stmt->bindParam(':id_personal_emp',$_POST['personal']);
+                                    $stmt->bindParam(':id_usuario_emp',$id);
+                                    
+                                    if($_POST['personal'] == 2){
+                                        $stmt->bindValue(':medico', 1, PDO::PARAM_INT);
+                                    }else{
+                                        $stmt->bindValue(':medico', 0, PDO::PARAM_INT);
+                                    }
+                                  
+                                      if($stmt->execute()){
+            
+                                            if($_POST['personal'] == 2){
+                                                $sql = "INSERT INTO empleados_medico 
+                                                (id_empleados_medico,id_especialidad_medico) VALUES (:id_empleados_medico,:id_especialidad_medico)";                    
+                                                $stmt = $conn->prepare($sql);
+                                                $stmt->bindParam(':id_especialidad_medico',$_POST["especialidad"]);
+                                                $stmt->bindParam(':id_empleados_medico',$_POST["cedula"]);
+                                                $stmt->execute();
+                                            }
+            
+                                            for($i=1;$i<=$_POST['numeroHijos'];$i++){
+                                              //Insertar en la tabla hijos_empleados
+                                                $sql = "INSERT INTO hijos_empleados 
+                                                (nombres_hijo,apellidos_hijo,anos_hijo,meses_hijo,id_empleados_hijos) VALUES (:nombres_hijo,:apellidos_hijo,:anos_hijo,:meses_hijo,:id_empleados_hijos)";                    
+                                                $stmt = $conn->prepare($sql);
+                                                $stmt->bindParam(':nombres_hijo',$_POST["nombreHijo$i"]);
+                                                $stmt->bindParam(':apellidos_hijo',$_POST["apellidoHijo$i"]);
+                                                $stmt->bindParam(':anos_hijo',$_POST["anosHijo$i"]);
+                                                $stmt->bindParam(':meses_hijo',$_POST["mesesHijo$i"]);
+                                                $stmt->bindParam(':id_empleados_hijos',$_POST["cedula"]);
+                                                $stmt->execute();
+                                            }
+            
+                                            for($i=1;$i<=$_POST['antecedentesAcadem'];$i++){
+                                                //Insertar en la tabla antecedentesAcademicos
+                                                $sql = "INSERT INTO estudios_empleados 
+                                                (titulo_estudiosempleados,institucion_estudiosempleados,fecha_ingreso,fecha_egreso,id_empleados_est) VALUES (:titulo_estudiosempleados,:institucion_estudiosempleados,:fecha_ingreso,:fecha_egreso,:id_empleados_est)";                    
+                                                $stmt = $conn->prepare($sql);
+                                                $stmt->bindParam(':titulo_estudiosempleados',$_POST["titulo$i"]);
+                                                $stmt->bindParam(':institucion_estudiosempleados',$_POST["institucion$i"]);
+                                                $stmt->bindParam(':fecha_ingreso',$_POST["anoIngreso$i"]);
+                                                $stmt->bindParam(':fecha_egreso',$_POST["anoEgreso$i"]);
+                                                $stmt->bindParam(':id_empleados_est', $_POST['cedula']);
+                                                $stmt->execute();
+                                            }
+                    
+                                            for($i=1;$i<=$_POST['experienciaLaboral'];$i++){
+                                                //Insertar en la tabla experiencia laboral
+                                                $sql = "INSERT INTO expe_laboral_emp (nombre_emp,naturaleza_emp,direccion,cargo,anos,meses,id_empleados_expe) VALUES (:nombre_emp,:naturaleza_emp,:direccion,:cargo,:anos,:meses,:id_empleados_expe)";                    
+                                                $stmt = $conn->prepare($sql);
+                                                $stmt->bindParam(':nombre_emp',$_POST["empresa$i"]);
+                                                $stmt->bindParam(':naturaleza_emp',$_POST["naturalezaEmpresa$i"]);
+                                                $stmt->bindParam(':direccion',$_POST["direccion$i"]);
+                                                $stmt->bindParam(':cargo',$_POST["cargo$i"]);
+                                                $stmt->bindParam(':anos',$_POST["ano$i"]);
+                                                $stmt->bindParam(':meses',$_POST["meses$i"]);
+                                                $stmt->bindParam(':id_empleados_expe', $_POST['cedula']);
+                                                $stmt->execute();
+                                            }
+                    
+                                            for($i=1;$i<=2;$i++){
+                                                //Insertar en la tabla antecedentesAcademicos
+                                                $sql = "INSERT INTO contacto_emergencia (nombres_contacemergencia,apellidos_contacemergencia,telefono_contacemergencia,celular_contacemergencia,id_empleados_contac) VALUES (:nombres_contacemergencia,:apellidos_contacemergencia,:telefono_contacemergencia,:celular_contacemergencia,:id_empleados_contac)";                    
+                                                $stmt = $conn->prepare($sql);                              
+                                                $stmt->bindParam(':nombres_contacemergencia',$_POST["nombresContactoEmerg$i"]);
+                                                $stmt->bindParam(':apellidos_contacemergencia',$_POST["apellidosContactoEmerg$i"]);
+                                                $stmt->bindParam(':telefono_contacemergencia',$_POST["telefonoContactoEmerg$i"]);
+                                                $stmt->bindParam(':celular_contacemergencia',$_POST["celularContactoEmerg$i"]);
+                                                $stmt->bindParam(':id_empleados_contac', $_POST['cedula']);
+                                                $stmt->execute();
+                                            }
+                                            
+                                            for($i=1;$i<=4;$i++){
+                                                //Insertar en la tabla antecedentesAcademicos
+                                                $sql = "INSERT INTO referencias_empleado (tipo_refe,nombres_refe,apellidos_refe,telefono_refe,celular_refe,id_empleados_refe) VALUES (:tipo_refe,:nombres_refe,:apellidos_refe,:telefono_refe,:celular_refe,:id_empleados_refe)";                    
+                                                $stmt = $conn->prepare($sql);
+                                                  if($i<=2){
+                                                    // personal
+                                                    $stmt->bindValue(':tipo_refe', 1, PDO::PARAM_INT);
+                                                  }else{
+                                                    $stmt->bindValue(':tipo_refe', 2, PDO::PARAM_INT);
+                                                  }
+                                                
+                                                $stmt->bindParam(':nombres_refe',$_POST["nombresRefe$i"]);
+                                                $stmt->bindParam(':apellidos_refe',$_POST["apellidosRefe$i"]);
+                                                $stmt->bindParam(':telefono_refe',$_POST["telefonoRefe$i"]);
+                                                $stmt->bindParam(':celular_refe',$_POST["celularRefe$i"]);
+                                                $stmt->bindParam(':id_empleados_refe', $_POST['cedula']);
+                                                $stmt->execute();
+                                            }
+                                            
+            
+                                          header("Location:profile.php?id=$cedula");                          
+                                      }
+        
+                              }catch (PDOException $e) {
+                                    die('Problema: ' . $e->getMessage());
+                              }
+
                       }
+                }
+
+
             } 
       }
 
@@ -548,7 +578,7 @@
                   <div class="col-md-2 mb-3">
                       <label for="validationServer11">Número de teléfono</label>
                       <input type="text" name="telefonoRefe3" class="form-control" onchange="validarTelefono('referenciatel3')" onkeypress="return soloNumeros(event)" maxlength="7" id="referenciatel3" autocomplete="off" required>
-                      <div class="invalid-feedback">
+                        <div class="invalid-feedback">
                           Numero fijo invalido.
                         </div>
                         <div class="valid-feedback">
@@ -665,10 +695,18 @@
                     <label for="validationServer08">Fecha ingreso</label>
                     <input type="text" name="created_at" class="form-control" value="<?php echo $created?>" id="validationServer37" readonly>
                   </div>
-                  <div class="col-md-4 mb-3">
-                      <label for="validationServer11">Salario base</label>
-                      <input type="text" onkeypress="return filterFloat(event,this);" name="salarioBase" class="form-control" maxlength="7" id="validationServer38" autocomplete="off" required/>
-                    </div>
+                  <div class="col-md-3 mb-3">
+                    <label for="validationServer07">Horario</label>
+                    <select class="custom-select" name="idhorario" id="validationServer44" required>
+                        <option selected disabled value="">Seleccione...</option>
+                        <option>Matutino</option>
+                        <option>Vespertino</option>
+                        <option>Jornada Completa</option>
+                        </select>
+                      <div class="invalid-feedback">
+                      <!--mensaje para feedback del campo.-->
+                      </div>
+                  </div>
                   <div class="col-md-3 mb-3">
                     <label for="validationServer09">Tipo de contrato</label>
                     <select class="custom-select" name="idcontrato" id="validationServer39" required>
@@ -701,22 +739,6 @@
                 
                 <div class="form-row">
                       <div class="col-md-3 mb-3">
-                          <label for="validationServer15">Cargo</label>
-                          <select class="custom-select" name="cargo" id="validationServer41" required>
-                          <option selected disabled value="">Seleccione...</option>
-                          <?php
-                          foreach ($cargos as $cargosEmpleado):
-                          ?>
-                          <option value="<?php echo $cargosEmpleado->id_cargo;?>"><?php echo utf8_encode($cargosEmpleado->nombre_cargo);?></option>
-                          <?php 
-                          endforeach;
-                          ?>  
-                          </select>
-                          <div class="invalid-feedback">
-                          <!--mensaje para feedback del campo.-->
-                          </div>
-                      </div>
-                      <div class="col-md-3 mb-3">
                           <label for="validationServer06">Personal</label>
                           <select class="custom-select" onchange="isMedic(this,'row-especialidad')" name="personal" id="validationServer42" required>
                             <option selected disabled value="">Seleccione...</option>
@@ -728,39 +750,34 @@
                             endforeach;
                             ?> 
                           </select>
-                          <div class="invalid-feedback">
-                            <!--mensaje para feedback del campo.-->
-                          </div>
+                      </div>
+                      <div class="col-md-3 mb-3">
+                        <label for="area">Área</label>
+                        <select class="custom-select" name="area" id="area" required>
+                            <option selected disabled value="">Seleccione...</option>
+                            <?php
+                            foreach ($areas as $areaEmpleado):
+                            ?>
+                            <option value="<?php echo $areaEmpleado->id_area;?>"><?php echo utf8_encode($areaEmpleado->nombre_area);?></option>
+                            <?php 
+                            endforeach;
+                            ?> 
+                            </select>
+                        <div class="invalid-feedback">
+                        <!--mensaje para feedback del campo.-->
                         </div>
-                        <div class="col-md-3 mb-3">
-                          <label for="validationServer07">Área</label>
-                          <select class="custom-select" name="area" id="validationServer43" required>
-                              <option selected disabled value="">Seleccione...</option>
-                              <?php
-                              foreach ($areas as $areaEmpleado):
-                              ?>
-                              <option value="<?php echo $areaEmpleado->id_area;?>"><?php echo utf8_encode($areaEmpleado->nombre_area);?></option>
-                              <?php 
-                              endforeach;
-                              ?> 
-                              </select>
-                            <div class="invalid-feedback">
-                            <!--mensaje para feedback del campo.-->
-                            </div>
-                          </div>
-                          <div class="col-md-3 mb-3">
-                              <label for="validationServer07">Horario</label>
-                              <select class="custom-select" name="idhorario" id="validationServer44" required>
-                                  <option selected disabled value="">Seleccione...</option>
-                                  <option>Matutino</option>
-                                  <option>Vespertino</option>
-                                  <option>Jornada Completa</option>
-                                  </select>
-                                <div class="invalid-feedback">
-                                <!--mensaje para feedback del campo.-->
-                                </div>
-                              </div>
-                  </div>
+                    </div>
+                    <div class="col-md-3 mb-3" id="objeto">
+                        <label for="cargo">Cargo</label>
+                        <select class="custom-select" name="cargo" id="cargo" required>
+                        <option selected disabled value="">Seleccione...</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 mb-3" id="sueldo">
+                        <label for="validationServer11">Salario base</label>
+                        <input type="text" name="salarioBase" class="form-control" readonly required>
+                    </div>   
+                </div>
                 <label class="font-weight-bolder mt-3">Descripcion de documentos que adjuntar</label>
                 <hr class="mt-1 mb-4 mr-5 ">
                   <div class="form-row">
@@ -776,18 +793,21 @@
 
                 
               <hr class="mt-2 mb-3">  
-              <button class="btn btn-primary mt-5" type="submit" name="btn-submit" id="btn-submit">Registrar</button>
+              <button class="btn btn-primary font-weight-bolder mt-5" type="submit" name="btn-submit" style="width:300px;" id="btn-submit">Registrar</button>
             </form>
       </div>
     </main>
   </div>
 </div>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-      <script>window.jQuery || document.write('<script src="../assets/js/vendor/jquery.slim.min.js"><\/script>')</script><script src="../assets/dist/js/bootstrap.bundle.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
-        <script src="../components/scripts/dashboard.js"></script>   
-        <script src="../controllers/validation/validation.js"></script>         
-      </body>
+    <script>window.jQuery || document.write('<script src="../assets/js/vendor/jquery.slim.min.js"><\/script>')</script><script src="../assets/dist/js/bootstrap.bundle.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+    
+    <script src="../components/scripts/dashboard.js"></script>   
+    <script src="../controllers/validation/validation.js"></script>   
+    <script type="text/javascript" src="../components/scripts/jquery.min.js"></script>    
+    <script type="text/javascript" src="../components/scripts/consultas.js"></script>        
+</body>
 </html>
