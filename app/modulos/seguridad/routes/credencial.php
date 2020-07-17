@@ -269,9 +269,9 @@ require '../../recursoshumanos/components/modal.php';
   onSubmit = (event) => {
     event.preventDefault()
 
-    if(document.getElementById('credencial').value == document.getElementById('idCredencial').value){
-        document.getElementById('credencial').className = "form-control is-invalid"
-        document.getElementById('credencial').focus();
+    if(document.getElementById('credenciales').value == document.getElementById('idCredencial').value){
+        document.getElementById('credenciales').className = "form-control is-invalid"
+        document.getElementById('credenciales').focus();
     }else{
         document.getElementById('formBorrarCredencial').submit();
     } 

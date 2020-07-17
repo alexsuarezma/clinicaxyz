@@ -74,31 +74,43 @@ $provincias = $conn->query("SELECT * FROM provincias ORDER BY nombre ASC")->fetc
                 <div class="form-row">
                   <div class="form-group col-md-6">
                     <label for="cedula">Cedula/Pasaporte</label>
-                    <input type="text" class="form-control" name="cedula" id="cedula" maxlength="10" required>
+                    <input type="text" class="form-control" name="cedula" onkeypress="return soloNumeros(event)" onchange="verificarCedula(this);" maxlength="10" id="cedula" required>
+                    <div class="invalid-feedback">
+                        Número de cédula inválida.
+                    </div>
+                    <div class="valid-feedback">
+                      Número de cédula válida.
+                    </div>
                   </div>
                 </div>
                 <div class="form-row">
                   <div class="form-group col-md-6">
                     <label for="name">Nombres</label>
-                    <input type="text" class="form-control" name="name" id="name" required>
+                    <input type="text" class="form-control" onkeypress="return soloLetras(event)" name="name" id="name" required>
                   </div>
                   <div class="form-group col-md-3">
                     <label for="apellidoPaterno">Apellido Paterno</label>
-                    <input type="text" class="form-control" name="apellidoPaterno" id="apellidoPaterno" required>
+                    <input type="text" class="form-control" onkeypress="return soloLetras(event)" name="apellidoPaterno" id="apellidoPaterno" required>
                   </div>
                   <div class="form-group col-md-3">
                     <label for="apellidoMaterno">Apellido Materno</label>
-                    <input type="text" class="form-control" name="apellidoMaterno" id="apellidoMaterno" required>
+                    <input type="text" class="form-control" onkeypress="return soloLetras(event)" name="apellidoMaterno" id="apellidoMaterno" required>
                   </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-6">
                         <label for="email">E-mail</label>
-                        <input type="email" class="form-control" name="email" id="email" placeholder="ejemplo@gmail.com" required>
+                        <input type="email" class="form-control"  onchange="validarEmail(this);" name="email" id="email" placeholder="ejemplo@gmail.com" required>
+                        <div class="invalid-feedback">
+                            Correo electrónico inválido.
+                        </div>
+                        <div class="valid-feedback">
+                            Correo electrónico válido.
+                        </div>
                     </div>
                     <div class="form-group col-md-6">
                         <label for="ocupacion">Ocupación</label>
-                        <input type="text" class="form-control" name="ocupacion" id="ocupacion" required>
+                        <input type="text" class="form-control" onkeypress="return soloLetras(event)" name="ocupacion" id="ocupacion" required>
                     </div>
                 </div>
                 <div class="form-row">
@@ -151,7 +163,7 @@ $provincias = $conn->query("SELECT * FROM provincias ORDER BY nombre ASC")->fetc
                   </div>
                   <div class="form-group col-md-4">
                     <label for="zona">Zona</label>
-                    <input type="text" class="form-control" id="zona" name="zona" required>
+                    <input type="text" class="form-control" onkeypress="return soloLetras(event)" id="zona" name="zona" required>
                     <!-- <select id="zona" name="zona" class="form-control" required>
                       <option selected disabled value="">Seleccione...</option>
                       <option value=""></option>
@@ -165,11 +177,25 @@ $provincias = $conn->query("SELECT * FROM provincias ORDER BY nombre ASC")->fetc
                     </div>
                     <div class="form-group col-md-3">
                         <label for="telefono">Telefono</label>
-                        <input type="text" class="form-control" id="telefono" name="telefono" maxlength="7" required>
+                        <input type="text" class="form-control"  onchange="validarTelefono(this);" onkeypress="return soloNumeros(event)" maxlength="7" id="telefono" name="telefono" required>
+                        <div class="invalid-feedback">
+                          Número fijo inválido. </br>
+                          ¡Debe ser un número teléfonico, tiene que tener 7 dígitos!
+                        </div>
+                        <div class="valid-feedback">
+                          Número fijo válido.
+                        </div>
                     </div>
                     <div class="form-group col-md-3">
                         <label for="celular">Celular</label>
-                        <input type="text" class="form-control" id="celular" name="celular" maxlength="10" required>
+                        <input type="text" class="form-control"  onchange="validarCelular(this);" onkeypress="return soloNumeros(event)" maxlength="10" id="celular" name="celular" required>
+                        <div class="invalid-feedback">
+                            Número celular inválido.</br>
+                            ¡El celular debe comenzar en 0, y contener 10 dígitos!
+                        </div>
+                        <div class="valid-feedback">
+                          Número celular válido.
+                        </div>
                     </div>
                  </div>
           
@@ -208,15 +234,15 @@ $provincias = $conn->query("SELECT * FROM provincias ORDER BY nombre ASC")->fetc
                 <div class="form-row">
                     <div class="form-group col-md-3">
                         <label for="carnetConadis">Carnet Conadis</label>
-                        <input class="form-control" id="carnetConadis" name="carnetConadis" required disabled="true">
+                        <input type="text" class="form-control" id="carnetConadis" name="carnetConadis" required disabled="true">
                     </div>
                     <div class="form-group col-md-6">
                         <label for="discapacidad">Discapacidad</label>
-                        <input class="form-control" id="discapacidad" name="discapacidad" required disabled="true">
+                        <input type="text" class="form-control" onkeypress="return soloLetras(event)" id="discapacidad" name="discapacidad" required disabled="true">
                     </div>
                     <div class="form-group col-md-3">
                         <label for="grado">Grado %</label>
-                        <input class="form-control" id="grado" name="grado" required disabled="true">
+                        <input type="text" class="form-control" id="grado" name="grado" required disabled="true">
                     </div>
                  </div>
                  <div class="d-flex justify-content-end mt-5">

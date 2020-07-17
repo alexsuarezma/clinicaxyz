@@ -31,8 +31,9 @@
             $contactos = $conn->query("SELECT * FROM contacto_emergencia WHERE id_empleados_contac = $id")->fetchAll(PDO::FETCH_OBJ);
             $hijos = $conn->query("SELECT * FROM hijos_empleados WHERE id_empleados_hijos = $id")->fetchAll(PDO::FETCH_OBJ);
 
-       }else{   
-            $records = $conn->prepare("SELECT medico FROM empleados WHERE id_empleados = :cedula");
+       }else{ 
+         
+            $records = $conn->prepare("SELECT * FROM empleados WHERE id_empleados = :cedula");
             $records->bindParam(':cedula', $_POST['cedula']);
             $records->execute();
             $results = $records->fetch(PDO::FETCH_ASSOC);
@@ -80,7 +81,43 @@
                       }
                   }
               
-                  
+              //BUSCAR CREDENCIALBASE DEL CARGO NUEVO
+              $credencialCargoNuevo = $conn->prepare('SELECT id_credencialbase_cargo FROM cargo_empleados WHERE id_cargo = :id_cargo');
+              $credencialCargoNuevo->bindParam(':id_cargo',$_POST['cargo']);
+              $credencialCargoNuevo->execute();
+              $resultadoCredencialNuevo = $credencialCargoNuevo->fetch(PDO::FETCH_ASSOC);
+
+              //BUSCAR CREDENCIALBASE DEL CARGO ANTERIOR
+              $credencialCargoAnterior = $conn->prepare('SELECT id_credencialbase_cargo FROM cargo_empleados WHERE id_cargo = :id_cargo');
+              $credencialCargoAnterior->bindParam(':id_cargo',$results['id_cargo_emp']);
+              $credencialCargoAnterior->execute();
+              $resultadoCredencialAnterior = $credencialCargoAnterior->fetch(PDO::FETCH_ASSOC);
+
+              if($resultadoCredencialNuevo['id_credencialbase_cargo'] != $resultadoCredencialAnterior['id_credencialbase_cargo']){
+
+                    //BUSCAR CREDENCIAL ANTERIOR EN USUARIO_CREDENCIAL CON EL ID_USUARIO_EMP
+                    $credencialBase = $conn->query("SELECT * FROM usuario_credencial WHERE id_usuario_uc =".$results['id_usuario_emp']." AND id_credencialbase_uc =".$resultadoCredencialAnterior['id_credencialbase_cargo'])->rowCount();
+    
+                    if($credencialBase>0){
+                      //CAMBIAR USUARIO/CREDENCIAL en donde el id del usuario empleado y la credencial base anterior sean 
+                      $sql = "UPDATE usuario_credencial SET id_credencialbase_uc=:id_credencialbase_uc WHERE id_usuario_uc=:id_usuario_uc AND id_credencialbase_uc=:id_cargo_emp";
+                      $stmt = $conn->prepare($sql);
+                      $stmt->bindParam(':id_usuario_uc', $results['id_usuario_emp']);
+                      $stmt->bindParam(':id_credencialbase_uc', $resultadoCredencialNuevo['id_credencialbase_cargo']);
+                      $stmt->bindParam(':id_cargo_emp',$resultadoCredencialAnterior['id_credencialbase_cargo']);
+                      $stmt->execute();
+                    }else{
+                      //SI NO EXISTE UNA CREDENCIAL PARA ESE USUARIO CON ESA CREDENCIAL BASE YA ANEXADA
+                      $sql = "INSERT INTO usuario_credencial (id_usuario_uc,id_credencialbase_uc) VALUES 
+                      (:id_usuario_uc,:id_credencialbase_uc)";
+                      $stmt = $conn->prepare($sql);
+                      $stmt->bindParam(':id_usuario_uc', $results['id_usuario_emp']);
+                      $stmt->bindParam(':id_credencialbase_uc', $resultadoCredencialNuevo['id_credencialbase_cargo']);
+                      $stmt->execute();
+                    }                 
+              }
+            
+
               //UPDATE EMPLEADO
                 $sql = "UPDATE empleados SET nombres=:nombres,apellidos=:apellidos,direccion=:direccion,nacionalidad=:nacionalidad,fecha_nacimiento=:fecha_nacimiento,parroquia=:parroquia,id_ciudad_emp=:id_ciudad_emp,telefono=:telefono,celular=:celular,email=:email,sexo=:sexo,estado_civil=:estado_civil,nombres_conyuge=:nombres_conyuge,apellidos_conyuge=:apellidos_conyuge,salario_base=:salario_base,id_cargo_emp=:id_cargo_emp,id_personal_emp=:id_personal_emp,id_area_emp=:id_area_emp,horario=:horario,documentos_descripcion=:documentos_descripcion,update_at=:update_at WHERE id_empleados=:id_empleados";
                 $stmt = $conn->prepare($sql);
@@ -519,10 +556,16 @@
                     <label for="validationServer08">Fecha ingreso</label>
                     <input type="text" name="created_at" value="<?php echo $results["created_at"]?>" class="form-control" id="validationServer37" readonly>
                   </div>
-                  <div class="col-md-4 mb-3">
-                      <label for="validationServer11">Salario base</label>
-                      <input type="text" name="salarioBase" class="form-control" value="<?php echo $results["salario_base"]?>" onkeypress="return filterFloat(event,this);" maxlength="7" id="validationServer38" autocomplete="off" required>
-                    </div>
+                  <div class="col-md-3 mb-3">
+                      <label for="validationServer07">Horario</label>
+                      <select class="custom-select" name="idhorario" id="validationServer44" required>
+                      <option selected="true"><?php echo $results["horario"]?></option>
+                      <option disabled value="">Seleccione...</option>
+                      <option>Matutino</option>
+                      <option>Vespertino</option>
+                      <option>Jornada Completa</option>
+                      </select>
+                  </div>
                   <div class="col-md-3 mb-3">
                     <label for="validationServer09">Tipo de contrato</label>
                     <select class="custom-select" name="idcontrato" id="validationServer39" required>
@@ -541,25 +584,6 @@
                 
                 <div class="form-row">
                       <div class="col-md-3 mb-3">
-                          <label for="validationServer15">Cargo</label>
-                          <select class="custom-select" name="cargo" id="validationServer41" required>
-
-                          <option selected="true" value="<?php echo $results['id_cargo_emp'];?>"><?php echo utf8_encode($results['nombre_cargo'])?></option>
-
-                          <option disabled value="">Seleccione...</option>
-                          <?php
-                          foreach ($cargos as $cargosEmpleado):
-                          ?>
-                          <option value="<?php echo $cargosEmpleado->id_cargo;?>"><?php echo utf8_encode($cargosEmpleado->nombre_cargo);?></option>
-                          <?php 
-                          endforeach;
-                          ?>  
-                          </select>
-                          <div class="invalid-feedback">
-                          <!--mensaje para feedback del campo.-->
-                          </div>
-                      </div>
-                      <div class="col-md-3 mb-3">
                           <label for="validationServer06">Personal</label>
                           <select class="custom-select" onchange="isMedic(this,'row-especialidad')" name="personal" id="validationServer42" required>
                           <option selected="true" value="<?php echo $results['id_personal_emp'];?>"><?php echo $results["nombre_personal"]?></option>
@@ -572,40 +596,32 @@
                               endforeach;
                               ?> 
                           </select>
-                          <div class="invalid-feedback">
-                            <!--mensaje para feedback del campo.-->
-                          </div>
                         </div>
                         <div class="col-md-3 mb-3">
-                          <label for="validationServer07">Área</label>
-                          <select class="custom-select" name="area" id="validationServer43" required>
-                              <option selected="true" value="<?php echo $results['id_area_emp'];?>"><?php echo $results["nombre_area"]?></option>
-                              <option disabled value="">Seleccione...</option>
-                              <?php
-                              foreach ($areas as $areaEmpleado):
-                              ?>
-                              <option value="<?php echo $areaEmpleado->id_area;?>"><?php echo utf8_encode($areaEmpleado->nombre_area);?></option>
-                              <?php 
-                              endforeach;
-                              ?> 
-                              </select>
-                            <div class="invalid-feedback">
-                            <!--mensaje para feedback del campo.-->
-                            </div>
-                          </div>
-                          <div class="col-md-3 mb-3">
-                              <label for="validationServer07">Horario</label>
-                              <select class="custom-select" name="idhorario" id="validationServer44" required>
-                                  <option selected="true"><?php echo $results["horario"]?></option>
-                                  <option disabled value="">Seleccione...</option>
-                                  <option>Matutino</option>
-                                  <option>Vespertino</option>
-                                  <option>Jornada Completa</option>
-                                  </select>
-                                <div class="invalid-feedback">
-                                <!--mensaje para feedback del campo.-->
-                                </div>
-                              </div>
+                            <label for="area">Área</label>
+                            <select class="custom-select" name="area" id="area" required>
+                            <option selected="true" value="<?php echo $results['id_area_emp'];?>"><?php echo $results["nombre_area"]?></option>
+                                <option disabled value="">Seleccione...</option>
+                                <?php
+                                foreach ($areas as $areaEmpleado):
+                                ?>
+                                <option value="<?php echo $areaEmpleado->id_area;?>"><?php echo utf8_encode($areaEmpleado->nombre_area);?></option>
+                                <?php 
+                                endforeach;
+                                ?> 
+                                </select>
+                        </div>
+                        <div class="col-md-3 mb-3" id="objeto">
+                            <label for="cargo">Cargo</label>
+                            <select class="custom-select" name="cargo" id="cargo" required>
+                            <option selected="true" value="<?php echo $results['id_cargo_emp'];?>"><?php echo utf8_encode($results['nombre_cargo'])?></option>
+                            <option disabled value="">Seleccione...</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 mb-3" id="sueldo">
+                            <label for="validationServer11">Salario base</label>
+                            <input type="text" name="salarioBase" value="<?php echo $results["salario_base"]?>" class="form-control" readonly>
+                        </div>   
                   </div>  
                   
                 <label class="font-weight-bolder mt-3">Contactos para casos de emergencia</label>
@@ -775,6 +791,8 @@
               <button class="btn btn-primary mt-5" type="submit" name="btn-actualizar" id="btn-actualizar">Guardar cambios</button>
             </form>
       </div>  
-<script src="../controllers/validation/validation.js"></script>     
+<script src="../controllers/validation/validation.js"></script>
+<script type="text/javascript" src="../components/scripts/jquery.min.js"></script>    
+<script type="text/javascript" src="../components/scripts/consultas.js"></script>         
 </body>
 </html>

@@ -21,7 +21,7 @@
         if ($resultado->num_rows>0) {
             // $resultado = $resultado->fetch_assoc();
             $salida.="<label for='cargo'>CARGOS Afectados</label> 
-                <select class='custom-select' name='cargo' id='cargo' required>
+                <select class='custom-select' name='cargo' id='cargo'>
                 <option selected disabled value=''>Afectados...</option>";
                 
             while ($fila = $resultado->fetch_assoc()) {

@@ -101,7 +101,7 @@ require '../../recursoshumanos/components/modal.php';
                                   <input id="idUserCredencialUsuario" name="idUserCredencialUsuario" type="hidden">
                                   <div class="form-group col-md-6">
                                       <label for="usuario">Usuario</label>
-                                      <input type="text" class="form-control" name="usuario" id="usuario" required>
+                                      <input type="text" class="form-control" name="usuario" id="usuario" readonly required>
                                   </div>
                               </div>
                               <hr class="mt-1 mb-4 mr-5">

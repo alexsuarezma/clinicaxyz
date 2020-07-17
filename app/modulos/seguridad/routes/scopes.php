@@ -204,6 +204,8 @@ require '../../recursoshumanos/components/modal.php';
                               No puedes asignar un scope que vas a ELIMINAR. 
                             </div>
                           </div>
+                          <div id="objeto">
+                          </div>
                       </div>
                       <div class='modal-footer mt-2'>
                         <button id="cancelar-update" type='button' class="btn btn-light border-secondary" data-dismiss='modal'>Cancelar</button>
@@ -219,6 +221,7 @@ require '../../recursoshumanos/components/modal.php';
 <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 <script src="../components/scripts/dashboard.js"></script> 
+<script src="../components/scripts/consulta.js"></script> 
 <script>
   function eliminarScope(id,name){
     document.getElementById('idScope').value = id;

@@ -9,18 +9,12 @@ $idScope=$_POST['idScope'];
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':idScope', $_POST['idScope']);
         $stmt->bindParam(':id_scope_credencial', $_POST['scope']);
-        if($stmt->execute()){
-            $sql = "DELETE FROM scope WHERE id_scope=:id_scope";
-            $stmt = $conn->prepare($sql);
-            $stmt->bindParam(':id_scope', $_POST['idScope']);
-            $stmt->execute();
-        }
-    }else{
-        echo 'no hay filas afectadas';
-        $sql = "DELETE FROM scope WHERE id_scope=:id_scope";
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':id_scope', $_POST['idScope']);
         $stmt->execute();
-            
-        header("Location:../routes/credencial.php");
     }
+    
+    $sql = "DELETE FROM scope WHERE id_scope=:id_scope";
+    $stmt = $conn->prepare($sql);
+    $stmt->bindParam(':id_scope', $_POST['idScope']);
+    $stmt->execute();
+
+    header("Location:../routes/scopes.php");

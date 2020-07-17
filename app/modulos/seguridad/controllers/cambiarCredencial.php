@@ -53,6 +53,7 @@ require '../../../../database.php';
         $stmt->bindParam(':id_usuario_credencial', $_POST['idUserCredencial']);
         $stmt->bindParam(':id_credencialbase_uc', $_POST['credencial']);
         $stmt->execute();
+        header("Location:../routes/usuarios.php");
     }
 
 ?>

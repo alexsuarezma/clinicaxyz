@@ -1,12 +1,24 @@
 <?php
 require 'components/layout.php';
+
 require '../../../database.php';
 require '../seguridad/controllers/functions/credenciales.php';
 
+
 verificarAcceso("../../../", "modulo_rrhh");
 
-//  if(verificarAccion($conn, "modulo_rrhh", "borrado_fisico") == true){
+
+
+//  if(verificarAccion($conn, "modulo_rrhh", "actualizar") == true){
 //     echo "<script language='javascript'>alert('Tienes permisos suficientes.');</script>";
+//     // EL PROCESO DE ACTUALIZAR
+//       if(verificarAccion($conn, "modulo_rrhh", "borrado_fisico") == true){
+//               //delete from ñdñlksa where
+//       }else{
+//         echo "<script language='javascript'>alert('No tienes permisos suficientes para esta acción.');</script>";
+//       }
+
+
 //  }else{
 //     echo "<script language='javascript'>alert('No tienes permisos suficientes para esta acción.');</script>";
 //  }
