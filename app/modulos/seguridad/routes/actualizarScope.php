@@ -2,6 +2,10 @@
 require '../../../../database.php';
 require '../components/layout.php';
 require '../../recursoshumanos/components/modal.php';
+require '../controllers/functions/credenciales.php';
+
+verificarAcceso("../../../../", "modulo_seguridad");
+
         $credencial = $conn->query("SELECT * FROM credencial_base AS c, scope AS s WHERE (c.id_scope_credencial = s.id_scope) AND (id_scope_credencial=".$_GET['id'].")ORDER BY nombre_credencial ASC")->fetchAll(PDO::FETCH_OBJ);
         $records = $conn->prepare("SELECT * FROM scope WHERE id_scope = :id_scope");
         $records->bindParam(':id_scope', $_GET['id']);

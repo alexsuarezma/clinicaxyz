@@ -1,3 +1,12 @@
+<?php
+require '../../../database.php';
+require 'components/layout.php';
+require 'controllers/functions/credenciales.php';
+
+
+verificarAcceso("../../../", "modulo_seguridad");
+
+?>
 <!doctype html>
 <html lang="en">
   <head>
@@ -16,7 +25,6 @@
   </head>
   <body>
 <?php
-  require 'components/layout.php';
   printLayout('index.php', '../../../index.php', 'routes/credencial.php', 'routes/scopes.php', 'routes/usuarios.php', 'routes/cargos.php');
 ?>
 <div class="container-fluid">

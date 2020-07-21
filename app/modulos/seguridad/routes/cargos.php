@@ -2,6 +2,10 @@
 require '../../../../database.php';
 require '../components/layout.php';
 require '../../recursoshumanos/components/modal.php';
+require '../controllers/functions/credenciales.php';
+
+
+verificarAcceso("../../../../", "modulo_seguridad");
   
   $cargo = $conn->query("SELECT * FROM cargo_empleados AS c, area_empleados AS a, credencial_base AS cb WHERE c.id_area_cargo = a.id_area AND c.id_credencialbase_cargo = cb.id_credencial ORDER BY nombre_cargo ASC")->fetchAll(PDO::FETCH_OBJ);
   $credencial = $conn->query("SELECT * FROM credencial_base AS c, scope AS s WHERE (c.id_scope_credencial = s.id_scope) ORDER BY nombre_credencial ASC")->fetchAll(PDO::FETCH_OBJ);
@@ -32,7 +36,7 @@ require '../../recursoshumanos/components/modal.php';
 
     <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
       <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">CREDENCIALES DE CARGOS</h1>
+        <h1 class="h2">GESTIÓN CREDENCIALES DE CARGOS</h1>
         <div class="btn-toolbar mb-2 mb-md-0">
           <div class="btn-group mr-2">
             <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>

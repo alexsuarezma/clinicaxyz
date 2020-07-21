@@ -46,6 +46,7 @@
                 $_SESSION['modulo_contabilidad'] = 0;
                 $_SESSION['modulo_ctas_medicas'] = 0;
                 $_SESSION['modulo_pacientes'] = 0;
+                $_SESSION['modulo_seguridad'] = 0;
                 $_SESSION['paciente'] = 0;
                 $_SESSION['nombre_credencial'] = "";
                 
@@ -72,6 +73,9 @@
                     }
                     if($results['paciente'] == 1){
                       $_SESSION['paciente'] = 1;
+                    }
+                    if($results['modulo_seguridad'] == 1) {
+                      $_SESSION['modulo_seguridad'] = 1;
                     }
                     if($_SESSION['nombre_credencial'] == ""){
                       $_SESSION['nombre_credencial'] = strtoupper($results['nombre_credencial']);
@@ -106,6 +110,9 @@
               }
               if($_SESSION['modulo_pacientes'] == 1){
                 echo "<a class='dropdown-item' href='app/modulos/pacientes/index copy 2.html'><i class='fas fa-procedures mr-2'></i> Modulo Pacientes</a>";
+              }
+              if($_SESSION['modulo_seguridad'] == 1){
+                echo "<a class='dropdown-item' href='app/modulos/seguridad/'><i class='fas fa-user-shield mr-2'></i> Modulo Seguridad</a>";
               }
               if($_SESSION['paciente'] == 1){
                 echo "<a class='dropdown-item' href='app/modulos/pacientes/index copy 2.html'><i class='fas fa-procedures mr-2'></i> Paciente</a>";

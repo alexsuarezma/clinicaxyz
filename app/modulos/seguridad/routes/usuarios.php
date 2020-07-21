@@ -2,6 +2,10 @@
 require '../../../../database.php';
 require '../components/layout.php';
 require '../../recursoshumanos/components/modal.php';
+require '../controllers/functions/credenciales.php';
+
+
+verificarAcceso("../../../../", "modulo_seguridad");
   
   $usuario = $conn->query("SELECT * FROM empleados AS e, usuario AS u, usuario_credencial AS uc, credencial_base AS c WHERE (uc.id_usuario_uc = u.id_usuario AND e.id_usuario_emp = u.id_usuario AND c.id_credencial = uc.id_credencialbase_uc) ORDER BY username ASC")->fetchAll(PDO::FETCH_OBJ);
   $credencial = $conn->query("SELECT * FROM credencial_base AS c, scope AS s WHERE (c.id_scope_credencial = s.id_scope) ORDER BY nombre_credencial ASC")->fetchAll(PDO::FETCH_OBJ);
@@ -32,7 +36,7 @@ require '../../recursoshumanos/components/modal.php';
 
     <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
       <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">CREDENCIALES DE USUARIOS</h1>
+        <h1 class="h2">LISTA DE USUARIOS</h1>
         <div class="btn-toolbar mb-2 mb-md-0">
           <div class="btn-group mr-2">
             <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
@@ -72,8 +76,9 @@ require '../../recursoshumanos/components/modal.php';
                       <td><?php echo $Usuarios->username?></td>
                       <td>
                         <div class="d-flex justify-content-end">
-                          <a onclick="agregarCredencial('<?php echo $Usuarios->id_empleados?>','<?php echo $Usuarios->id_usuario_uc?>','<?php echo $Usuarios->id_usuario_credencial?>','<?php echo $Usuarios->id_credencial?>','<?php echo $Usuarios->nombre_credencial?>','<?php echo $Usuarios->nombres?>','<?php echo $Usuarios->apellidos?>','<?php echo $Usuarios->username?>')" class="text-secondary" data-toggle="modal" href="#agregarCredencial"><i class="fas fa-plus-circle  mr-2" style="font-size:20px;" title="Agrega una nueva credencial al usuario <?php echo $Usuarios->username?>"></i></a>
-                          <a onclick="eliminarCredencial('<?php echo $Usuarios->id_empleados?>','<?php echo $Usuarios->id_usuario_uc?>','<?php echo $Usuarios->id_usuario_credencial?>','<?php echo $Usuarios->id_credencial?>','<?php echo $Usuarios->nombre_credencial?>','<?php echo $Usuarios->nombres?>','<?php echo $Usuarios->apellidos?>','<?php echo $Usuarios->username?>')" data-toggle="modal" href="#updateCredencialAsignada"><i class="far fa-edit" style="color:red; font-size:20px;" title="Editar Credencial del usuario <?php echo $Usuarios->username?>"></i></a>
+                          <a class="text-secondary" href="../controllers/borrarCredencialUsuario.php?idUser=<?php echo $Usuarios->id_usuario_uc?>&idCredencial=<?php echo $Usuarios->id_credencial?>"><i class="fas fa-user-slash mr-2" style="font-size:20px;" title="Eliminar la credencial al usuario <?php echo $Usuarios->username?>"></i></a>
+                          <a onclick="agregarCredencial('<?php echo $Usuarios->id_empleados?>','<?php echo $Usuarios->id_usuario_uc?>','<?php echo $Usuarios->id_usuario_credencial?>','<?php echo $Usuarios->id_credencial?>','<?php echo $Usuarios->nombre_credencial?>','<?php echo $Usuarios->nombres?>','<?php echo $Usuarios->apellidos?>','<?php echo $Usuarios->username?>')" class="text-secondary" data-toggle="modal" href="#agregarCredencial"><i class="fas fa-user-plus mr-2" style="font-size:20px;" title="Agrega una nueva credencial al usuario <?php echo $Usuarios->username?>"></i></a>
+                          <a onclick="eliminarCredencial('<?php echo $Usuarios->id_empleados?>','<?php echo $Usuarios->id_usuario_uc?>','<?php echo $Usuarios->id_usuario_credencial?>','<?php echo $Usuarios->id_credencial?>','<?php echo $Usuarios->nombre_credencial?>','<?php echo $Usuarios->nombres?>','<?php echo $Usuarios->apellidos?>','<?php echo $Usuarios->username?>')" data-toggle="modal" href="#updateCredencialAsignada"><i class="fas fa-user-edit" style="color:red; font-size:20px;" title="Editar Credencial del usuario <?php echo $Usuarios->username?>"></i></a>
                         </div>                      
                       </td>
                   </tr>
@@ -98,6 +103,7 @@ require '../../recursoshumanos/components/modal.php';
                               <label class="font-weight-bold">Credencial de usuario</label>
                               <hr class="mt-1 mb-4 mr-5">
                               <div class="form-row">
+                              <input id="idUcActual" name="idUcActual" type="hidden">
                                   <input id="idUserCredencialUsuario" name="idUserCredencialUsuario" type="hidden">
                                   <div class="form-group col-md-6">
                                       <label for="usuario">Usuario</label>
@@ -257,6 +263,7 @@ require '../../recursoshumanos/components/modal.php';
   function agregarCredencial(id,idUser,idUc,idCredencial,nameCredencial,nombreEmpleado,apellidoEmpleado,userName){
     document.getElementById('cedulaUsuario').value = id;
     document.getElementById('idUserCredencialUsuario').value = idUser;
+    document.getElementById('idUcActual').value = idUc;
     document.getElementById('nombreEmpleadoUsuario').value = nombreEmpleado;
     document.getElementById('apellidoEmpleadoUsuario').value = apellidoEmpleado;
     document.getElementById('usuario').value = userName;
