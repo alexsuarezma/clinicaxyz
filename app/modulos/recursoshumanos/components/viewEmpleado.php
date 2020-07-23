@@ -1,9 +1,12 @@
 <?php
-    require '../../../../database.php';
-    require 'layout.php';
+require '../../../../database.php';
+require 'layout.php';
+require '../../seguridad/controllers/functions/credenciales.php';
+
+  verificarAcceso("../../../../", "modulo_rrhh");
     $id = $_GET['id'];    
     
-            $records = $conn->prepare("SELECT * FROM empleados AS e, cargo_empleados AS c, personal_empleados AS p, area_empleados AS a, ciudades AS ci WHERE (c.id_cargo = e.id_cargo_emp AND p.id_personal = e.id_personal_emp AND a.id_area = e.id_area_emp AND ci.idciudades = e.id_ciudad_emp) AND id_empleados = :cedula");
+            $records = $conn->prepare("SELECT * FROM empleados AS e, cargo_empleados AS c, horario_empleado AS h, personal_empleados AS p, area_empleados AS a, ciudades AS ci WHERE (c.id_cargo = e.id_cargo_emp AND c.id_horario_cargo = h.id_horario_empleado AND p.id_personal = e.id_personal_emp AND a.id_area = e.id_area_emp AND ci.idciudades = e.id_ciudad_emp) AND id_empleados = :cedula");
             $records->bindParam(':cedula', $id);
             $records->execute();
             $results = $records->fetch(PDO::FETCH_ASSOC);
@@ -23,24 +26,23 @@
     
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/dashboard/">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <title>Recursos Humanos | Ex Empleado</title>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-    <!-- Bootstrap core CSS -->
-    <link href="../assets/dist/css/bootstrap.css" rel="stylesheet">
     <!-- Custom styles for this template -->
     <link href="../assets/styles/component/dashboard.css" rel="stylesheet">
 </head>
 <body>
-<?php
-  
-  printLayout('../index.php', '../../../../index.html', '../routes/contrato.php', '../routes/personal.php', '../routes/reclutamiento.php', '../routes/historialPersonal.php');
+<?php          
+    // printLayout ($route, $homePage, $createPage, $personalPage, $reclutamiento, $historialPersonal, $asistencia,
+    // $logout,$ajuste,$rrhh,$suministro,$contabilidad,$ctas_medicas,$paciente,$seguridad);
+    printLayout('../index.php', '../../../../index.php', '../routes/contrato.php', '../routes/personal.php', 
+    '../routes/reclutamiento.php', '../routes/historialPersonal.php','../routes/listaAsistencias.php','../../seguridad/controllers/logout.php','../../seguridad/routes/perfil.php',
+    '../index.php','../../suministro/','../../contabilidad/','../../citasmedicas/','../../pacientes/','../../seguridad/');
 ?>
 <div class="container-fluid">
   <div class="row">
@@ -175,17 +177,9 @@
                         <input type="text" name="apellidos" class="form-control" value="<?php echo $results["created_at"]?>" disabled="">
                     </div>
                     <div class="col-md-4 mb-3">
-                        <label for="validationServer02">Salario Base</label>
-                        <input type="text" name="apellidos" class="form-control" value="<?php echo $results["salario_base"]?>" disabled="">
-                    </div>
-                    <div class="col-md-4 mb-3">
                         <label for="validationServer02">Contrato</label>
                         <input type="text" name="apellidos" class="form-control" value="<?php echo $results["idcontrato"]?>" disabled="">
                     </div>
-                    <!-- <div class="col-md-4 mb-3">
-                        <label for="validationServer02">Especialidad</label>
-                        <input type="text" name="apellidos" class="form-control" value="" value="php echo $results" disabled="">
-                    </div> -->
                 </div>
                 <div class="form-row">
                     <div class="col-md-3 mb-3">
@@ -200,10 +194,24 @@
                         <label for="validationServer02">Área</label>
                         <input type="text" name="apellidos" class="form-control" value="<?php echo $results['nombre_area']?>" disabled="">
                     </div>
+                </div>
+                <div class="form-row">
                     <div class="col-md-3 mb-3">
-                        <label for="validationServer02">Horario</label>
-                        <input type="text" name="apellidos" class="form-control" value="<?php echo $results["horario"]?>" disabled="">
+                        <label for="validationServer11">Salario base</label>
+                        <input type="text" name="salarioBase" class="form-control" value="<?php echo $results["sueldo_base_cargo"]?>" readonly required>
+                    </div>  
+                    <div class="col-md-3 mb-3">
+                        <label for="validationServer07">Jornada</label>
+                        <input type="text" class="form-control" name="idhorario" id="validationServer44" value="<?php echo $results["jornada"]?>" readonly>
                     </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="validationServer07">Hora Entrada</label>
+                        <input type="text" class="form-control" name="idhorario" id="validationServer44" value="<?php echo $results["inicio"]?>" readonly>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="validationServer07">Hora Salida</label>
+                        <input type="text" class="form-control" name="idhorario" id="validationServer44" value="<?php echo $results["finalizacion"]?>" readonly>
+                    </div> 
                 </div>
                 <label class="font-weight-bolder mt-3">Experiencia laboral</label>
                     <hr class="mt-1 mb-4 mr-5 ">
@@ -342,9 +350,7 @@
    </div>
   </div>
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-  <script>window.jQuery || document.write('<script src="../assets/js/vendor/jquery.slim.min.js"><\/script>')</script><script src="../assets/dist/js/bootstrap.bundle.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
   <script src="scripts/dashboard.js"></script>      
   

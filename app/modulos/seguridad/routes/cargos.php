@@ -4,8 +4,13 @@ require '../components/layout.php';
 require '../../recursoshumanos/components/modal.php';
 require '../controllers/functions/credenciales.php';
 
-
 verificarAcceso("../../../../", "modulo_seguridad");
+
+$actualizar = true;
+
+  if(verificarAccion($conn, "modulo_seguridad", "actualizar") == false){
+    $actualizar = false;
+  }
   
   $cargo = $conn->query("SELECT * FROM cargo_empleados AS c, area_empleados AS a, credencial_base AS cb WHERE c.id_area_cargo = a.id_area AND c.id_credencialbase_cargo = cb.id_credencial ORDER BY nombre_cargo ASC")->fetchAll(PDO::FETCH_OBJ);
   $credencial = $conn->query("SELECT * FROM credencial_base AS c, scope AS s WHERE (c.id_scope_credencial = s.id_scope) ORDER BY nombre_credencial ASC")->fetchAll(PDO::FETCH_OBJ);
@@ -18,7 +23,7 @@ verificarAcceso("../../../../", "modulo_seguridad");
     <meta name="description" content="">
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Jekyll v4.0.1">
-    <title>Seguridad</title>
+    <title> Seguridad | Cargos</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/dashboard/">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
@@ -26,10 +31,23 @@ verificarAcceso("../../../../", "modulo_seguridad");
     <link href="../assets/dist/css/bootstrap.css" rel="stylesheet">
     <!-- Custom styles for this template -->
     <link href="../assets/styles/dashboard.css" rel="stylesheet">
+    <style>
+        #busqueda {
+                background-image: url('/css/searchicon.png');
+                background-position: 10px 12px;
+                background-repeat: no-repeat;
+                width: 100%;
+                font-size: 16px;
+                padding: 12px 20px 12px 40px;
+                border: 1px solid #ddd;
+                margin-bottom: 12px;
+            }
+    </style>
   </head>
   <body>
 <?php
-  printLayout('../index.php', '../../../../index.php', 'credencial.php', 'scopes.php', 'usuarios.php', 'cargos.php');
+ printLayout('../index.php', '../../../../index.php', 'credencial.php', 'scopes.php', 'usuarios.php', 'cargos.php','../controllers/logout.php',
+ 'perfil.php','../recursoshumanos/','../../suministro/','../../contabilidad/','../../citasmedicas/','../../pacientes/','../../seguridad/');
 ?>
 <div class="container-fluid">
   <div class="row">
@@ -48,6 +66,9 @@ verificarAcceso("../../../../", "modulo_seguridad");
           </button>
         </div>
       </div>
+      <div class="container mt-4">
+        <input type="search" name="busqueda" id="busqueda" placeholder="Busca por areas, cargo, credenciales..." title="Type in a name">
+      </div>
       <div class="container mt-5 mb-5">
 
             <table class="table">
@@ -62,21 +83,31 @@ verificarAcceso("../../../../", "modulo_seguridad");
               </thead>
               <tbody>
               <?php
-              foreach ($cargo as $Cargos):
+                 foreach ($cargo as $Cargos):
               ?>
                   <tr>
                       <th scope="row"><?php echo utf8_encode($Cargos->nombre_area)?></th>
                       <td><?php echo utf8_encode($Cargos->nombre_cargo)?></td>
                       <td><?php echo utf8_encode($Cargos->nombre_credencial)?></td>
-                      <td>
-                        <div class="d-flex justify-content-end">
-                          <a onclick="cambiarCredencial('<?php echo $Cargos->id_cargo?>','<?php echo $Cargos->id_credencial?>','<?php echo utf8_encode($Cargos->nombre_cargo)?>','<?php echo utf8_encode($Cargos->nombre_credencial)?>')" data-toggle="modal" href="#updateCredencialAsignada"><i class="far fa-edit" style="color:red; font-size:20px;" title="Editar Credencial del cargo <?php echo utf8_encode($Cargos->nombre_cargo)?>"></i></a>
-                        </div>                      
-                      </td>
+                      <?php
+                        if($actualizar != false):
+                      ?>
+                          <td>
+                            <div class="d-flex justify-content-end">
+                              <a onclick="cambiarCredencial('<?php echo $Cargos->id_cargo?>','<?php echo $Cargos->id_credencial?>','<?php echo utf8_encode($Cargos->nombre_cargo)?>','<?php echo utf8_encode($Cargos->nombre_credencial)?>')" data-toggle="modal" href="#updateCredencialAsignada"><i class="far fa-edit" style="color:red; font-size:20px;" title="Editar Credencial del cargo <?php echo utf8_encode($Cargos->nombre_cargo)?>"></i></a>
+                            </div>                      
+                          </td>
+                      <?php
+                        else:
+                      ?>
+                          <td></td>
+                      <?php
+                        endif;
+                      ?>
                   </tr>
-                  <?php 
-                  endforeach;
-                ?>   
+              <?php 
+                 endforeach;
+              ?>   
               </tbody>
           </table>
           <hr class="mb-4">       

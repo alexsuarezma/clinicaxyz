@@ -1,6 +1,9 @@
 <?php
 require '../../../../database.php';
 $idScope=$_POST['idScope'];
+if($idScope == 5){
+    header("Location: scopes.php");
+}
     $scopes = $conn->query("SELECT * FROM credencial_base WHERE id_scope_credencial = $idScope")->rowCount();
     
     if($scopes>0){

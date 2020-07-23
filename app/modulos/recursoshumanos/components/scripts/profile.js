@@ -9,7 +9,7 @@ $(document).ready(function(){
         document.getElementById("update").className = document.getElementById("update").className.replace(" active", "");
     });
     $('#horario').click(function(){
-        $("#section").load("horario.html");
+        $("#section").load("asistencias.php");
         document.getElementById("horario").className = document.getElementById("horario").className+" active";
         document.getElementById("informacion").className = document.getElementById("informacion").className.replace(" active", "");
         document.getElementById("actividades").className = document.getElementById("actividades").className.replace(" active", "");

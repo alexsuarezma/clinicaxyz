@@ -16,7 +16,7 @@ $provincias = $conn->query("SELECT * FROM provincias ORDER BY nombre ASC")->fetc
     <meta name="description" content="">
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Jekyll v4.0.1">
-	<title>Registrarse</title>
+    <title>Clinica Vitalia | Registro</title>
     <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/sign-in/">
     
     <link href="../assets/dist/css/bootstrap.css" rel="stylesheet">

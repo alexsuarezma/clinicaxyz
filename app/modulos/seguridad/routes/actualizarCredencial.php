@@ -3,8 +3,19 @@ require '../../../../database.php';
 require '../components/layout.php';
 require '../../recursoshumanos/components/modal.php';
 require '../controllers/functions/credenciales.php';
+if($_GET['id'] == 18 && $_GET['id'] == 19){
+    header("Location: credencial.php");
+}
 
 verificarAcceso("../../../../", "modulo_seguridad");
+
+  if(verificarAccion($conn, "modulo_seguridad", "insertar") == false){
+    header("Location: credencial.php");
+  }
+  if(verificarAccion($conn, "modulo_seguridad", "actualizar") == false){
+    header("Location: credencial.php");
+  }
+
   $scopes = $conn->query("SELECT * FROM scope ORDER BY descripcion_rol ASC")->fetchAll(PDO::FETCH_OBJ);
 
         $records = $conn->prepare("SELECT * FROM credencial_base AS c, scope AS s WHERE (c.id_scope_credencial = s.id_scope) AND id_credencial = :id_credencial");
@@ -21,7 +32,7 @@ verificarAcceso("../../../../", "modulo_seguridad");
     <meta name="description" content="">
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Jekyll v4.0.1">
-    <title>Seguridad</title>
+    <title> Seguridad | Actualizar Credenciales</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/dashboard/">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
@@ -32,7 +43,8 @@ verificarAcceso("../../../../", "modulo_seguridad");
   </head>
   <body>
 <?php
-  printLayout('../index.php', '../../../../index.php', 'credencial.php', 'scopes.php', 'usuarios.php', 'cargos.php');
+  printLayout('../index.php', '../../../../index.php', 'credencial.php', 'scopes.php', 'usuarios.php', 'cargos.php','../controllers/logout.php',
+  'perfil.php','../recursoshumanos/','../../suministro/','../../contabilidad/','../../citasmedicas/','../../pacientes/','../../seguridad/');
 ?>
 <div class="container-fluid">
   <div class="row">

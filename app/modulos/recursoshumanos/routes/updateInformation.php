@@ -13,7 +13,7 @@
     $especialidades = $conn->query("SELECT * FROM especialidades ORDER BY descripcion ASC")->fetchAll(PDO::FETCH_OBJ);
     
         if(!isset($_POST["btn-actualizar"])){
-            $records = $conn->prepare("SELECT * FROM empleados AS e, cargo_empleados AS c, personal_empleados AS p, area_empleados AS a, ciudades AS ci WHERE (c.id_cargo = e.id_cargo_emp AND p.id_personal = e.id_personal_emp AND a.id_area = e.id_area_emp AND ci.idciudades = e.id_ciudad_emp) AND id_empleados = :cedula");
+            $records = $conn->prepare("SELECT * FROM empleados AS e, cargo_empleados AS c, horario_empleado AS h, personal_empleados AS p, area_empleados AS a, ciudades AS ci WHERE (c.id_cargo = e.id_cargo_emp AND c.id_horario_cargo = h.id_horario_empleado AND p.id_personal = e.id_personal_emp AND a.id_area = e.id_area_emp AND ci.idciudades = e.id_ciudad_emp) AND id_empleados = :cedula");
             $records->bindParam(':cedula', $id);
             $records->execute();
             $results = $records->fetch(PDO::FETCH_ASSOC);
@@ -119,7 +119,7 @@
             
 
               //UPDATE EMPLEADO
-                $sql = "UPDATE empleados SET nombres=:nombres,apellidos=:apellidos,direccion=:direccion,nacionalidad=:nacionalidad,fecha_nacimiento=:fecha_nacimiento,parroquia=:parroquia,id_ciudad_emp=:id_ciudad_emp,telefono=:telefono,celular=:celular,email=:email,sexo=:sexo,estado_civil=:estado_civil,nombres_conyuge=:nombres_conyuge,apellidos_conyuge=:apellidos_conyuge,salario_base=:salario_base,id_cargo_emp=:id_cargo_emp,id_personal_emp=:id_personal_emp,id_area_emp=:id_area_emp,horario=:horario,documentos_descripcion=:documentos_descripcion,update_at=:update_at WHERE id_empleados=:id_empleados";
+                $sql = "UPDATE empleados SET nombres=:nombres,apellidos=:apellidos,direccion=:direccion,nacionalidad=:nacionalidad,fecha_nacimiento=:fecha_nacimiento,parroquia=:parroquia,id_ciudad_emp=:id_ciudad_emp,telefono=:telefono,celular=:celular,email=:email,sexo=:sexo,estado_civil=:estado_civil,nombres_conyuge=:nombres_conyuge,apellidos_conyuge=:apellidos_conyuge,id_cargo_emp=:id_cargo_emp,id_personal_emp=:id_personal_emp,id_area_emp=:id_area_emp,documentos_descripcion=:documentos_descripcion,update_at=:update_at WHERE id_empleados=:id_empleados";
                 $stmt = $conn->prepare($sql);
 
                 $stmt->bindParam(':id_empleados', $_POST['cedula']);
@@ -138,8 +138,6 @@
                 $stmt->bindParam(':estado_civil',$_POST['estadoCivil']);
                 $stmt->bindParam(':nombres_conyuge',$_POST['nombresConyuge']);
                 $stmt->bindParam(':apellidos_conyuge',$_POST['apellidosConyuge']);
-                $stmt->bindParam(':salario_base',$_POST['salarioBase']);
-                $stmt->bindParam(':horario',$_POST['idhorario']);
                 $stmt->bindParam(':documentos_descripcion',$_POST['documentosDescription']);
                 $stmt->bindValue(':update_at', $updated);
                 $stmt->bindParam(':id_area_emp',$_POST['area']);
@@ -239,12 +237,11 @@
 
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">  
 </head>
 <body>
 
@@ -557,16 +554,6 @@
                     <input type="text" name="created_at" value="<?php echo $results["created_at"]?>" class="form-control" id="validationServer37" readonly>
                   </div>
                   <div class="col-md-3 mb-3">
-                      <label for="validationServer07">Horario</label>
-                      <select class="custom-select" name="idhorario" id="validationServer44" required>
-                      <option selected="true"><?php echo $results["horario"]?></option>
-                      <option disabled value="">Seleccione...</option>
-                      <option>Matutino</option>
-                      <option>Vespertino</option>
-                      <option>Jornada Completa</option>
-                      </select>
-                  </div>
-                  <div class="col-md-3 mb-3">
                     <label for="validationServer09">Tipo de contrato</label>
                     <select class="custom-select" name="idcontrato" id="validationServer39" required>
                       <option selected="true"></option>
@@ -618,11 +605,25 @@
                             <option disabled value="">Seleccione...</option>
                             </select>
                         </div>
-                        <div class="col-md-3 mb-3" id="sueldo">
-                            <label for="validationServer11">Salario base</label>
-                            <input type="text" name="salarioBase" value="<?php echo $results["salario_base"]?>" class="form-control" readonly>
-                        </div>   
                   </div>  
+                  <div class="form-row" id="sueldo">
+                    <div class="col-md-3 mb-3">
+                        <label for="validationServer11">Salario base</label>
+                        <input type="text" name="salarioBase" class="form-control" value="<?php echo $results["sueldo_base_cargo"]?>" readonly required>
+                    </div>  
+                    <div class="col-md-3 mb-3">
+                      <label for="validationServer07">Jornada</label>
+                      <input type="text" class="form-control" name="idhorario" id="validationServer44" value="<?php echo $results["jornada"]?>" readonly>
+                  </div>
+                  <div class="col-md-3 mb-3">
+                      <label for="validationServer07">Hora Entrada</label>
+                      <input type="text" class="form-control" name="idhorario" id="validationServer44" value="<?php echo $results["inicio"]?>" readonly>
+                  </div>
+                  <div class="col-md-3 mb-3">
+                      <label for="validationServer07">Hora Salida</label>
+                      <input type="text" class="form-control" name="idhorario" id="validationServer44" value="<?php echo $results["finalizacion"]?>" readonly>
+                  </div> 
+                </div>
                   
                 <label class="font-weight-bolder mt-3">Contactos para casos de emergencia</label>
                 <hr class="mt-1 mb-4 mr-5 ">

@@ -4,9 +4,20 @@ require '../components/layout.php';
 require '../../recursoshumanos/components/modal.php';
 require '../controllers/functions/credenciales.php';
 
-
 verificarAcceso("../../../../", "modulo_seguridad");
-  
+
+$borradoFisico = true;
+$insertar = true;
+$actualizar = true;
+  if(verificarAccion($conn, "modulo_seguridad", "borrado_fisico") == false){
+    $borradoFisico = false;
+  }
+  if(verificarAccion($conn, "modulo_seguridad", "insertar") == false){
+    $insertar = false;
+  }
+  if(verificarAccion($conn, "modulo_seguridad", "actualizar") == false){
+    $actualizar = false;
+  }
   $scopes = $conn->query("SELECT * FROM scope ORDER BY descripcion_rol ASC")->fetchAll(PDO::FETCH_OBJ);
   $credencial = $conn->query("SELECT * FROM credencial_base AS c, scope AS s WHERE (c.id_scope_credencial = s.id_scope) ORDER BY nombre_credencial ASC")->fetchAll(PDO::FETCH_OBJ);
 ?>
@@ -18,7 +29,7 @@ verificarAcceso("../../../../", "modulo_seguridad");
     <meta name="description" content="">
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Jekyll v4.0.1">
-    <title>Seguridad</title>
+    <title> Seguridad | Credenciales</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/dashboard/">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
@@ -29,7 +40,8 @@ verificarAcceso("../../../../", "modulo_seguridad");
   </head>
   <body>
 <?php
-  printLayout('../index.php', '../../../../index.php', 'credencial.php', 'scopes.php', 'usuarios.php', 'cargos.php');
+  printLayout('../index.php', '../../../../index.php', 'credencial.php', 'scopes.php', 'usuarios.php', 'cargos.php','../controllers/logout.php',
+  'perfil.php','../recursoshumanos/','../../suministro/','../../contabilidad/','../../citasmedicas/','../../pacientes/','../../seguridad/');
 ?>
 <div class="container-fluid">
   <div class="row">
@@ -66,36 +78,86 @@ verificarAcceso("../../../../", "modulo_seguridad");
               </tr>
               </thead>
               <tbody>
+
               <?php
-              foreach ($credencial as $credenciales):
+                if($insertar == false || $actualizar == false):
               ?>
-                  <tr>
-                      <th scope="row"><?php echo $credenciales->nombre_credencial?></th>
-                      <td><?php echo $credenciales->modulo_rrhh?></td>
-                      <td><?php echo $credenciales->modulo_contabilidad?></td>
-                      <td><?php echo $credenciales->modulo_suministros?></td>
-                      <td><?php echo $credenciales->modulo_ctas_medicas?></td>
-                      <td><?php echo $credenciales->modulo_pacientes?></td>
-                      <td><?php echo $credenciales->modulo_seguridad?></td>
-                      <td><?php echo $credenciales->paciente?></td>
-                      <td><?php echo $credenciales->descripcion_rol?></td>
-                      <td>
-                        <div class="d-flex justify-content-end">
-                          <a href="actualizarCredencial.php?id=<?php echo $credenciales->id_credencial?>" ><i class="far fa-edit mr-2" style="color:blue; font-size:20px;" title="Editar Credencial"></i></a>
-                          <a onclick="eliminarCredencial('<?php echo $credenciales->id_credencial?>','<?php echo $credenciales->nombre_credencial?>')" data-toggle="modal" href="#modal-delete"><i class="fas fa-trash-alt" style="color:red; font-size:20px;" title="Eliminar Credencial"></i></a>
-                        </div>                      
-                      </td>
-                  </tr>
+                  <?php
+                      foreach ($credencial as $credenciales):
+                  ?>
+                      <tr>
+                          <th scope="row"><?php echo $credenciales->nombre_credencial?></th>
+                          <td><?php echo $credenciales->modulo_rrhh?></td>
+                          <td><?php echo $credenciales->modulo_contabilidad?></td>
+                          <td><?php echo $credenciales->modulo_suministros?></td>
+                          <td><?php echo $credenciales->modulo_ctas_medicas?></td>
+                          <td><?php echo $credenciales->modulo_pacientes?></td>
+                          <td><?php echo $credenciales->modulo_seguridad?></td>
+                          <td><?php echo $credenciales->paciente?></td>
+                          <td><?php echo $credenciales->descripcion_rol?></td>
+                          <td></td>
+                      </tr>
                   <?php 
-                  endforeach;
-                ?>   
+                      endforeach;
+                  ?>  
+              <?php 
+                else:
+              ?>
+
+                  <?php
+                      foreach ($credencial as $credenciales):
+                  ?>
+                        <tr>
+                            <th scope="row"><?php echo $credenciales->nombre_credencial?></th>
+                            <td><?php echo $credenciales->modulo_rrhh?></td>
+                            <td><?php echo $credenciales->modulo_contabilidad?></td>
+                            <td><?php echo $credenciales->modulo_suministros?></td>
+                            <td><?php echo $credenciales->modulo_ctas_medicas?></td>
+                            <td><?php echo $credenciales->modulo_pacientes?></td>
+                            <td><?php echo $credenciales->modulo_seguridad?></td>
+                            <td><?php echo $credenciales->paciente?></td>
+                            <td><?php echo $credenciales->descripcion_rol?></td>
+                            <?php
+                              if($credenciales->id_credencial != 18 && $credenciales->id_credencial != 19):
+                            ?>
+                            <td>
+                              <div class="d-flex justify-content-end">
+                                <a href="actualizarCredencial.php?id=<?php echo $credenciales->id_credencial?>" ><i class="far fa-edit mr-2" style="color:blue; font-size:20px;" title="Editar Credencial"></i></a>
+                                  <?php
+                                      if($borradoFisico == true):
+                                  ?>
+                                    <a onclick="eliminarCredencial('<?php echo $credenciales->id_credencial?>','<?php echo $credenciales->nombre_credencial?>')" data-toggle="modal" href="#modal-delete"><i class="fas fa-trash-alt" style="color:red; font-size:20px;" title="Eliminar Credencial"></i></a>
+                                  <?php
+                                    endif;
+                                  ?>
+                              </div>                      
+                            </td>
+                            <?php
+                              else:
+                            ?>
+                                <td></td>
+                            <?php
+                              endif;
+                            ?>
+                        </tr>
+                  <?php 
+                    endforeach;
+                  ?>
+              <?php 
+                endif;
+              ?>   
               </tbody>
           </table>
           <hr class="mb-4">
-          <div class="d-flex justify-content-center">
-              <a href="#" class="text-secondary" id="agregar" name="agregar" title="Agrega una nueva credencial"><i class="fas fa-plus-circle" style="font-size:35px;"></i></a>
-          </div>
-          
+          <?php
+                if($insertar != false || $actualizar != false):
+          ?>
+              <div class="d-flex justify-content-center">
+                  <a href="#" class="text-secondary" id="agregar" name="agregar" title="Agrega una nueva credencial"><i class="fas fa-plus-circle" style="font-size:35px;"></i></a>
+              </div>
+          <?php 
+            endif;
+          ?>   
             <div class='modal fade' name='agregarCredencial' id='agregarCredencial' data-backdrop='static' data-keyboard='false' tabindex='-1' role='dialog' aria-labelledby='staticBackdropLabe' aria-hidden='true'>
                 <div class='modal-dialog' style="max-width:800px;" >
                     <div class='modal-content'>

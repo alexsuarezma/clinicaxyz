@@ -34,23 +34,53 @@
 
     if (isset($_POST['cargo'])) {
         $q = $conn->real_escape_string($_POST['cargo']);
-        $query= "SELECT * FROM cargo_empleados WHERE id_cargo=$q";	
+        $query= "SELECT * FROM cargo_empleados AS c, horario_empleado AS h WHERE c.id_horario_cargo = h.id_horario_empleado AND id_cargo=$q";	
 
         $resultado = $conn->query($query);
 
-        $salida.="<label for='validationServer11'>Salario base</label>";
+        $salida.="<div class='col-md-3 mb-3'>
+                        <label for='validationServer11'>Salario base</label>";
         
         if ($resultado->num_rows>0) {
             $resultado=$resultado->fetch_assoc();
         
             
             if($resultado['sueldo_base_cargo']!= NULL){
-                $salida.="<input type='text' name='salarioBase' class='form-control' id='validationServer38' value=".$resultado['sueldo_base_cargo']." readonly required>";
+                $salida.="<input type='text' name='salarioBase' class='form-control' id='validationServer38' value=".$resultado['sueldo_base_cargo']." readonly required>
+                </div>";
             }else{
-                $salida.="<input type='text' name='salarioBase' class='form-control' id='validationServer38' readonly required>";
+                $salida.="<input type='text' name='salarioBase' class='form-control' id='validationServer38' readonly required>
+                </div>";
             }   
+
+            $salida.="<div class='col-md-3 mb-3'>
+                <label for='validationServer07'>Jornada</label>
+                <input type='text' class='form-control' name='idhorario' id='validationServer44' value=".$resultado['jornada']." readonly>
+            </div>
+            <div class='col-md-3 mb-3'>
+                <label for='validationServer07'>Hora Entrada</label>
+                <input type='text' class='form-control' name='idhorario' id='validationServer44' value=".$resultado['inicio']." readonly>
+            </div>
+            <div class='col-md-3 mb-3'>
+                <label for='validationServer07'>Hora Salida</label>
+                <input type='text' class='form-control' name='idhorario' id='validationServer44' value=".$resultado['finalizacion']." readonly>
+            </div>";
+
         }else{
-            $salida.="<input type='text' name='salarioBase' class='form-control' id='validationServer38' readonly required>";
+            $salida.="<input type='text' name='salarioBase' class='form-control' id='validationServer38' readonly required>
+            </div>
+            <div class='col-md-3 mb-3'>
+                <label for='validationServer07'>Jornada</label>
+                <input type='text' class='form-control' name='idhorario' id='validationServer44' readonly>
+            </div>
+            <div class='col-md-3 mb-3'>
+                <label for='validationServer07'>Hora Entrada</label>
+                <input type='text' class='form-control' name='idhorario' id='validationServer44' readonly>
+            </div>
+            <div class='col-md-3 mb-3'>
+                <label for='validationServer07'>Hora Salida</label>
+                <input type='text' class='form-control' name='idhorario' id='validationServer44' readonly>
+            </div>";
         }  
     }
 

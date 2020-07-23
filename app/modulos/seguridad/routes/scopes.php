@@ -4,8 +4,19 @@ require '../components/layout.php';
 require '../../recursoshumanos/components/modal.php';
 require '../controllers/functions/credenciales.php';
 
-
 verificarAcceso("../../../../", "modulo_seguridad");
+$borradoFisico = true;
+$insertar = true;
+$actualizar = true;
+  if(verificarAccion($conn, "modulo_seguridad", "borrado_fisico") == false){
+    $borradoFisico = false;
+  }
+  if(verificarAccion($conn, "modulo_seguridad", "insertar") == false){
+    $insertar = false;
+  }
+  if(verificarAccion($conn, "modulo_seguridad", "actualizar") == false){
+    $actualizar = false;
+  }
   
   $scopes = $conn->query("SELECT * FROM scope ORDER BY descripcion_rol ASC")->fetchAll(PDO::FETCH_OBJ);
 ?>
@@ -17,7 +28,7 @@ verificarAcceso("../../../../", "modulo_seguridad");
     <meta name="description" content="">
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Jekyll v4.0.1">
-    <title>Seguridad</title>
+    <title> Seguridad | Acciones</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/dashboard/">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
@@ -28,7 +39,8 @@ verificarAcceso("../../../../", "modulo_seguridad");
   </head>
   <body>
 <?php
-  printLayout('../index.php', '../../../../index.php', 'credencial.php', 'scopes.php', 'usuarios.php', 'cargos.php');
+  printLayout('../index.php', '../../../../index.php', 'credencial.php', 'scopes.php', 'usuarios.php', 'cargos.php','../controllers/logout.php',
+  'perfil.php','../recursoshumanos/','../../suministro/','../../contabilidad/','../../citasmedicas/','../../pacientes/','../../seguridad/');
 ?>
 <div class="container-fluid">
   <div class="row">
@@ -65,6 +77,31 @@ verificarAcceso("../../../../", "modulo_seguridad");
               </tr>
               </thead>
               <tbody>
+              <?php
+                if($insertar == false || $actualizar == false):
+              ?>
+                  <?php
+                    foreach ($scopes as $Scopes):
+                  ?>
+                      <tr>
+                          <th scope="row"><?php echo $Scopes->descripcion_rol?></th>
+                          <td><?php echo $Scopes->nivel_scope?></td>
+                          <td><?php echo $Scopes->lectura?></td>
+                          <td><?php echo $Scopes->insertar?></td>
+                          <td><?php echo $Scopes->actualizar?></td>
+                          <td><?php echo $Scopes->actualizar_informacion?></td>
+                          <td><?php echo $Scopes->borrado_logico?></td>
+                          <td><?php echo $Scopes->borrado_fisico?></td>
+                          <td><?php echo $Scopes->crear_usuarios?></td>
+                          <td></td>
+                      </tr>
+                  <?php 
+                    endforeach;
+                  ?>  
+              <?php 
+                else:
+              ?>
+
                 <?php
                 foreach ($scopes as $Scopes):
                 ?>
@@ -78,24 +115,48 @@ verificarAcceso("../../../../", "modulo_seguridad");
                       <td><?php echo $Scopes->borrado_logico?></td>
                       <td><?php echo $Scopes->borrado_fisico?></td>
                       <td><?php echo $Scopes->crear_usuarios?></td>
-                      <td>
-                        <div class="d-flex justify-content-end">
-                          <a href="actualizarScope.php?id=<?php echo $Scopes->id_scope?>" ><i class="far fa-edit mr-2" style="color:blue; font-size:20px;" title="Editar Scope"></i></a>
-                          <a onclick="eliminarScope('<?php echo $Scopes->id_scope?>','<?php echo $Scopes->descripcion_rol?>')" data-toggle="modal" href="#modal-delete"><i class="fas fa-trash-alt" style="color:red; font-size:20px;" title="Eliminar Scope"></i></a>
-                        </div>                      
-                      </td>
+                      <?php
+                        if($Scopes->id_scope != 5):
+                      ?>
+                          <td>
+                            <div class="d-flex justify-content-end">
+                              <a href="actualizarScope.php?id=<?php echo $Scopes->id_scope?>" ><i class="far fa-edit mr-2" style="color:blue; font-size:20px;" title="Editar Scope"></i></a>
+                            <?php
+                              if($borradoFisico == true):
+                            ?>
+                                <a onclick="eliminarScope('<?php echo $Scopes->id_scope?>','<?php echo $Scopes->descripcion_rol?>')" data-toggle="modal" href="#modal-delete"><i class="fas fa-trash-alt" style="color:red; font-size:20px;" title="Eliminar Scope"></i></a>
+                            <?php
+                              endif;
+                            ?>
+                            </div>                      
+                          </td>
+                      <?php
+                        else:
+                      ?>
+                          <td></td>
+                      <?php
+                        endif;
+                      ?>
                   </tr>
                   <?php 
-                  endforeach;
-                ?>   
+                    endforeach;
+                  ?> 
+              <?php
+                endif;
+              ?>  
               </tbody>
           </table>
           <hr class="mb-4">
-          <div class="d-flex justify-content-center">
-              <a href="#" class="text-secondary" id="agregar" name="agregar" title="Agrega un nuevo scope"><i class="fas fa-plus-circle" style="font-size:35px;"></i></a>
-          </div>
+          <?php
+            if($insertar != false || $actualizar != false):
+          ?>
+              <div class="d-flex justify-content-center">
+                  <a href="#" class="text-secondary" id="agregar" name="agregar" title="Agrega un nuevo scope"><i class="fas fa-plus-circle" style="font-size:35px;"></i></a>
+              </div>
+          <?php
+            endif;
+          ?>  
           
-          <!-- <button type="button" class="btn btn-success" id="agregar" name="agregar">AGREGAR</button> -->
 
             <div class='modal fade' name='agregarScope' id='agregarScope' data-backdrop='static' data-keyboard='false' tabindex='-1' role='dialog' aria-labelledby='staticBackdropLabe' aria-hidden='true'>
                 <div class='modal-dialog' style="max-width:800px;" >

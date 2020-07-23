@@ -15,9 +15,10 @@ verificarAcceso("../../../", "modulo_seguridad");
     <meta name="description" content="">
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Jekyll v4.0.1">
-    <title>Seguridad</title>
+    <title>Clinica Vitalia | Seguridad</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/dashboard/">
+    <link href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" rel="stylesheet">
     <!-- Bootstrap core CSS -->
     <link href="../assets/dist/css/bootstrap.css" rel="stylesheet">
     <!-- Custom styles for this template -->
@@ -25,7 +26,8 @@ verificarAcceso("../../../", "modulo_seguridad");
   </head>
   <body>
 <?php
-  printLayout('index.php', '../../../index.php', 'routes/credencial.php', 'routes/scopes.php', 'routes/usuarios.php', 'routes/cargos.php');
+  printLayout('index.php', '../../../index.php', 'routes/credencial.php', 'routes/scopes.php', 'routes/usuarios.php', 'routes/cargos.php',
+  'controllers/logout.php','routes/perfil.php','../recursoshumanos/','../suministro/','../contabilidad/','../citasmedicas/','../pacientes/','../seguridad/');
 ?>
 <div class="container-fluid">
   <div class="row">

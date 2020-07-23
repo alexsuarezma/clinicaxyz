@@ -2,12 +2,15 @@
 
   
   require '../../../../database.php';
+  date_default_timezone_set('America/Guayaquil');
   require '../components/layout.php';
+  require '../../seguridad/controllers/functions/credenciales.php';
+
+  verificarAcceso("../../../../", "modulo_rrhh");
   
 
     $created = date('d')."/".date('m')."/".date('Y');
-    $hora = (date("H")-7);
-    $creacion = date('d')."/".date('m')."/".date('Y')." ".$hora.":".date("i").":".date("s");
+    $creacion = date('d')."/".date('m')."/".date('Y')." ".date("H").":".date("i").":".date("s");
     
     $ciudades = $conn->query("SELECT * FROM ciudades ORDER BY nombre ASC")->fetchAll(PDO::FETCH_OBJ);
     $personal = $conn->query("SELECT * FROM personal_empleados ORDER BY nombre_personal ASC")->fetchAll(PDO::FETCH_OBJ);
@@ -78,7 +81,7 @@
             
                                     $sql = "INSERT INTO empleados 
                                         (id_empleados,profileimage,medico,nombres,apellidos,direccion,nacionalidad,fecha_nacimiento,parroquia,id_ciudad_emp,telefono,celular,email,sexo,estado_civil,
-                                        nombres_conyuge,apellidos_conyuge,salario_base,horario,documentos_descripcion,fileDocument,disponible,deleted,created_at,update_at,id_area_emp,id_cargo_emp,id_personal_emp,id_usuario_emp) VALUES (:id_empleados,:profileimage,:medico,:nombres,:apellidos,:direccion,:nacionalidad,:fecha_nacimiento,:parroquia,:id_ciudad_emp,:telefono,:celular,:email,:sexo,:estado_civil,:nombres_conyuge,:apellidos_conyuge,:salario_base,:horario,:documentos_descripcion,:fileDocument,:disponible,:deleted,:created_at,:update_at,:id_area_emp,:id_cargo_emp,:id_personal_emp,:id_usuario_emp)";
+                                        nombres_conyuge,apellidos_conyuge,documentos_descripcion,fileDocument,disponible,deleted,created_at,update_at,id_area_emp,id_cargo_emp,id_personal_emp,id_usuario_emp) VALUES (:id_empleados,:profileimage,:medico,:nombres,:apellidos,:direccion,:nacionalidad,:fecha_nacimiento,:parroquia,:id_ciudad_emp,:telefono,:celular,:email,:sexo,:estado_civil,:nombres_conyuge,:apellidos_conyuge,:documentos_descripcion,:fileDocument,:disponible,:deleted,:created_at,:update_at,:id_area_emp,:id_cargo_emp,:id_personal_emp,:id_usuario_emp)";
                                     $stmt = $conn->prepare($sql);
                                     $stmt->bindParam(':id_empleados', $_POST['cedula']);
                                     $stmt->bindParam(':profileimage', $gravatar);
@@ -96,8 +99,6 @@
                                     $stmt->bindParam(':estado_civil',$_POST['estadoCivil']);
                                     $stmt->bindParam(':nombres_conyuge',$_POST['nombresConyuge']);
                                     $stmt->bindParam(':apellidos_conyuge',$_POST['apellidosConyuge']);
-                                    $stmt->bindParam(':salario_base',$_POST['salarioBase']);
-                                    $stmt->bindParam(':horario',$_POST['idhorario']);
                                     $stmt->bindParam(':documentos_descripcion',$_POST['documentosDescription']);
                                     $stmt->bindParam(':fileDocument', $archivo);
                                     $stmt->bindValue(':deleted', 0, PDO::PARAM_INT);
@@ -215,26 +216,24 @@
 ?>
 
 <!doctype html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
-    <meta name="generator" content="Jekyll v4.0.1">
-    <title>Recursos Humanos</title>
+    <title>Recursos Humanos | Ingresar Empleado</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-    <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/dashboard/">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">  
-    <!-- Bootstrap core CSS -->
-    <link href="../assets/dist/css/bootstrap.css" rel="stylesheet">
+    <link href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" rel="stylesheet">    
     <!-- Custom styles for this template -->
     <link href="../assets/styles/component/dashboard.css" rel="stylesheet">
   </head>
   <body>
-<?php
-  printLayout('../index.php', '../../../../index.html', 'contrato.php', 'personal.php', 'reclutamiento.php', 'historialPersonal.php');
-?>
+  <?php          
+    // printLayout ($route, $homePage, $createPage, $personalPage, $reclutamiento, $historialPersonal, $asistencia,
+    // $logout,$ajuste,$rrhh,$suministro,$contabilidad,$ctas_medicas,$paciente,$seguridad);
+    printLayout('../index.php', '../../../../index.php', 'contrato.php', 'personal.php', 
+    'reclutamiento.php', 'historialPersonal.php','listaAsistencias.php','../../seguridad/controllers/logout.php','../../seguridad/routes/perfil.php',
+    '../index.php','../../suministro/','../../contabilidad/','../../citasmedicas/','../../pacientes/','../../seguridad/');
+  ?>
 <div class="container-fluid">
   <div class="row">
 
@@ -691,21 +690,9 @@
                 <label class="font-weight-bolder mt-3">Información ocupacional</label>
                 <hr class="mt-1 mb-4 mr-5 ">
                 <div class="form-row">
-                  <div class="col-md-2 mb-3">
+                  <div class="col-md-3 mb-3">
                     <label for="validationServer08">Fecha ingreso</label>
                     <input type="text" name="created_at" class="form-control" value="<?php echo $created?>" id="validationServer37" readonly>
-                  </div>
-                  <div class="col-md-3 mb-3">
-                    <label for="validationServer07">Horario</label>
-                    <select class="custom-select" name="idhorario" id="validationServer44" required>
-                        <option selected disabled value="">Seleccione...</option>
-                        <option>Matutino</option>
-                        <option>Vespertino</option>
-                        <option>Jornada Completa</option>
-                        </select>
-                      <div class="invalid-feedback">
-                      <!--mensaje para feedback del campo.-->
-                      </div>
                   </div>
                   <div class="col-md-3 mb-3">
                     <label for="validationServer09">Tipo de contrato</label>
@@ -773,10 +760,25 @@
                         <option selected disabled value="">Seleccione...</option>
                         </select>
                     </div>
-                    <div class="col-md-3 mb-3" id="sueldo">
+                    
+                </div>
+                <div class="form-row" id="sueldo">
+                    <div class="col-md-3 mb-3">
                         <label for="validationServer11">Salario base</label>
                         <input type="text" name="salarioBase" class="form-control" readonly required>
-                    </div>   
+                    </div>  
+                    <div class="col-md-3 mb-3">
+                      <label for="validationServer07">Jornada</label>
+                      <input type="text" class="form-control" name="idhorario" id="validationServer44" readonly>
+                  </div>
+                  <div class="col-md-3 mb-3">
+                      <label for="validationServer07">Hora Entrada</label>
+                      <input type="text" class="form-control" name="idhorario" id="validationServer44" readonly>
+                  </div>
+                  <div class="col-md-3 mb-3">
+                      <label for="validationServer07">Hora Salida</label>
+                      <input type="text" class="form-control" name="idhorario" id="validationServer44" readonly>
+                  </div> 
                 </div>
                 <label class="font-weight-bolder mt-3">Descripcion de documentos que adjuntar</label>
                 <hr class="mt-1 mb-4 mr-5 ">
@@ -800,10 +802,8 @@
   </div>
 </div>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-    <script>window.jQuery || document.write('<script src="../assets/js/vendor/jquery.slim.min.js"><\/script>')</script><script src="../assets/dist/js/bootstrap.bundle.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
     
     <script src="../components/scripts/dashboard.js"></script>   
     <script src="../controllers/validation/validation.js"></script>   

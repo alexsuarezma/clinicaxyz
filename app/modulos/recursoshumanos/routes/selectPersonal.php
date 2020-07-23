@@ -1,6 +1,9 @@
 <?php
   require '../components/layout.php';
-  ?>
+  require '../../seguridad/controllers/functions/credenciales.php';
+
+  verificarAcceso("../../../../", "modulo_rrhh");
+?>
 <!doctype html>
 <html lang="en">
   <head>
@@ -22,7 +25,11 @@
 </head>
   <body>
 <?php
-    printLayout('../index.php', '../../../../index.html', 'contrato.php', 'selectPersonal.php', 'reclutamiento.php', 'historialPersonal.php');
+    // printLayout ($route, $homePage, $createPage, $personalPage, $reclutamiento, $historialPersonal, $asistencia,
+    // $logout,$ajuste,$rrhh,$suministro,$contabilidad,$ctas_medicas,$paciente,$seguridad);
+    printLayout('../index.php', '../../../../index.php', 'contrato.php', 'personal.php', 
+    'reclutamiento.php', 'historialPersonal.php','listaAsistencias.php','../../seguridad/controllers/logout.php','../../seguridad/routes/perfil.php',
+    '../index.php','../../suministro/','../../contabilidad/','../../citasmedicas/','../../pacientes/','../../seguridad/');
 ?>
 <div class="container-fluid">
   <div class="row">

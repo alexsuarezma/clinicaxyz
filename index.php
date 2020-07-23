@@ -120,7 +120,7 @@
             ?>            
             <!-- <a class='dropdown-item' href='#'><i class='fas fa-file-medical-alt mr-3'></i> Historial Clinico</a> -->
             <hr class="ml-4 mr-4 mt-2">
-            <a class='dropdown-item mt-2' style="float:right;" href='#'><span class="float-right">Ajustes de Usuario</span></a>
+            <a class='dropdown-item mt-2' style="float:right;" href='app/modulos/seguridad/routes/perfil.php'><span class="float-right">Ajustes de Usuario</span></a>
             <a class='dropdown-item' style="float:right;" href='#'><span class="float-right">Another</span></a>
             <a class='dropdown-item' style="float:right;" href='app/modulos/seguridad/controllers/logout.php'><span class="float-right">Cerrar Sesión</span></a>
           </div>
