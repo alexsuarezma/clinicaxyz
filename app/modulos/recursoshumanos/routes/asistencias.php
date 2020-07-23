@@ -76,8 +76,7 @@ $id = $_SESSION['cedula'];
                     right:'month,basicWeek,basicDay,agendaWeek,agendaDay'
                 }, 
                     //MARCAR EVENTOS
-                events:`http://localhost:8080/app/modulos/recursoshumanos/controllers/consultaAsistencia.php?cedula=${document.getElementById('cedula').value}`,
-
+                events:`../controllers/consultaAsistencia.php?cedula=${document.getElementById('cedula').value}`,
                 eventClick:function(calEvent,jsEvent,view){
                     $('#tituloEvento').html(`${calEvent.nombres} ${calEvent.apellidos}`);
                     $('#horaEntrada').html(calEvent.hora_entrada);
