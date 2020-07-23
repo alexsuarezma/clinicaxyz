@@ -57,7 +57,7 @@ $actualizar = true;
   <body>
 <?php
   printLayout('../index.php', '../../../../index.php', 'credencial.php', 'scopes.php', 'usuarios.php', 'cargos.php','../controllers/logout.php',
-  'perfil.php','../recursoshumanos/','../../suministro/','../../contabilidad/','../../citasmedicas/','../../pacientes/','../../seguridad/');
+  'perfil.php','../../recursoshumanos/','../../suministro/','../../contabilidad/','../../citasmedicas/','../../pacientes/','../../seguridad/');
 ?>
 <div class="container-fluid">
   <div class="row">
