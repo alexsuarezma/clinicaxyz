@@ -12,11 +12,10 @@ $actualizar = true;
     $actualizar = false;
   }
   
-  $cargo = $conn->query("SELECT * FROM cargo_empleados AS c, area_empleados AS a, credencial_base AS cb WHERE c.id_area_cargo = a.id_area AND c.id_credencialbase_cargo = cb.id_credencial ORDER BY nombre_cargo ASC")->fetchAll(PDO::FETCH_OBJ);
   $credencial = $conn->query("SELECT * FROM credencial_base AS c, scope AS s WHERE (c.id_scope_credencial = s.id_scope) ORDER BY nombre_credencial ASC")->fetchAll(PDO::FETCH_OBJ);
 ?>
 <!doctype html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -70,46 +69,7 @@ $actualizar = true;
         <input type="search" name="busqueda" id="busqueda" placeholder="Busca por areas, cargo, credenciales..." title="Type in a name">
       </div>
       <div class="container mt-5 mb-5">
-
-            <table class="table">
-              <thead class="thead-dark">
-              <tr>
-                  <th scope="col">Area</th>
-                  <th scope="col">Cargo</th>
-                  <th scope="col">Nombre Credencial Asignada</th>
-                  <th scope="col"></th>
-
-              </tr>
-              </thead>
-              <tbody>
-              <?php
-                 foreach ($cargo as $Cargos):
-              ?>
-                  <tr>
-                      <th scope="row"><?php echo utf8_encode($Cargos->nombre_area)?></th>
-                      <td><?php echo utf8_encode($Cargos->nombre_cargo)?></td>
-                      <td><?php echo utf8_encode($Cargos->nombre_credencial)?></td>
-                      <?php
-                        if($actualizar != false):
-                      ?>
-                          <td>
-                            <div class="d-flex justify-content-end">
-                              <a onclick="cambiarCredencial('<?php echo $Cargos->id_cargo?>','<?php echo $Cargos->id_credencial?>','<?php echo utf8_encode($Cargos->nombre_cargo)?>','<?php echo utf8_encode($Cargos->nombre_credencial)?>')" data-toggle="modal" href="#updateCredencialAsignada"><i class="far fa-edit" style="color:red; font-size:20px;" title="Editar Credencial del cargo <?php echo utf8_encode($Cargos->nombre_cargo)?>"></i></a>
-                            </div>                      
-                          </td>
-                      <?php
-                        else:
-                      ?>
-                          <td></td>
-                      <?php
-                        endif;
-                      ?>
-                  </tr>
-              <?php 
-                 endforeach;
-              ?>   
-              </tbody>
-          </table>
+            <div id="datosCargos"></div>
           <hr class="mb-4">       
       </div>
     </main>
@@ -192,6 +152,7 @@ $actualizar = true;
 <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 <script src="../components/scripts/dashboard.js"></script> 
+<script src="../components/scripts/filtroCargos.js"></script>
 <script src="../components/scripts/consulta.js"></script> 
 <script>
 

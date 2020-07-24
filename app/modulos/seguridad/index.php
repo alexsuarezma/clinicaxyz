@@ -3,7 +3,6 @@ require '../../../database.php';
 require 'components/layout.php';
 require 'controllers/functions/credenciales.php';
 
-
 verificarAcceso("../../../", "modulo_seguridad");
 
 ?>

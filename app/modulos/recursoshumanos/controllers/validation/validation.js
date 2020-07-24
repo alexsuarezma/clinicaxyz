@@ -38,7 +38,7 @@ function soloMeses(input){
 
 function isMedic(input,especialidad){
   var tempValue = input.value;
-    if(tempValue == 2){     
+    if(tempValue == 22){     
       document.getElementById(especialidad).disabled = false;
       document.getElementById(especialidad).className = "custom-select is-valid";
       document.getElementById(especialidad).focus();

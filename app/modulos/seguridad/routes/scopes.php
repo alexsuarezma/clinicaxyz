@@ -5,18 +5,10 @@ require '../../recursoshumanos/components/modal.php';
 require '../controllers/functions/credenciales.php';
 
 verificarAcceso("../../../../", "modulo_seguridad");
-$borradoFisico = true;
-$insertar = true;
-$actualizar = true;
-  if(verificarAccion($conn, "modulo_seguridad", "borrado_fisico") == false){
-    $borradoFisico = false;
-  }
-  if(verificarAccion($conn, "modulo_seguridad", "insertar") == false){
-    $insertar = false;
-  }
-  if(verificarAccion($conn, "modulo_seguridad", "actualizar") == false){
-    $actualizar = false;
-  }
+
+$_SESSION['insertar'] = verificarAccion($conn, "modulo_seguridad", "insertar");
+$_SESSION['actualizar'] = verificarAccion($conn, "modulo_seguridad", "actualizar");
+$_SESSION['borrado_fisico'] = verificarAccion($conn, "modulo_seguridad", "borrado_fisico");
   
   $scopes = $conn->query("SELECT * FROM scope ORDER BY descripcion_rol ASC")->fetchAll(PDO::FETCH_OBJ);
 ?>
@@ -78,7 +70,7 @@ $actualizar = true;
               </thead>
               <tbody>
               <?php
-                if($insertar == false || $actualizar == false):
+                if($_SESSION['insertar'] == false || $_SESSION['actualizar'] == false):
               ?>
                   <?php
                     foreach ($scopes as $Scopes):
@@ -122,7 +114,7 @@ $actualizar = true;
                             <div class="d-flex justify-content-end">
                               <a href="actualizarScope.php?id=<?php echo $Scopes->id_scope?>" ><i class="far fa-edit mr-2" style="color:blue; font-size:20px;" title="Editar Scope"></i></a>
                             <?php
-                              if($borradoFisico == true):
+                              if($_SESSION['borrado_fisico'] == true):
                             ?>
                                 <a onclick="eliminarScope('<?php echo $Scopes->id_scope?>','<?php echo $Scopes->descripcion_rol?>')" data-toggle="modal" href="#modal-delete"><i class="fas fa-trash-alt" style="color:red; font-size:20px;" title="Eliminar Scope"></i></a>
                             <?php
@@ -148,7 +140,7 @@ $actualizar = true;
           </table>
           <hr class="mb-4">
           <?php
-            if($insertar != false || $actualizar != false):
+            if($_SESSION['insertar'] != false):
           ?>
               <div class="d-flex justify-content-center">
                   <a href="#" class="text-secondary" id="agregar" name="agregar" title="Agrega un nuevo scope"><i class="fas fa-plus-circle" style="font-size:35px;"></i></a>

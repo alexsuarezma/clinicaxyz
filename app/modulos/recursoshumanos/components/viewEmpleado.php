@@ -6,7 +6,8 @@ require '../../seguridad/controllers/functions/credenciales.php';
   verificarAcceso("../../../../", "modulo_rrhh");
     $id = $_GET['id'];    
     
-            $records = $conn->prepare("SELECT * FROM empleados AS e, cargo_empleados AS c, horario_empleado AS h, personal_empleados AS p, area_empleados AS a, ciudades AS ci WHERE (c.id_cargo = e.id_cargo_emp AND c.id_horario_cargo = h.id_horario_empleado AND p.id_personal = e.id_personal_emp AND a.id_area = e.id_area_emp AND ci.idciudades = e.id_ciudad_emp) AND id_empleados = :cedula");
+            $records = $conn->prepare("SELECT * FROM empleados AS e, cargo_empleados AS c, horario_empleado AS h, cargo_horario AS ch, area_empleados AS a, ciudades AS ci WHERE (e.id_cargo_horario_emp = ch.id_cargo_horario 
+            AND ch.id_horario_ch = h.id_horario_empleado AND ch.id_cargo_ch = c.id_cargo AND c.id_area_cargo = a.id_area AND ci.idciudades = e.id_ciudad_emp) AND id_empleados = :cedula");
             $records->bindParam(':cedula', $id);
             $records->execute();
             $results = $records->fetch(PDO::FETCH_ASSOC);
@@ -182,17 +183,13 @@ require '../../seguridad/controllers/functions/credenciales.php';
                     </div>
                 </div>
                 <div class="form-row">
-                    <div class="col-md-3 mb-3">
+                    <div class="col-md-6 mb-3">
                         <label for="validationServer02">Cargo</label>
-                        <input type="text" name="apellidos" class="form-control" value="<?php echo $results['nombre_cargo']?>" disabled="">
+                        <input type="text" name="apellidos" class="form-control" value="<?php echo utf8_encode($results['nombre_cargo'])?>" disabled="">
                     </div>
-                    <div class="col-md-3 mb-3">
-                        <label for="validationServer02">Personal</label>
-                        <input type="text" name="apellidos" class="form-control" value="<?php echo $results['nombre_personal']?>" disabled="">
-                    </div>
-                    <div class="col-md-3 mb-3">
+                    <div class="col-md-6 mb-3">
                         <label for="validationServer02">Área</label>
-                        <input type="text" name="apellidos" class="form-control" value="<?php echo $results['nombre_area']?>" disabled="">
+                        <input type="text" name="apellidos" class="form-control" value="<?php echo utf8_encode($results['nombre_area'])?>" disabled="">
                     </div>
                 </div>
                 <div class="form-row">

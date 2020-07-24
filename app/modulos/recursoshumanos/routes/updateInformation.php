@@ -1,19 +1,18 @@
 <?php
     require '../../../../database.php';
     session_start();
+    date_default_timezone_set('America/Guayaquil');
     $id = $_SESSION['cedula'];
     
-    $hora = (date("H")-7);
-    $updated = date('d')."/".date('m')."/".date('Y')." ".$hora.":".date("i").":".date("s");
+    $updated = date('d')."/".date('m')."/".date('Y')." ".date("H").":".date("i").":".date("s");
 
     $ciudades = $conn->query("SELECT * FROM ciudades ORDER BY nombre ASC")->fetchAll(PDO::FETCH_OBJ);
-    $cargos = $conn->query("SELECT * FROM cargo_empleados ORDER BY nombre_cargo ASC")->fetchAll(PDO::FETCH_OBJ);
-    $personales = $conn->query("SELECT * FROM personal_empleados ORDER BY nombre_personal ASC")->fetchAll(PDO::FETCH_OBJ);
     $areas = $conn->query("SELECT * FROM area_empleados ORDER BY nombre_area ASC")->fetchAll(PDO::FETCH_OBJ);
     $especialidades = $conn->query("SELECT * FROM especialidades ORDER BY descripcion ASC")->fetchAll(PDO::FETCH_OBJ);
     
         if(!isset($_POST["btn-actualizar"])){
-            $records = $conn->prepare("SELECT * FROM empleados AS e, cargo_empleados AS c, horario_empleado AS h, personal_empleados AS p, area_empleados AS a, ciudades AS ci WHERE (c.id_cargo = e.id_cargo_emp AND c.id_horario_cargo = h.id_horario_empleado AND p.id_personal = e.id_personal_emp AND a.id_area = e.id_area_emp AND ci.idciudades = e.id_ciudad_emp) AND id_empleados = :cedula");
+            $records = $conn->prepare("SELECT * FROM empleados AS e, cargo_empleados AS c, horario_empleado AS h, cargo_horario AS ch, area_empleados AS a, ciudades AS ci WHERE (e.id_cargo_horario_emp = ch.id_cargo_horario 
+            AND ch.id_horario_ch = h.id_horario_empleado AND ch.id_cargo_ch = c.id_cargo AND c.id_area_cargo = a.id_area AND ci.idciudades = e.id_ciudad_emp) AND id_empleados = :cedula");  
             $records->bindParam(':cedula', $id);
             $records->execute();
             $results = $records->fetch(PDO::FETCH_ASSOC);
@@ -33,14 +32,14 @@
 
        }else{ 
          
-            $records = $conn->prepare("SELECT * FROM empleados WHERE id_empleados = :cedula");
+            $records = $conn->prepare("SELECT * FROM empleados AS e, cargo_horario AS ch WHERE e.id_cargo_horario_emp = ch.id_cargo_horario AND id_empleados = :cedula");
             $records->bindParam(':cedula', $_POST['cedula']);
             $records->execute();
             $results = $records->fetch(PDO::FETCH_ASSOC);
 
                   if($results['medico']==1){
                       
-                      if($_POST['personal']==2){
+                      if($_POST['cargo']==22){
                         //update
                           $sql = "UPDATE empleados_medico SET id_especialidad_medico=:id_especialidad_medico WHERE id_empleados_medico=:id_empleados";
                           $stmt = $conn->prepare($sql);
@@ -64,7 +63,7 @@
                       
                   }else{
                       //INSERT
-                      if($_POST['personal'] == 2){
+                      if($_POST['cargo'] == 22){
                           $sql = "INSERT INTO empleados_medico 
                           (id_empleados_medico,id_especialidad_medico) VALUES (:id_empleados_medico,:id_especialidad_medico)";                    
                           $stmt = $conn->prepare($sql);
@@ -89,7 +88,7 @@
 
               //BUSCAR CREDENCIALBASE DEL CARGO ANTERIOR
               $credencialCargoAnterior = $conn->prepare('SELECT id_credencialbase_cargo FROM cargo_empleados WHERE id_cargo = :id_cargo');
-              $credencialCargoAnterior->bindParam(':id_cargo',$results['id_cargo_emp']);
+              $credencialCargoAnterior->bindParam(':id_cargo',$results['id_cargo_ch']);
               $credencialCargoAnterior->execute();
               $resultadoCredencialAnterior = $credencialCargoAnterior->fetch(PDO::FETCH_ASSOC);
 
@@ -97,7 +96,7 @@
 
                     //BUSCAR CREDENCIAL ANTERIOR EN USUARIO_CREDENCIAL CON EL ID_USUARIO_EMP
                     $credencialBase = $conn->query("SELECT * FROM usuario_credencial WHERE id_usuario_uc =".$results['id_usuario_emp']." AND id_credencialbase_uc =".$resultadoCredencialAnterior['id_credencialbase_cargo'])->rowCount();
-    
+
                     if($credencialBase>0){
                       //CAMBIAR USUARIO/CREDENCIAL en donde el id del usuario empleado y la credencial base anterior sean 
                       $sql = "UPDATE usuario_credencial SET id_credencialbase_uc=:id_credencialbase_uc WHERE id_usuario_uc=:id_usuario_uc AND id_credencialbase_uc=:id_cargo_emp";
@@ -119,7 +118,9 @@
             
 
               //UPDATE EMPLEADO
-                $sql = "UPDATE empleados SET nombres=:nombres,apellidos=:apellidos,direccion=:direccion,nacionalidad=:nacionalidad,fecha_nacimiento=:fecha_nacimiento,parroquia=:parroquia,id_ciudad_emp=:id_ciudad_emp,telefono=:telefono,celular=:celular,email=:email,sexo=:sexo,estado_civil=:estado_civil,nombres_conyuge=:nombres_conyuge,apellidos_conyuge=:apellidos_conyuge,id_cargo_emp=:id_cargo_emp,id_personal_emp=:id_personal_emp,id_area_emp=:id_area_emp,documentos_descripcion=:documentos_descripcion,update_at=:update_at WHERE id_empleados=:id_empleados";
+                $sql = "UPDATE empleados SET nombres=:nombres,apellidos=:apellidos,direccion=:direccion,nacionalidad=:nacionalidad,fecha_nacimiento=:fecha_nacimiento,parroquia=:parroquia,
+                id_ciudad_emp=:id_ciudad_emp,telefono=:telefono,celular=:celular,email=:email,sexo=:sexo,estado_civil=:estado_civil,nombres_conyuge=:nombres_conyuge,apellidos_conyuge=:apellidos_conyuge,
+                id_cargo_horario_emp=:id_cargo_horario_emp,documentos_descripcion=:documentos_descripcion,update_at=:update_at WHERE id_empleados=:id_empleados";
                 $stmt = $conn->prepare($sql);
 
                 $stmt->bindParam(':id_empleados', $_POST['cedula']);
@@ -140,9 +141,8 @@
                 $stmt->bindParam(':apellidos_conyuge',$_POST['apellidosConyuge']);
                 $stmt->bindParam(':documentos_descripcion',$_POST['documentosDescription']);
                 $stmt->bindValue(':update_at', $updated);
-                $stmt->bindParam(':id_area_emp',$_POST['area']);
-                $stmt->bindParam(':id_cargo_emp',$_POST['cargo']);
-                $stmt->bindParam(':id_personal_emp',$_POST['personal']);
+                $stmt->bindParam(':id_cargo_horario_emp',$_POST['horario']);
+                
 
 
             try{
@@ -549,11 +549,57 @@
                 <label class="font-weight-bolder mt-3">Información ocupacional</label>
                 <hr class="mt-1 mb-4 mr-5 ">
                 <div class="form-row">
-                  <div class="col-md-2 mb-3">
+                        <div class="col-md-6 mb-3">
+                            <label for="area">Área</label>
+                            <select class="custom-select" name="area" id="area" required>
+                            <option selected="true" value="<?php echo $results['id_area'];?>"><?php echo utf8_encode($results["nombre_area"])?></option>
+                                <option disabled value="">Seleccione...</option>
+                                <?php
+                                 foreach ($areas as $areaEmpleado):
+                                ?>
+                                <option value="<?php echo $areaEmpleado->id_area;?>"><?php echo utf8_encode($areaEmpleado->nombre_area);?></option>
+                                <?php 
+                                  endforeach;
+                                ?> 
+                                </select>
+                        </div>
+                        <div class="col-md-6 mb-3" id="objeto">
+                            <label for="cargo">Cargo</label>
+                            <select class="custom-select" name="cargo" id="cargo" required>
+                            <option selected="true" value="<?php echo $results['id_cargo'];?>"><?php echo utf8_encode($results['nombre_cargo'])?></option>
+                            <option disabled value="">Seleccione...</option>
+                            </select>
+                        </div>
+                  </div>  
+                  <div class="form-row" id="sueldo">
+                    <div class="col-md-5 mb-3">
+                        <label for="validationServer11">Salario base</label>
+                        <input type="text" name="salarioBase" class="form-control" value="<?php echo $results["sueldo_base_cargo"]?>" readonly required>
+                    </div>
+                    <div class="col-md-5 mb-3">
+                    <label for="horario">Jornada</label>
+                      <select class="custom-select" name="horario" id="horario" required>
+                          <option selected="true" value="<?php echo $results['id_cargo_horario'];?>"><?php echo utf8_encode($results['jornada'])?></option>
+                          <option disabled value="">Seleccione...</option>
+                      </select>
+                    </div>  
+                    </div>
+                <div class="form-row" id="jornadaHora">
+                  <div class="col-md-5 mb-3">
+                      <label for="validationServer07">Hora Entrada</label>
+                      <input type="text" class="form-control" name="" id="validationServer44" value="<?php echo $results["inicio"]?>" readonly>
+                  </div>
+                  <div class="col-md-5 mb-3">
+                      <label for="validationServer07">Hora Salida</label>
+                      <input type="text" class="form-control" name="" id="validationServer44" value="<?php echo $results["finalizacion"]?>" readonly>
+                  </div> 
+                </div>
+                <div class="form-row">
+                  <div class="col-md-5 mb-3">
                     <label for="validationServer08">Fecha ingreso</label>
                     <input type="text" name="created_at" value="<?php echo $results["created_at"]?>" class="form-control" id="validationServer37" readonly>
                   </div>
-                  <div class="col-md-3 mb-3">
+                  <div class="col-md-5 mb-3">
                     <label for="validationServer09">Tipo de contrato</label>
                     <select class="custom-select" name="idcontrato" id="validationServer39" required>
                       <option selected="true"></option>
@@ -562,69 +608,8 @@
                       <option>Contrato 2</option>
                       <option>Contrato 3</option>
                     </select>
-                    <div class="invalid-feedback">
-                      <!--mensaje para feedback del campo.-->
-                    </div>
                   </div>
-  
                 </div>
-                
-                <div class="form-row">
-                      <div class="col-md-3 mb-3">
-                          <label for="validationServer06">Personal</label>
-                          <select class="custom-select" onchange="isMedic(this,'row-especialidad')" name="personal" id="validationServer42" required>
-                          <option selected="true" value="<?php echo $results['id_personal_emp'];?>"><?php echo $results["nombre_personal"]?></option>
-                           <option disabled value="">Seleccione...</option>
-                           <?php
-                              foreach ($personales as $personalEmpleado):
-                              ?>
-                              <option value="<?php echo $personalEmpleado->id_personal;?>"><?php echo utf8_encode($personalEmpleado->nombre_personal);?></option>
-                              <?php 
-                              endforeach;
-                              ?> 
-                          </select>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <label for="area">Área</label>
-                            <select class="custom-select" name="area" id="area" required>
-                            <option selected="true" value="<?php echo $results['id_area_emp'];?>"><?php echo $results["nombre_area"]?></option>
-                                <option disabled value="">Seleccione...</option>
-                                <?php
-                                foreach ($areas as $areaEmpleado):
-                                ?>
-                                <option value="<?php echo $areaEmpleado->id_area;?>"><?php echo utf8_encode($areaEmpleado->nombre_area);?></option>
-                                <?php 
-                                endforeach;
-                                ?> 
-                                </select>
-                        </div>
-                        <div class="col-md-3 mb-3" id="objeto">
-                            <label for="cargo">Cargo</label>
-                            <select class="custom-select" name="cargo" id="cargo" required>
-                            <option selected="true" value="<?php echo $results['id_cargo_emp'];?>"><?php echo utf8_encode($results['nombre_cargo'])?></option>
-                            <option disabled value="">Seleccione...</option>
-                            </select>
-                        </div>
-                  </div>  
-                  <div class="form-row" id="sueldo">
-                    <div class="col-md-3 mb-3">
-                        <label for="validationServer11">Salario base</label>
-                        <input type="text" name="salarioBase" class="form-control" value="<?php echo $results["sueldo_base_cargo"]?>" readonly required>
-                    </div>  
-                    <div class="col-md-3 mb-3">
-                      <label for="validationServer07">Jornada</label>
-                      <input type="text" class="form-control" name="idhorario" id="validationServer44" value="<?php echo $results["jornada"]?>" readonly>
-                  </div>
-                  <div class="col-md-3 mb-3">
-                      <label for="validationServer07">Hora Entrada</label>
-                      <input type="text" class="form-control" name="idhorario" id="validationServer44" value="<?php echo $results["inicio"]?>" readonly>
-                  </div>
-                  <div class="col-md-3 mb-3">
-                      <label for="validationServer07">Hora Salida</label>
-                      <input type="text" class="form-control" name="idhorario" id="validationServer44" value="<?php echo $results["finalizacion"]?>" readonly>
-                  </div> 
-                </div>
-                  
                 <label class="font-weight-bolder mt-3">Contactos para casos de emergencia</label>
                 <hr class="mt-1 mb-4 mr-5 ">
                 <?php

@@ -50,7 +50,6 @@ function buscarCargos(consulta){
     });
 }   
 
-
 function buscarCredencialesUsuario(consulta){
     $.ajax({
         url: '../controllers/consultas/credenciales.php' ,

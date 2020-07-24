@@ -13,7 +13,6 @@
     $creacion = date('d')."/".date('m')."/".date('Y')." ".date("H").":".date("i").":".date("s");
     
     $ciudades = $conn->query("SELECT * FROM ciudades ORDER BY nombre ASC")->fetchAll(PDO::FETCH_OBJ);
-    $personal = $conn->query("SELECT * FROM personal_empleados ORDER BY nombre_personal ASC")->fetchAll(PDO::FETCH_OBJ);
     $areas = $conn->query("SELECT * FROM area_empleados ORDER BY nombre_area ASC")->fetchAll(PDO::FETCH_OBJ);
     $especialidades = $conn->query("SELECT * FROM especialidades ORDER BY descripcion ASC")->fetchAll(PDO::FETCH_OBJ);
     
@@ -36,6 +35,7 @@
               $sql = "INSERT INTO usuario (username, password) VALUES (:username,:password)";
               $stmt = $conn->prepare($sql);
               $stmt->bindParam(':username', $_POST['nombres']);
+              //CAMBIAR LA CONTRASEÑA BASE FORMATO // asuarez27/20  (primeraletradeprimer nombre, primerapellido, diay año en el que se registra)
               $password = password_hash(123, PASSWORD_BCRYPT);
               $stmt->bindParam(':password', $password);
               
@@ -66,14 +66,10 @@
 
                           if(!file_exists($archivo)){
                               $resultado = @move_uploaded_file($_FILES["fileDocument"]["tmp_name"],$archivo);
-                                if($resultado){
-                                  //seguardo
-                                }else{
-                                  //nose guardo
+                                if($resultado){//seguardo
+                                }else{//nose guardo
                                 }
-                          }else{
-                                echo "ya existe";
-                          }
+                          }else{echo "ya existe";}
 
                             try {
                                     $name= $_POST["nombres"]." ".$_POST["apellidos"];
@@ -81,7 +77,7 @@
             
                                     $sql = "INSERT INTO empleados 
                                         (id_empleados,profileimage,medico,nombres,apellidos,direccion,nacionalidad,fecha_nacimiento,parroquia,id_ciudad_emp,telefono,celular,email,sexo,estado_civil,
-                                        nombres_conyuge,apellidos_conyuge,documentos_descripcion,fileDocument,disponible,deleted,created_at,update_at,id_area_emp,id_cargo_emp,id_personal_emp,id_usuario_emp) VALUES (:id_empleados,:profileimage,:medico,:nombres,:apellidos,:direccion,:nacionalidad,:fecha_nacimiento,:parroquia,:id_ciudad_emp,:telefono,:celular,:email,:sexo,:estado_civil,:nombres_conyuge,:apellidos_conyuge,:documentos_descripcion,:fileDocument,:disponible,:deleted,:created_at,:update_at,:id_area_emp,:id_cargo_emp,:id_personal_emp,:id_usuario_emp)";
+                                        nombres_conyuge,apellidos_conyuge,documentos_descripcion,fileDocument,disponible,deleted,created_at,update_at,id_usuario_emp,id_cargo_horario_emp) VALUES (:id_empleados,:profileimage,:medico,:nombres,:apellidos,:direccion,:nacionalidad,:fecha_nacimiento,:parroquia,:id_ciudad_emp,:telefono,:celular,:email,:sexo,:estado_civil,:nombres_conyuge,:apellidos_conyuge,:documentos_descripcion,:fileDocument,:disponible,:deleted,:created_at,:update_at,:id_usuario_emp,:id_cargo_horario_emp)";
                                     $stmt = $conn->prepare($sql);
                                     $stmt->bindParam(':id_empleados', $_POST['cedula']);
                                     $stmt->bindParam(':profileimage', $gravatar);
@@ -105,12 +101,11 @@
                                     $stmt->bindValue(':disponible', 1, PDO::PARAM_INT);
                                     $stmt->bindValue(':created_at', $creacion);
                                     $stmt->bindValue(':update_at', null, PDO::PARAM_INT);
-                                    $stmt->bindParam(':id_area_emp',$_POST['area']);
-                                    $stmt->bindParam(':id_cargo_emp',$_POST['cargo']);
-                                    $stmt->bindParam(':id_personal_emp',$_POST['personal']);
+                                    //PONER CARGO_HORARIO   QUE REFERENCIA AL CARGO (PERO DETALLA EL HORARIO/JORNADA)
+                                    $stmt->bindParam(':id_cargo_horario_emp',$_POST['horario']);
                                     $stmt->bindParam(':id_usuario_emp',$id);
-                                    
-                                    if($_POST['personal'] == 2){
+                                    //SI EL CARGO QUE ESCOGIO ES ID22/MEDICO   BANDERILLA MEDICO SE PONE EN TRUE
+                                    if($_POST['cargo'] == 22){
                                         $stmt->bindValue(':medico', 1, PDO::PARAM_INT);
                                     }else{
                                         $stmt->bindValue(':medico', 0, PDO::PARAM_INT);
@@ -118,7 +113,7 @@
                                   
                                       if($stmt->execute()){
             
-                                            if($_POST['personal'] == 2){
+                                            if($_POST['cargo'] == 22){
                                                 $sql = "INSERT INTO empleados_medico 
                                                 (id_empleados_medico,id_especialidad_medico) VALUES (:id_empleados_medico,:id_especialidad_medico)";                    
                                                 $stmt = $conn->prepare($sql);
@@ -197,8 +192,7 @@
                                                 $stmt->bindParam(':id_empleados_refe', $_POST['cedula']);
                                                 $stmt->execute();
                                             }
-                                            
-            
+
                                           header("Location:profile.php?id=$cedula");                          
                                       }
         
@@ -688,7 +682,50 @@
                     </div>
                   </div>
                 <label class="font-weight-bolder mt-3">Información ocupacional</label>
-                <hr class="mt-1 mb-4 mr-5 ">
+                <hr class="mt-1 mb-4 mr-5 ">               
+                <div class="form-row">
+                      <div class="col-md-6 mb-3">
+                        <label for="area">Área</label>
+                        <select class="custom-select" name="area" id="area" required>
+                            <option selected disabled value="">Seleccione...</option>
+                            <?php
+                            foreach ($areas as $areaEmpleado):
+                            ?>
+                            <option value="<?php echo $areaEmpleado->id_area;?>"><?php echo utf8_encode($areaEmpleado->nombre_area);?></option>
+                            <?php 
+                            endforeach;
+                            ?> 
+                            </select>
+                    </div>
+                    <div class="col-md-6 mb-3" id="objeto">
+                        <label for="cargo">Cargo</label>
+                        <select class="custom-select" name="" id="" required>
+                        <option selected disabled value="">Seleccione...</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row" id="sueldo">
+                    <div class="col-md-5 mb-3">
+                        <label for="validationServer11">Salario base</label>
+                        <input type="text" name="salarioBase" class="form-control" readonly required>
+                    </div>  
+                    <div class="col-md-5 mb-3">
+                      <label for="">Jornada</label>
+                      <select class="custom-select" name="" id="" required>
+                        <option selected disabled value="">Seleccione...</option>
+                      </select>
+                    </div>
+                </div>
+                <div class="form-row" id="jornadaHora">
+                  <div class="col-md-3 mb-3">
+                      <label for="validationServer07">Hora Entrada</label>
+                      <input type="text" class="form-control" name="" id="validationServer44" readonly required>
+                  </div>
+                  <div class="col-md-3 mb-3">
+                      <label for="validationServer07">Hora Salida</label>
+                      <input type="text" class="form-control" name="" id="validationServer44" readonly required>
+                  </div> 
+                </div>
                 <div class="form-row">
                   <div class="col-md-3 mb-3">
                     <label for="validationServer08">Fecha ingreso</label>
@@ -702,9 +739,6 @@
                       <option>Contrato 2</option>
                       <option>Contrato 3</option>
                     </select>
-                    <div class="invalid-feedback">
-                      <!--mensaje para feedback del campo.-->
-                    </div>
                   </div>
                   <div class="col-md-3 mb-3">
                     <label for="validationServer09">Especialidad</label>
@@ -722,63 +756,6 @@
                         EL PERSONAL ES MEDICO. PORFAVOR, ESCOGE UNA ESPECIALIDAD...
                     </div>
                   </div>
-                </div>
-                
-                <div class="form-row">
-                      <div class="col-md-3 mb-3">
-                          <label for="validationServer06">Personal</label>
-                          <select class="custom-select" onchange="isMedic(this,'row-especialidad')" name="personal" id="validationServer42" required>
-                            <option selected disabled value="">Seleccione...</option>
-                            <?php
-                            foreach ($personal as $personalEmpleado):
-                            ?>
-                            <option value="<?php echo $personalEmpleado->id_personal;?>"><?php echo utf8_encode($personalEmpleado->nombre_personal);?></option>
-                            <?php 
-                            endforeach;
-                            ?> 
-                          </select>
-                      </div>
-                      <div class="col-md-3 mb-3">
-                        <label for="area">Área</label>
-                        <select class="custom-select" name="area" id="area" required>
-                            <option selected disabled value="">Seleccione...</option>
-                            <?php
-                            foreach ($areas as $areaEmpleado):
-                            ?>
-                            <option value="<?php echo $areaEmpleado->id_area;?>"><?php echo utf8_encode($areaEmpleado->nombre_area);?></option>
-                            <?php 
-                            endforeach;
-                            ?> 
-                            </select>
-                        <div class="invalid-feedback">
-                        <!--mensaje para feedback del campo.-->
-                        </div>
-                    </div>
-                    <div class="col-md-3 mb-3" id="objeto">
-                        <label for="cargo">Cargo</label>
-                        <select class="custom-select" name="cargo" id="cargo" required>
-                        <option selected disabled value="">Seleccione...</option>
-                        </select>
-                    </div>
-                    
-                </div>
-                <div class="form-row" id="sueldo">
-                    <div class="col-md-3 mb-3">
-                        <label for="validationServer11">Salario base</label>
-                        <input type="text" name="salarioBase" class="form-control" readonly required>
-                    </div>  
-                    <div class="col-md-3 mb-3">
-                      <label for="validationServer07">Jornada</label>
-                      <input type="text" class="form-control" name="idhorario" id="validationServer44" readonly>
-                  </div>
-                  <div class="col-md-3 mb-3">
-                      <label for="validationServer07">Hora Entrada</label>
-                      <input type="text" class="form-control" name="idhorario" id="validationServer44" readonly>
-                  </div>
-                  <div class="col-md-3 mb-3">
-                      <label for="validationServer07">Hora Salida</label>
-                      <input type="text" class="form-control" name="idhorario" id="validationServer44" readonly>
-                  </div> 
                 </div>
                 <label class="font-weight-bolder mt-3">Descripcion de documentos que adjuntar</label>
                 <hr class="mt-1 mb-4 mr-5 ">

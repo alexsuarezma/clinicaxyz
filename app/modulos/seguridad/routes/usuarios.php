@@ -6,23 +6,11 @@ require '../controllers/functions/credenciales.php';
 
 verificarAcceso("../../../../", "modulo_seguridad");
 
-$borradoFisico = true;
-$crearUsuarios = true;
-$insertar = true;
-$actualizar = true;
-  if(verificarAccion($conn, "modulo_seguridad", "borrado_fisico") == false){
-    $borradoFisico = false;
-  }
-  if(verificarAccion($conn, "modulo_seguridad", "crear_usuarios") == false){
-    $crearUsuarios = false;
-  }
-  if(verificarAccion($conn, "modulo_seguridad", "insertar") == false){
-    $insertar = false;
-  }
-  if(verificarAccion($conn, "modulo_seguridad", "actualizar") == false){
-    $actualizar = false;
-  }
-  $usuario = $conn->query("SELECT * FROM empleados AS e, usuario AS u, usuario_credencial AS uc, credencial_base AS c WHERE (uc.id_usuario_uc = u.id_usuario AND e.id_usuario_emp = u.id_usuario AND c.id_credencial = uc.id_credencialbase_uc) ORDER BY username ASC")->fetchAll(PDO::FETCH_OBJ);
+$_SESSION['insertar'] = verificarAccion($conn, "modulo_seguridad", "insertar");
+$_SESSION['actualizar'] = verificarAccion($conn, "modulo_seguridad", "actualizar");
+$_SESSION['crear_usuarios'] = verificarAccion($conn, "modulo_seguridad", "crear_usuarios");
+$_SESSION['borrado_fisico'] = verificarAccion($conn, "modulo_seguridad", "borrado_fisico");
+
   $credencial = $conn->query("SELECT * FROM credencial_base AS c, scope AS s WHERE (c.id_scope_credencial = s.id_scope) ORDER BY nombre_credencial ASC")->fetchAll(PDO::FETCH_OBJ);
 ?>
 <!doctype html>
@@ -81,80 +69,8 @@ $actualizar = true;
       </div>
       <div class="container mt-5 mb-5">
 
-            <table class="table">
-              <thead class="thead-dark">
-              <tr>
-                  <th scope="col">Cedula</th>
-                  <th scope="col">Nombre</th>
-                  <th scope="col">Apellido</th>
-                  <th scope="col">Cargo</th>
-                  <th scope="col">Nombre Credencial</th>
-                  <th scope="col">Nombre de Usuario</th>
-                  <th scope="col"></th>
-
-              </tr>
-              </thead>
-              <tbody>
-
-              <?php
-                if($insertar == false || $actualizar == false):
-              ?>
-                  <?php
-                    foreach ($usuario as $Usuarios):
-                  ?>
-                      <tr>
-                          <th scope="row"><?php echo $Usuarios->id_empleados?></th>
-                          <td><?php echo $Usuarios->nombres?></td>
-                          <td><?php echo $Usuarios->apellidos?></td>
-                          <td><?php echo $Usuarios->id_cargo_emp?></td>
-                          <td><?php echo $Usuarios->nombre_credencial?></td>
-                          <td><?php echo $Usuarios->username?></td>
-                          <td></td>
-                      </tr>
-                  <?php 
-                    endforeach;
-                  ?>   
-              <?php 
-                else:
-              ?>
-                  <?php
-                     foreach ($usuario as $Usuarios):
-                  ?>
-                      <tr>
-                          <th scope="row"><?php echo $Usuarios->id_empleados?></th>
-                          <td><?php echo $Usuarios->nombres?></td>
-                          <td><?php echo $Usuarios->apellidos?></td>
-                          <td><?php echo $Usuarios->id_cargo_emp?></td>
-                          <td><?php echo $Usuarios->nombre_credencial?></td>
-                          <td><?php echo $Usuarios->username?></td>
-                          <td>
-                            <div class="d-flex justify-content-end">
-                              <?php
-                                  if($borradoFisico == true):
-                              ?>
-                                  <a class="text-secondary" href="../controllers/borrarCredencialUsuario.php?idUser=<?php echo $Usuarios->id_usuario_uc?>&idCredencial=<?php echo $Usuarios->id_credencial?>"><i class="fas fa-user-slash mr-2" style="font-size:20px;" title="Eliminar la credencial al usuario <?php echo $Usuarios->username?>"></i></a>
-                              <?php
-                                endif;
-                              ?>
-                              <?php
-                                  if($crearUsuarios == true):
-                              ?>
-                                  <a onclick="agregarCredencial('<?php echo $Usuarios->id_empleados?>','<?php echo $Usuarios->id_usuario_uc?>','<?php echo $Usuarios->id_usuario_credencial?>','<?php echo $Usuarios->id_credencial?>','<?php echo $Usuarios->nombre_credencial?>','<?php echo $Usuarios->nombres?>','<?php echo $Usuarios->apellidos?>','<?php echo $Usuarios->username?>')" class="text-secondary" data-toggle="modal" href="#agregarCredencial"><i class="fas fa-user-plus mr-2" style="font-size:20px;" title="Agrega una nueva credencial al usuario <?php echo $Usuarios->username?>"></i></a>
-                              <?php
-                                endif;
-                              ?>
-                              <a onclick="eliminarCredencial('<?php echo $Usuarios->id_empleados?>','<?php echo $Usuarios->id_usuario_uc?>','<?php echo $Usuarios->id_usuario_credencial?>','<?php echo $Usuarios->id_credencial?>','<?php echo $Usuarios->nombre_credencial?>','<?php echo $Usuarios->nombres?>','<?php echo $Usuarios->apellidos?>','<?php echo $Usuarios->username?>')" data-toggle="modal" href="#updateCredencialAsignada"><i class="fas fa-user-edit" style="color:red; font-size:20px;" title="Editar Credencial del usuario <?php echo $Usuarios->username?>"></i></a>
-                            </div>                      
-                          </td>
-                      </tr>
-                  <?php 
-                    endforeach;
-                  ?>  
-              <?php 
-                endif;
-              ?> 
-              </tbody>
-          </table>
+          <div id="datosUsuarios"></div>
+          
           <hr class="mb-4">       
 
             <div class='modal fade' name='agregarCredencial' id='agregarCredencial' data-backdrop='static' data-keyboard='false' tabindex='-1' role='dialog' aria-labelledby='staticBackdropLabe' aria-hidden='true'>
@@ -274,7 +190,7 @@ $actualizar = true;
                               <input type="text" class="form-control" name="nameCredencial" id="nameCredencial" readonly>
                           </div>
                       </div>
-                      <label class="font-weight-bold mt-2 text-danger">Elige una nueva credencial en caso de requieras cambiar la credencial actual a este usuario</label>
+                      <label class="font-weight-bold mt-2 text-danger">En caso de que requieras puedes cambiarle la credencial actual a este usuario</label>
                       <hr class="mt-1 mb-4 mr-5">
                       <input id="idCredencial" name="idCredencial" type="hidden">
                       <input id="idUserCredencial" name="idUserCredencial" type="hidden">
@@ -315,6 +231,7 @@ $actualizar = true;
 <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 <script src="../components/scripts/dashboard.js"></script> 
+<script src="../components/scripts/filtroUsuarios.js"></script> 
 <script src="../components/scripts/consulta.js"></script> 
 <script>
   function eliminarCredencial(id,idUser,idUc,idCredencial,nameCredencial,nombreEmpleado,apellidoEmpleado,userName){

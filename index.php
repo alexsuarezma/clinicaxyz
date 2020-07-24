@@ -117,6 +117,7 @@
               if($_SESSION['paciente'] == 1){
                 echo "<a class='dropdown-item' href='app/modulos/pacientes/index copy 2.html'><i class='fas fa-procedures mr-2'></i> Paciente</a>";
               }
+              
             ?>            
             <!-- <a class='dropdown-item' href='#'><i class='fas fa-file-medical-alt mr-3'></i> Historial Clinico</a> -->
             <hr class="ml-4 mr-4 mt-2">
