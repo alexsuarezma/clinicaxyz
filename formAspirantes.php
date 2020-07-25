@@ -492,7 +492,7 @@
               </div>  
               <div class="input-group mb-3">
               <div class="custom-file">
-                <input name="fileDocument" type="file" class="form-control" id="fileDocument" accept="application/pdf" aria-describedby="inputGroupFileAddon01" required>
+                <input name="fileDocument" type="file" class="form-control" id="fileDocument" onchange="return validarExtdoc(this);" accept="application/pdf" aria-describedby="inputGroupFileAddon01" required>
               </div>
             </div>
 

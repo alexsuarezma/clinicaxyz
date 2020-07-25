@@ -146,7 +146,7 @@
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="validationServer02">Contrato</label>
-                    <input type="text" name="apellidos" class="form-control" value="<?php echo $results["idcontrato"]?>" disabled="">
+                    <input type="text" name="apellidos" class="form-control" value="<?php echo $results["tipo_contrato"]?>" disabled="">
                 </div>
             </div>
             <div class="form-row">

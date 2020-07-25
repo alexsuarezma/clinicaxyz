@@ -33,7 +33,7 @@
     // $logout,$ajuste,$rrhh,$suministro,$contabilidad,$ctas_medicas,$paciente,$seguridad);
     printLayout('../index.php', '../../../../index.php', 'contrato.php', 'personal.php', 
     'reclutamiento.php', 'historialPersonal.php','listaAsistencias.php','../../seguridad/controllers/logout.php','../../seguridad/routes/perfil.php',
-    '../index.php','../../suministro/','../../contabilidad/','../../citasmedicas/','../../pacientes/','../../seguridad/');
+    '../index.php','../../suministro/','../../contabilidad/','../../citasmedicas/','../../pacientes/','../../seguridad/',3);
 ?>
 <div class="container-fluid">
   <div class="row">
@@ -101,9 +101,22 @@
                             </a>
                             <a class="list-group-item" id="contrato" href="#contrato">
                                 <div class="d-flex justify-content-between align-items-center">
+                                    <?php
+                                         if($results['load_contrato'] == false):
+                                    ?>
                                     <div><i class="fe-icon-heart mr-1 text-muted"></i>
+                                        <div class="d-inline-block font-weight-medium text-uppercase">Contrato <span class="badge badge-danger"> ¡¡NO HAS GENERADO CONTRATO!!</span></div>
+                                        </div><span class="badge badge-danger">?</span>
+                                    <?php
+                                        else:
+                                    ?>
+                                     <div><i class="fe-icon-heart mr-1 text-muted"></i>
                                         <div class="d-inline-block font-weight-medium text-uppercase">Contrato</div>
-                                    </div><span class="badge badge-secondary">3</span>
+                                        </div><span class="badge badge-success">1</span>
+                                    <?php
+                                        endif;
+                                    ?>
+                                    
                                 </div>
                             </a>
                             <a class="list-group-item" name="update" id="update" href="#update">

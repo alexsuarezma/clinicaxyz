@@ -1,6 +1,19 @@
 <?php
    function printLayout ($route, $homePage, $credencial, $scopes, $usuarios, $cargos,
-   $logout,$ajuste,$rrhh,$suministro,$contabilidad,$ctas_medicas,$paciente,$seguridad){
+   $logout,$ajuste,$rrhh,$suministro,$contabilidad,$ctas_medicas,$paciente,$seguridad,$active){
+
+    $routes[4]= [];
+  
+
+    for ($i = 0; $i < 5; $i++) {
+      if($active==($i+1)){
+        $routes[$i]="active";
+      }else{
+        $routes[$i]="";
+      }
+    }
+
+
       echo "<nav class='navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow'>";
       echo "<a class='navbar-brand col-md-3 col-lg-2 mr-0 px-3' href=$route>";
       echo "<span className='font-weight-bold'>Modulo </span>";
@@ -53,31 +66,31 @@
       echo "<div class='sidebar-sticky pt-3'>";
       echo "<ul class='nav flex-column'>";
       echo "<li class='nav-item'>";
-      echo "<a class='nav-link active' href=$homePage>";
+      echo "<a class='nav-link $routes[0]' href=$homePage>";
       echo "<span data-feather='home'></span>";
       echo "Pagina Principal <span class='sr-only'>(current)</span>";
       echo "</a>";
       echo "</li>";
       echo "<li class='nav-item'>";
-      echo "<a class='nav-link' href=$usuarios>";
+      echo "<a class='nav-link $routes[1]' href=$usuarios>";
       echo "<span data-feather='bar-chart-2'></span>";
       echo "Lista de Usuarios";
       echo "</a>";
       echo "</li>";
       echo "<li class='nav-item'>";
-      echo "<a class='nav-link' href=$credencial>";
+      echo "<a class='nav-link $routes[2]' href=$credencial>";
       echo "<span data-feather='briefcase'></span>";
       echo "Gestión Credenciales Bases";
       echo "</a>";
       echo "</li>";
       echo "<li class='nav-item'>";
-      echo "<a class='nav-link' href=$cargos>";
+      echo "<a class='nav-link $routes[3]' href=$cargos>";
       echo "<span data-feather='layers'></span>";
       echo "Gestión Cargos/Credenciales";
       echo "</a>";
       echo "</li>";
       echo "<li class='nav-item'>";
-      echo "<a class='nav-link' href=$scopes>";
+      echo "<a class='nav-link $routes[4]' href=$scopes>";
       echo "<span data-feather='users'></span>";
       echo "Gestión Scopes";
       echo "</a>";

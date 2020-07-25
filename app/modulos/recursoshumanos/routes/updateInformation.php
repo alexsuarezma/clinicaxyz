@@ -599,16 +599,6 @@
                     <label for="validationServer08">Fecha ingreso</label>
                     <input type="text" name="created_at" value="<?php echo $results["created_at"]?>" class="form-control" id="validationServer37" readonly>
                   </div>
-                  <div class="col-md-5 mb-3">
-                    <label for="validationServer09">Tipo de contrato</label>
-                    <select class="custom-select" name="idcontrato" id="validationServer39" required>
-                      <option selected="true"></option>
-                      <option disabled value="">Seleccione...</option>
-                      <option>Contrato 1</option>
-                      <option>Contrato 2</option>
-                      <option>Contrato 3</option>
-                    </select>
-                  </div>
                 </div>
                 <label class="font-weight-bolder mt-3">Contactos para casos de emergencia</label>
                 <hr class="mt-1 mb-4 mr-5 ">

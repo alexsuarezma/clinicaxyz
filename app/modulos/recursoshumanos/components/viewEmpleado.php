@@ -43,7 +43,7 @@ require '../../seguridad/controllers/functions/credenciales.php';
     // $logout,$ajuste,$rrhh,$suministro,$contabilidad,$ctas_medicas,$paciente,$seguridad);
     printLayout('../index.php', '../../../../index.php', '../routes/contrato.php', '../routes/personal.php', 
     '../routes/reclutamiento.php', '../routes/historialPersonal.php','../routes/listaAsistencias.php','../../seguridad/controllers/logout.php','../../seguridad/routes/perfil.php',
-    '../index.php','../../suministro/','../../contabilidad/','../../citasmedicas/','../../pacientes/','../../seguridad/');
+    '../index.php','../../suministro/','../../contabilidad/','../../citasmedicas/','../../pacientes/','../../seguridad/',6);
 ?>
 <div class="container-fluid">
   <div class="row">

@@ -1,6 +1,18 @@
 <?php
    function printLayout ($route, $homePage, $createPage, $personalPage, $reclutamiento, $historialPersonal, $asistencia,
-   $logout,$ajuste,$rrhh,$suministro,$contabilidad,$ctas_medicas,$paciente,$seguridad){
+   $logout,$ajuste,$rrhh,$suministro,$contabilidad,$ctas_medicas,$paciente,$seguridad,$active){
+    
+    $routes[5]= [];
+  
+
+    for ($i = 0; $i < 6; $i++) {
+      if($active==($i+1)){
+        $routes[$i]="active";
+      }else{
+        $routes[$i]="";
+      }
+    }
+
       echo "<nav class='navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow'>";
       echo "<a class='navbar-brand col-md-3 col-lg-2 mr-0 px-3' href=$route>";
       echo "<span className='font-weight-bold'>Recursos</span>";
@@ -53,25 +65,25 @@
       echo "<div class='sidebar-sticky pt-3'>";
       echo "<ul class='nav flex-column'>";
       echo "<li class='nav-item'>";
-      echo "<a class='nav-link active' href=$homePage>";
+      echo "<a class='nav-link $routes[0]' href=$homePage>";
       echo "<span data-feather='home'></span>";
       echo "Pagina Principal <span class='sr-only'>(current)</span>";
       echo "</a>";
       echo "</li>";
       echo "<li class='nav-item'>";
-      echo "<a class='nav-link' href=$createPage>";
+      echo "<a class='nav-link $routes[1]' href=$createPage>";
       echo "<span data-feather='briefcase'></span>";
       echo "Registro de Empleado";
       echo "</a>";
       echo "</li>";
       echo "<li class='nav-item'>";
-      echo "<a class='nav-link' href=$personalPage>";
+      echo "<a class='nav-link $routes[2]' href=$personalPage>";
       echo "<span data-feather='users'></span>";
       echo "Personal";
       echo "</a>";
       echo "</li>";
       echo "<li class='nav-item'>";
-      echo "<a class='nav-link' href=$asistencia>";
+      echo "<a class='nav-link $routes[3]' href=$asistencia>";
       echo "<span data-feather='layers'></span>";
       echo "Lista de Asistencia";
       echo "</a>";
@@ -83,7 +95,7 @@
       echo "</a>";
       echo "</li>";
       echo "<li class='nav-item'>";
-      echo "<a class='nav-link' href=$reclutamiento>";
+      echo "<a class='nav-link $routes[4]' href=$reclutamiento>";
       echo "<span data-feather='layers'></span>";
       echo "Reclutamiento";
       echo "</a>";
@@ -98,7 +110,7 @@
       echo "</h6>";
       echo "<ul class='nav flex-column mb-2'>";
       echo "<li class='nav-item'>";
-      echo "<a class='nav-link' href=$historialPersonal>";
+      echo "<a class='nav-link $routes[5]' href=$historialPersonal>";
       echo "<span data-feather='file-text'></span>";
       echo "Historial de personal";
       echo "</a>";
@@ -125,5 +137,6 @@
       echo "</div>";
       echo "</nav>";
    }
+
 
 

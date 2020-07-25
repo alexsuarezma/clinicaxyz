@@ -198,14 +198,13 @@ const cedula = document.getElementById("validationServer01").value;
 
 }
 
-function validarExtdoc()
+function validarExtdoc(input)
 {
-    var archivoInput = document.getElementById('fileDocument');
-    var archivoRuta = archivoInput.value;
+    var archivoRuta = input.value;
     var extPermitidas = /(.pdf|.PDF)$/i;
     if(!extPermitidas.exec(archivoRuta)){
         alert('Asegurese de haber seleccionado un documento con extension ".pdf o .PDF" ');
-        archivoInput.value = '';
+        input.value = '';
         return false;
     }
     // else

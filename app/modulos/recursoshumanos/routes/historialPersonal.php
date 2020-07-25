@@ -5,7 +5,8 @@
     require '../../seguridad/controllers/functions/credenciales.php';
 
     verificarAcceso("../../../../", "modulo_rrhh");
-        $results = $conn->query("SELECT * FROM empleados AS e, cargo_empleados AS c, personal_empleados AS p, area_empleados AS a WHERE (c.id_cargo = e.id_cargo_emp AND p.id_personal = e.id_personal_emp AND a.id_area = e.id_area_emp) AND (deleted=1) ORDER By id_empleados LIMIT 25")->fetchAll(PDO::FETCH_OBJ);
+        $results = $conn->query("SELECT * FROM empleados AS e, cargo_empleados AS c, horario_empleado AS h, cargo_horario AS ch, area_empleados AS a, ciudades AS ci WHERE (e.id_cargo_horario_emp = ch.id_cargo_horario 
+        AND ch.id_horario_ch = h.id_horario_empleado AND ch.id_cargo_ch = c.id_cargo AND c.id_area_cargo = a.id_area AND ci.idciudades = e.id_ciudad_emp) AND (deleted=1) ORDER By id_empleados LIMIT 25")->fetchAll(PDO::FETCH_OBJ);
 
 ?>
 <!DOCTYPE html>
@@ -38,7 +39,7 @@
   // $logout,$ajuste,$rrhh,$suministro,$contabilidad,$ctas_medicas,$paciente,$seguridad);
   printLayout('../index.php', '../../../../index.php', 'contrato.php', 'personal.php', 
   'reclutamiento.php', 'historialPersonal.php','listaAsistencias.php','../../seguridad/controllers/logout.php','../../seguridad/routes/perfil.php',
-  '../index.php','../../suministro/','../../contabilidad/','../../citasmedicas/','../../pacientes/','../../seguridad/');
+  '../index.php','../../suministro/','../../contabilidad/','../../citasmedicas/','../../pacientes/','../../seguridad/',6);
 ?>
 <div class="container-fluid">
   <div class="row">
@@ -70,7 +71,7 @@
                         <span style="text-decoration: line-through;"><?php echo $empleados->nombres?> <?php echo $empleados->apellidos?></span>
                         <span>
                           <span class='font-weight-bold'>Cargo: <span class="font-weight-light"><?php echo $empleados->nombre_cargo?></span>-</span>
-                          <span class='font-weight-bold'>Personal: <span class="font-weight-light"><?php echo $empleados->nombre_personal?></span>-</span>
+                          <span class='font-weight-bold'>Personal: <span class="font-weight-light"><?php echo $empleados->jornada?></span>-</span>
                           <span class='font-weight-bold'>Area: <span class="font-weight-light"><?php echo $empleados->nombre_area?></span></span>
                         </span>
                         <span class='font-weight-bold'>|Descontratado desde: <span class="font-weight-light"><?php echo $empleados->update_at?></span>|</span>

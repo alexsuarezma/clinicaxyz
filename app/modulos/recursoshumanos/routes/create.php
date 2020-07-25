@@ -77,7 +77,7 @@
             
                                     $sql = "INSERT INTO empleados 
                                         (id_empleados,profileimage,medico,nombres,apellidos,direccion,nacionalidad,fecha_nacimiento,parroquia,id_ciudad_emp,telefono,celular,email,sexo,estado_civil,
-                                        nombres_conyuge,apellidos_conyuge,documentos_descripcion,fileDocument,disponible,deleted,created_at,update_at,id_usuario_emp,id_cargo_horario_emp) VALUES (:id_empleados,:profileimage,:medico,:nombres,:apellidos,:direccion,:nacionalidad,:fecha_nacimiento,:parroquia,:id_ciudad_emp,:telefono,:celular,:email,:sexo,:estado_civil,:nombres_conyuge,:apellidos_conyuge,:documentos_descripcion,:fileDocument,:disponible,:deleted,:created_at,:update_at,:id_usuario_emp,:id_cargo_horario_emp)";
+                                        nombres_conyuge,apellidos_conyuge,documentos_descripcion,fileDocument,file_contrato,load_contrato,disponible,tipo_contrato,deleted,created_at,update_at,id_usuario_emp,id_cargo_horario_emp) VALUES (:id_empleados,:profileimage,:medico,:nombres,:apellidos,:direccion,:nacionalidad,:fecha_nacimiento,:parroquia,:id_ciudad_emp,:telefono,:celular,:email,:sexo,:estado_civil,:nombres_conyuge,:apellidos_conyuge,:documentos_descripcion,:fileDocument,:file_contrato,:load_contrato,:disponible,:tipo_contrato,:deleted,:created_at,:update_at,:id_usuario_emp,:id_cargo_horario_emp)";
                                     $stmt = $conn->prepare($sql);
                                     $stmt->bindParam(':id_empleados', $_POST['cedula']);
                                     $stmt->bindParam(':profileimage', $gravatar);
@@ -97,6 +97,9 @@
                                     $stmt->bindParam(':apellidos_conyuge',$_POST['apellidosConyuge']);
                                     $stmt->bindParam(':documentos_descripcion',$_POST['documentosDescription']);
                                     $stmt->bindParam(':fileDocument', $archivo);
+                                    $stmt->bindValue(':file_contrato','', PDO::PARAM_STR);
+                                    $stmt->bindValue(':load_contrato', 0, PDO::PARAM_INT);
+                                    $stmt->bindParam(':tipo_contrato', $_POST['tipoContrato']);
                                     $stmt->bindValue(':deleted', 0, PDO::PARAM_INT);
                                     $stmt->bindValue(':disponible', 1, PDO::PARAM_INT);
                                     $stmt->bindValue(':created_at', $creacion);
@@ -226,7 +229,7 @@
     // $logout,$ajuste,$rrhh,$suministro,$contabilidad,$ctas_medicas,$paciente,$seguridad);
     printLayout('../index.php', '../../../../index.php', 'contrato.php', 'personal.php', 
     'reclutamiento.php', 'historialPersonal.php','listaAsistencias.php','../../seguridad/controllers/logout.php','../../seguridad/routes/perfil.php',
-    '../index.php','../../suministro/','../../contabilidad/','../../citasmedicas/','../../pacientes/','../../seguridad/');
+    '../index.php','../../suministro/','../../contabilidad/','../../citasmedicas/','../../pacientes/','../../seguridad/',2);
   ?>
 <div class="container-fluid">
   <div class="row">
@@ -732,12 +735,15 @@
                     <input type="text" name="created_at" class="form-control" value="<?php echo $created?>" id="validationServer37" readonly>
                   </div>
                   <div class="col-md-3 mb-3">
-                    <label for="validationServer09">Tipo de contrato</label>
-                    <select class="custom-select" name="idcontrato" id="validationServer39" required>
+                    <label for="tipoContrato">Tipo de contrato</label>
+                    <select class="custom-select" name="tipoContrato" id="tipoContrato" required>
                       <option selected disabled value="">Seleccione...</option>
-                      <option>Contrato 1</option>
-                      <option>Contrato 2</option>
-                      <option>Contrato 3</option>
+                      <option value="Indefinido">Contrato De Trabajo Indefinido</option>
+                      <option value="Indefinido Bonificado">Contrato De Trabajo Indefinido Bonificado</option>
+                      <option value="Indefinido Discapacidad">Contrato De Trabajo Indefinido Personas Con Discapacidad</option>
+                      <option value="Temporal">Contrato De Trabajo Temporal</option>
+                      <option value="Temporal Discapacidad">Contrato De Trabajo Temporal Personas Con Discapacitada</option>
+                      <option value="Practicas">Contrato De Trabajo En Prácticas</option>
                     </select>
                   </div>
                   <div class="col-md-3 mb-3">
@@ -766,7 +772,7 @@
                   </div>  
                   <div class="input-group mb-3">
                   <div class="custom-file">
-                    <input name="fileDocument" type="file" class="form-control" onchange="return validarExtdoc()" id="fileDocument" accept="application/pdf" aria-describedby="inputGroupFileAddon01" required>
+                    <input name="fileDocument" type="file" class="form-control" onchange="return validarExtdoc(this);" id="fileDocument" accept="application/pdf" aria-describedby="inputGroupFileAddon01" required>
                   </div>
                 </div>
 
