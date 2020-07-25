@@ -1,8 +1,6 @@
 {
     "require": {
         "composer/composer": "^1.10",
-        "vlucas/phpdotenv": "^4.1",
-        "gravatarphp/gravatar": "^2.0",
-        "mpdf/mpdf": "^8.0"
+        "vlucas/phpdotenv": "^4.1"
     }
 }

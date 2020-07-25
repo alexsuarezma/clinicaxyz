@@ -72,21 +72,21 @@ $id = $_SESSION['cedula'];
                 <hr class="mt-1 mb-4">
                 <div class="form-row">               
                     <div class="form-group col-md-12">
-                        <a class="text-info" href="../controllers/viewPdf.php?type=1&desde=&hasta=" target="_blank">
+                        <a class="text-info" href="https://clinicavitaliacontratos.herokuapp.com/viewPdf.php?type=1&desde=&hasta=&id=<?php echo $_SESSION['cedula']?>" target="_blank">
                         <i class="fas fa-external-link-square-alt mr-2"></i> 
                         Rellenar formato con datos del empleado (Contrato De Trabajo Indefinido)</a>
                     </div>
                 </div>
                 <div class="form-row">               
                     <div class="form-group col-md-12">
-                        <a class="text-info" href="../controllers/viewPdf.php?type=2&desde=&hasta=" target="_blank">
+                        <a class="text-info" href="https://clinicavitaliacontratos.herokuapp.com/viewPdf.php?type=2&desde=&hasta=&id=<?php echo $_SESSION['cedula']?>" target="_blank">
                         <i class="fas fa-external-link-square-alt mr-2"></i> 
                         Rellenar formato con datos del empleado (Contrato De Trabajo Indefinido Bonificado)</a>
                     </div>
                 </div>
                 <div class="form-row">               
                     <div class="form-group col-md-12">
-                        <a class="text-info" href="../controllers/viewPdf.php?type=3&desde=&hasta=" target="_blank">
+                        <a class="text-info" href="https://clinicavitaliacontratos.herokuapp.com/viewPdf.php?type=3&desde=&hasta=&id=<?php echo $_SESSION['cedula']?>" target="_blank">
                         <i class="fas fa-external-link-square-alt mr-2"></i> 
                         Rellenar formato con datos del empleado (Contrato De Trabajo Indefinido Personas Con Discapacidad)</a>
                     </div>

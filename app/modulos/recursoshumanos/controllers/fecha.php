@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -15,9 +18,10 @@
                     </button>
                 </div>
                 <div class='modal-body'>
-                    <form action="viewPdf.php" class="ml-2 mr-2">
+                    <form action="https://clinicavitaliacontratos.herokuapp.com/viewPdf.php" class="ml-2 mr-2">
                         <label class="font-weight-bold">Selección de fechas</label>
                         <input type="hidden" name="type" value="<?php echo $_GET['type']?>">
+                        <input type="hidden" name="id" value="<?php echo $_SESSION['cedula']?>">
                         <hr class="mt-1 mb-4 mr-5">
                         <div class="form-row">
                             <div class="form-group col-md-6">
