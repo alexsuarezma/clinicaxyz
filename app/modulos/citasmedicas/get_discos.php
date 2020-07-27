@@ -25,7 +25,7 @@ if($banda_id != ''){ //verificamos nuevamente que sea una opcion valida
  */
 ?>
 
-<option value="">- <?php echo $banda_id ?>-</option>
+<option value="">- Seleccione-</option>
 <?php foreach($filas as $op): //creamos las opciones a partir de los datos obtenidos ?>
-<option value="<?php echo  $op['id_empleados_medico'] ?>"><?= $op['apellidos']." ".$op['nombres']?></option>
+<option value="<?php echo  $op['id_empleados_medico'] ?>"><?= utf8_decode($op['apellidos']." ".$op['nombres'])?></option>
 <?php endforeach; ?>

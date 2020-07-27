@@ -33,86 +33,14 @@
               } 
 
 
-              if (isset($_POST['guardar'])) {
-                $id_paciente=$_POST['id_paciente'];
-                $cedula = $_POST['cedula'];
-                $especialidad=$_POST['bandas'];
-                $especialista=$_POST['discos'];
-                $fecha=$_POST['bandas_f'];
-                $hora=$_POST['discos_h'];
-             
-
-
-                $fecha_de_registro=Date("Y-m-d H-i-s");
-
-
-                $consulta_fecha="SELECT * from citas where fecha='$fecha' ";
-                $sql_conteo=mysqli_query($conexion,$consulta_fecha);
-                $conteo=mysqli_num_rows($sql_conteo);
-
-                if ($conteo < 13 ) {
-                	    
-
-                	    $sql_consulta="SELECT * from citas where fecha='$fecha' and id_hora='$hora' ";
-                	    $sql_consulta_conteo=mysqli_query($conexion,$sql_consulta);
-                	    $total=mysqli_num_rows($sql_consulta_conteo);
-
-                	    if ($total<1) {
-
-                	    	   $guardar_cita="INSERT into citas values('','$fecha','$hora','$id_paciente','Pendiente')";
-
-    mysqli_query($conexion, $guardar_cita);
-
-
-    						$id=mysqli_insert_id($conexion);
-
-                $sql_docdor="SELECT * from empleados_medico where id_empleados_medico= '$especialista' ";
-                $resultado_doctor=mysqli_query($conexion,$sql_docdor);
-                $row_doc=mysqli_fetch_array($resultado_doctor);
-                $id_doc=$row_doc['id_medico'];
-
-                  $registrar="INSERT INTO  citas_medicos values ('','$id','$id_doc')";
-
-                  mysqli_query($conexion,$registrar);
-
-
-                  $guardar_cita="INSERT INTO cita_especialidad values('','$id','$especialidad')";
-
-                  mysqli_query($conexion,$guardar_cita);
-      
-    echo ("<script LANGUAGE='JavaScript'>
-    window.alert('Consulta programada exitosamente ".$id_doc." ".$especialidad." ');
-    window.location.href='reportes/imprimir_cita.php?id_alu= ".$id." ';
-    </script>");
-
-                	    	
-                	    }else{
-                	    		  echo ("<script LANGUAGE='JavaScript'>
-    window.alert('La hora escogida ya esta ocupada!! ');
-    window.location.href='index.php ';
-    </script>");
-
-                	    }
-
-
-                } else {
-
-                	  echo ("<script LANGUAGE='JavaScript'>
-    window.alert('Ya no hay cupos para el dia escogido... ');
-    window.location.href='index.php ';
-    </script>");
-
-             		
-
-              }
-         	}
-
+            
 ?>
 
 
 <html >
   <head>
     <meta charset="utf-8">
+     <meta http-equiv="content-type" content="text/html; charset=utf-8" /> 
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
@@ -124,7 +52,7 @@
     <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/checkout/">
 
     <!-- Bootstrap core CSS -->
-<link href="../assets/dist/css/bootstrap.css" rel="stylesheet">
+
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 
 <LINK REL=StyleSheet HREF="formulario.css" TYPE="text/css" MEDIA=screen>
@@ -171,7 +99,7 @@ return patron.test(te); // 6
 
   </script>
 
-    <h2 class="mt-5" style="text-align:center;">Citas Medicas</h2>
+    <h2 class="mt-5" style="text-align:center;">Citas Médicas</h2>
     <div class="container">
  
 <!-- comienzo del formulario-->
@@ -216,6 +144,31 @@ return patron.test(te); // 6
 
 
 
+
+  if (isset($_POST['guardar'])) {
+                $id_paciente=$_POST['id_paciente'];
+                $cedula = $_POST['cedula'];
+                $especialidad=$_POST['bandas'];
+                $especialista=$_POST['discos'];
+                $fecha=$_POST['bandas_f'];
+                $hora=$_POST['discos_h'];
+             
+
+
+                $fecha_de_registro=Date("Y-m-d H-i-s");
+
+
+              
+               //   mysqli_query($conexion,$guardar_cita);
+      
+    echo ("<script LANGUAGE='JavaScript'>
+   
+    window.location.href='confirmar_pago.php? id_paciente=".$id_paciente." & cedula=".$cedula." & especialidad=".$especialidad." & especialista=".$especialista." & fecha=".$fecha." & hora=".$hora." ';
+    </script>");
+
+                        
+        
+          }
 
 // Realizar una consulta MySQL
 
@@ -340,7 +293,7 @@ while($tiempoInicio <= $tiempoFin){
          
 
            <hr class="mb-4">
-        <button class="btn btn-primary " type="submit" id="guardar" name="guardar">Enviar</button>
+        <button class="btn btn-primary " type="submit" id="guardar" name="guardar"> Continuar</button>
         <?php  }   } else { ?>
 
 
@@ -454,7 +407,7 @@ while($tiempoInicio <= $tiempoFin){
 </div>
    
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-      <script>window.jQuery || document.write('<script src="../assets/js/vendor/jquery.slim.min.js"><\/script>')</script><script src="../assets/dist/js/bootstrap.bundle.js"></script>
+    
         <script src="form-validation.js"></script>
         <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 </body>

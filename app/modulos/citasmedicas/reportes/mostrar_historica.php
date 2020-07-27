@@ -145,9 +145,13 @@ function morepagestable($datas, $lineheight=13) {
 	require '../conexion.php';
 
 
-	$id_alum=$_GET['id_alu'];
+	$id_paciente=$_GET['id_paciente'];
+	$id_citas=$_GET['id_citas'];
 	
-	$query = "SELECT * FROM citas_medica where idcitas= $id_alum ";
+	$query = "SELECT *,ciu.nombre as ci_nom,pro.nombre as pro_nom from citas as ci join pacientes as pa on ci.paciente=pa.idpacientes
+join hora as ho on ci.id_hora=ho.id_hora
+join provincias as pro on pa.provincia=pro.idprovincias
+join ciudades as ciu on  pa.ciudad=ciu.idciudades where pa.idpacientes='$id_paciente' and ci.idcitas='$id_citas' ";
 	$resultado = $conexion->query($query);
 	
 	$pdf = new PDF();
@@ -163,88 +167,16 @@ function morepagestable($datas, $lineheight=13) {
 	$pdf->write(5, utf8_decode('   ____________________________________________________________________________________________'));
 	$pdf->Ln(8);
 	$pdf->SetFont('Arial','B',15);
-	$pdf->Cell(195,6,'Hoja de cita',0,0,'C');
+	$pdf->Cell(195,6,'Historial clinico',0,0,'C');
 
 	$pdf->SetFont('Arial','',10);
 	$pdf->write(5, utf8_decode('   ____________________________________________________________________________________________'));
 	$pdf->Ln(15);
 
 	$pdf->SetFont('Arial','B',15);
-	$pdf->Cell(195,6,utf8_decode('CITA N°: '.$row['idcitas']),0,0,'C');
+	$pdf->Cell(87,6,utf8_decode('Cedula  N°: '.$row['idpacientes']),0,0,'C');
 
 
-
-	$pdf->SetFont('Arial','B',12);
-	$pdf->Ln(12);
-	$pdf->Cell(195,6,'Fecha de solicitud',0,0,'C');
-	$pdf->Ln(12);
-
-	$pdf->SetFont('Arial','',12);
-	$pdf->Cell(195,6,'GUAYAQUIL/ '.$row['fecha'],0,0,'C');
-	$pdf->Ln(12);
-
-
-	
-	$pdf->SetFont('Arial','B',12);
-	$pdf->cell(195,6,'CONSULTA MEDICA',0,0,'C');
-	$pdf->SetFont('Arial','B',10);
-	$pdf->Ln(12);
-
-	$pdf->SetFont('Arial','',10);
-	$pdf->Cell(85,6, utf8_decode('Para el dia '),0,0,'R');
-	
-	$pdf->SetFont('Arial','U',10);
-	$pdf->Cell(20,6,utf8_decode($row['fecha']),0,0,'L');
-
-
-	$pdf->SetFont('Arial','',10);
-	$pdf->Cell(10,6,utf8_decode(" a las "),0,0,'R');
-
-	$pdf->SetFont('Arial','U',10);
-
-	$pdf->Cell(30,6,$row['hora'],0,0,'');
-
-	$pdf->Ln(12);
-
-	$pdf->SetFont('Arial','',10);
-
-	$pdf->Cell(110,6,utf8_decode("Tiene cita asignada con Dr(a). "),0,0,'R');
-
-	$pdf->SetFont('Arial','U',10);
-	$pdf->Cell(15,6,utf8_decode($row['nombreD']." ".$row['apellidos']),0,0,'L'); 
-	$pdf->Ln(12);
-
-	$pdf->SetFont('Arial','',10);
-	$pdf->cell(100,6,utf8_decode("del servicio de "),0,0,'R');
-	$pdf->SetFont('Arial','U',10);
-	$pdf->Cell(10,6,utf8_decode($row['descripcion']),0,0,'L');
-
-	$pdf->Ln(30);
-
-	$pdf->SetFont('Arial','',10);
-
-	$pdf->write(5, utf8_decode('   ___________________________________________________________________________________________'));
-	$pdf->Ln(8);
-	$pdf->SetFont('Arial','',10);
-	$pdf->Cell(195,6,utf8_decode('Este documento deberá ser presentado como soporte de haber agendado una cita al momento de'),0,0,'C');
-	$pdf->Ln(8);
-	$pdf->Cell(195,6,utf8_decode("acercarse a su consulta"),0,0,'C');
-
-	$pdf->SetFont('Arial','',10);
-	$pdf->write(5, utf8_decode('   ___________________________________________________________________________________________'));
-	$pdf->Ln(20);
-
-
-	$pdf->SetFont('Arial','B',10);
-	$pdf->Cell(10,10,"Nota:",0,0,'');
-	$pdf->SetFont('Arial','',10);
-
-
-	$pdf->write(10,utf8_decode(" Por favos, en caso de NO poder asistir a la consulta de "));
-	$pdf->SetFont('Arial','B',10);
-	$pdf->write(10,utf8_decode($row['descripcion']));
-	$pdf->SetFont('Arial','',10);
-	$pdf->write(10,utf8_decode(" agradeceriamos q lo comunique al telefono *** *** ** extensión ***** "));
 
 /*
 	$pdf->cell(42,6,'Datos de la cita:',1,0,'C',1);
@@ -300,22 +232,22 @@ function morepagestable($datas, $lineheight=13) {
 	$pdf->Cell(55,8,utf8_decode($row['id_alumno']),1,0,'C');
 	$pdf->Cell(42,8,'Nombre y apellido: ',1,0,'C',1);
 	$pdf->Cell(55,8,$row['apellido_alumno'].' '.$row['nombre_alumno'],1,0,'C',0,' ');
-				
+	*/			
 	
 	
 	$pdf->Ln(8);
 
 	$pdf->Cell(42,8,'Cedula:',1,0,'C',1);
-	$pdf->Cell(55,8,$row['cedula_alumno'],1,0,'C');
+	$pdf->Cell(55,8,$row['paciente'],1,0,'C');
 
-	$pdf->Cell(42,8,'Fecha de nacimiento:',1,0,'J',1);
-	$pdf->Cell(55,8,$row['fecha_de_nacimiento'],1,0,'C');
+	$pdf->Cell(42,8,'Nombre:',1,0,'J',1);
+	$pdf->Cell(55,8,$row['nombres'],1,0,'C');
 
 	$pdf->Ln(8);
 
 
-	$pdf->Cell(42,8,'Genero:',1,0,'C',1);
-	$pdf->Cell(55,8,$row['genero'],1,0,'C');
+	$pdf->Cell(42,8,'apellidos:',1,0,'C',1);
+	$pdf->Cell(55,8,$row['ape_paterno']." ".$row['ape_mat'],1,0,'C');
 
 	
 
@@ -392,7 +324,7 @@ function morepagestable($datas, $lineheight=13) {
 
 	$pdf->Cell(5,8,'________________________',0,0,'');
 	$pdf->Ln(10);
-	*/
+	
 
 	$pdf->SetFont('Arial','',10);
 		

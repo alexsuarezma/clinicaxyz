@@ -32,12 +32,14 @@ update citas set fecha='2020-06-01' where paciente='0958548125';
    select * from empleados_medico;
    select * from empleados;
    
-   create view citas_medica as select pa.*,ho.*, ci_me.medico,emp.id_empleados,emp.nombres as 'nombreD',emp.apellidos,
+drop view citas_medica;
+   create view citas_medica as select pa.*,ho.*,ci.idcitas,ci.fecha, ci_me.medico,emp.id_empleados, esp.descripcion,emp.nombres as 'nombreD',emp.apellidos,
    emp.celular from citas as ci join pacientes as pa on pa.idpacientes=ci.paciente
    join hora as ho on ho.id_hora=ci.id_hora 
    join citas_medicos as ci_me on ci_me.cita=ci.idcitas
    join empleados_medico as em_me on em_me.id_medico=ci_me.medico
-   join empleados as emp on em_me.id_empleados_medico=emp.id_empleados;
+   join empleados as emp on em_me.id_empleados_medico=emp.id_empleados
+   join especialidades as esp on esp.idespecialidades=em_me.id_especialidad_medico;
    
    select * from citas_medica;
    drop view citas_medica;
