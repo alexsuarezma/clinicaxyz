@@ -1,4 +1,7 @@
-
+<?php 
+        session_start();
+        $_SESSION['paciente'] = 0;
+  ?>
 <!doctype html>
 <html lang="en">
   <head>
@@ -33,10 +36,21 @@
         <li class="nav-item">
           <a class="nav-link" href="formAspirantes.php">Postulate</a>
         </li>
+        <?php
+          if( $_SESSION['paciente'] == 1):
+        ?>
+          <li class="nav-item">
+            <a class="nav-link" href="app/modulos/citasmedicas/index.php">Citas Medicas</a>
+          </li>
+          <!-- <li class="nav-item">
+            <a class="nav-link" href="app/modulos/citasmedicas/cita.php">Historial Clinico</a>
+          </li> -->
+        <?php
+          endif;
+        ?>
       </ul>
 
       <?php 
-        session_start();
         
           if(!empty($_SESSION['user_id'])): 
             require 'database.php';
