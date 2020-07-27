@@ -108,7 +108,7 @@ else
     <?php
   
     include "conexion.php";
-    $sentencia="SELECT * FROM cita_medica where fecha='$fecha_actual' order by idcitas ";
+    $sentencia="SELECT * FROM citas_medicas where fecha='$fecha_actual' order by idcitas";
 
 
 $result=mysqli_query($conexion, $sentencia);
