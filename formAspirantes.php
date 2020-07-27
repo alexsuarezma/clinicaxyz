@@ -151,21 +151,6 @@
         <li class="nav-item active">
         <a class="nav-link" href="#">Citas medicas<span class="sr-only">(current)</span></a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Pacientes</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="app/modulos/recursoshumanos/index.php">Recursos humanos<span class="sr-only">(current)</span></a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Suministros</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Contabilidad</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Seguridad</a>
-        </li>
       </ul>
     </div>
   </nav>

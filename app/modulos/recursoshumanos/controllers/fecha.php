@@ -1,9 +1,12 @@
 <?php
 session_start();
+date_default_timezone_set('America/Guayaquil');
+$created = date('d')."/".date('m')."/".date('Y');
 ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
@@ -25,8 +28,7 @@ session_start();
                         <hr class="mt-1 mb-4 mr-5">
                         <div class="form-row">
                             <div class="form-group col-md-6">
-                                <label for="desde">Escoge la fecha de inicio del contrato</label>
-                                <input type="date" class="form-control" name="desde" id="desde" required>
+                                <input type="hidden" class="form-control" name="desde" id="desde" value="<?php echo $created?>" required>
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="hasta">Escoge la fecha de finalización del contrato</label>

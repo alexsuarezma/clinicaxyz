@@ -319,9 +319,6 @@
                       endforeach;
                       ?>  
                     </select>
-                    <div class="invalid-feedback">
-                      <!--mensaje para feedback del campo.-->
-                    </div>
                 </div>
                 <div class="col-md-6 mb-3">
                   <label for="validationServer04">Telefono fijo</label>

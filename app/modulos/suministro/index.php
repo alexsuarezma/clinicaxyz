@@ -1,227 +1,61 @@
-<?php 
-require 'php/conexion.php'; 
+<?php
+require '../../../database.php';
+require 'components/layout.php';
 require '../seguridad/controllers/functions/credenciales.php';
 
 verificarAcceso("../../../", "modulo_suministros");
 
-    
-
-    $query= "SELECT * FROM categoria";	
-    $resultado = $conexion->query($query);
-
 ?>
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <title>SUMINISTRO CENTRO MEDICO</title>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <meta name="copyright" content="Todos los derechos reservados DEPARTAMENTO SUMINISTRO">
-  <link href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-  <meta name="description" content="Suministro del Departamento Farmaceutico">
-  <link rel="icon" type=".ico" href="ico/farma.ico">
-  <script src="js/jquery-3.4.1.min.js"></script>
-  <script src="js/script.js"></script>
-  <script src="js/main.js"></script>
-  <link rel="stylesheet" href="css/sumies.css">
-</head>
-<body>
-  <div class="container">
-    <div class="content_nav">
-      <ul>
-        <li class="product td"><span><i class="fas fa-box-open"></i></span><a href="#" class="pr">Productos</a>
-          <ul>
-            <li class="register_pro">
-              <form onsubmit="onSubmit(event)"method="POST">
-                  <span>Busquedad</span>
-                  <input type="search" name="busqueda" id="busqueda" required>
-                  <button class="btn"><i style="font-size:12px;" class="fas fa-search" title="Buscar"></i></button>
-              </form>
-              <form action="php/data.php" method="POST" >    
-                <span>Codigo de Barra</span>
-                <input type="text" name="serie_pr" id="" maxlength="30">
-                <span>Nombre</span>
-                <input type="text" name="nombre_pr" id="" onkeypress="return soloLetras(event)" maxlength="30">
-                <span>Descripcion</span>
-                <textarea name="descripcion_pr" id="" cols="30" rows="10"></textarea>
-                <span>Categoria - Insumos</span>
-                <select name="categoria_pr" id="" maxlength="20">
-                  <?php
-                    while($catenom = $resultado->fetch_assoc()):
-                  ?>
-                  <option value="<?php echo $catenom["idcategoria"];?>"><?php echo $catenom["nombre_cate"];?></option>
-                  <?php 
-                    endwhile;
-                  ?> 
-                </select>
-                <span>Stock</span>
-                <input type="number" name="stock_pr" id="" onKeyPress="return soloNumeros(event)" maxlength="6">
-                <span>Precio</span>
-                <input type="number" name="precio_pr" id="" onKeyPress="return soloNumeros(event)" maxlength="6">
-                <span>Fecha de Elaboracion</span>
-                <input type="date" name="fecha_elaboracion" id="">
-                <span>Fecha de Caducidad</span>
-                <input type="date" name="fecha_caducidad" id="">
-                <div class="buttons">
-                  <input type="submit" class="btn" value="GUARDAR"></input> 
-                  <button class="btn"><i class="fas fa-arrow-up"></i></button>
-                </div>
-              </form>
-            </li>
-          </ul>
-        </li>
-        <li class="provider td"><span><i class="fas fa-dolly"></i></span><a href="#" class="provee">Proveedores</a>
-          <ul>
-            <li class="register_provee">
-              <form onsubmit="onSubmitPro(event)"method="POST">
-                  <span>Busquedad</span>
-                  <input type="search" name="busqueda-pro" id="busqueda-pro" required>
-                  <button class="btn"><i style="font-size:12px;" class="fas fa-search" title="Buscar"></i></button>
-              </form>
-              <form action="php/data_2.php" method="POST">
-                <span>N° Identifiacion</span>
-                <input type="text" name="numero_identificacion_pro" id="ruc" maxlength="13" onKeyPress="return soloNumeros(event)">
-                <input type = "button" value = "Validar RUC" onclick="validar()">
-                <span>Razon Social</span>
-                <input type="text" name="razon_social_empresa_pro" onkeypress="return soloLetras(event)" id="" maxlength="30">
-                <span>Nombre Representante Legal</span>
-                <input type="text" name="nombre_representante_legal_pro" id="" maxlength="30">
-                <span>Ciudad</span>
-                <select name="ciudad" id="" maxlength="60">
-                  <option>Azuay, Cuenca</option>
-                  <option>Bolívar, Guaranda</option>
-                  <option>Cañar, Azogues</option>
-                  <option>Carchi, Tulcán</option>
-                  <option>Chimborazo, Riobamba</option>
-                  <option>Cotopaxi, Latacunga</option>
-                  <option>El Oro, Machala</option>
-                  <option>Esmeraldas, Esmeraldas</option>
-                  <option>Galápagos, Puerto Baquerizo Moreno</option>
-                  <option>Guayas, Guayaquil</option>
-                  <option>Imbabura, Ibarra</option>
-                  <option>Loja, Loja</option>
-                  <option>Los Ríos, Babahoyo</option>
-                  <option>Manabí, Portoviejo</option>
-                  <option>Morona Santiago, Macas</option>
-                  <option>Napo, Tena</option>
-                  <option>Orellana, Francisco de Orellana</option>
-                  <option>Pastaza, Puyo</option>
-                  <option>Pichincha, Quito</option>
-                  <option>Santa Elena, Santa Elena</option>
-                  <option>Santo Domingo de los Tsáchilas, Santo Domingo</option>
-                  <option>Sucumbíos, Nueva Loja</option>
-                  <option>Tungurahua, Ambato</option>
-                  <option>Zamora Chinchipe, Zamora</option>
-                </select>
-                <span>Direccion</span>
-                <input type="text" name="direccion_pro" id="" maxlength="60">
-                <span>Telefono Fijo 1</span>
-                <input type="text" name="telefono_1_pro" id="" maxlength="30">
-                <span>Telefono Fijo 2</span>
-                <input type="text" name="telefono_2_pro" id="" maxlength="30">
-                <span>Correo Electronico</span>
-                <input type="email" name="email_1_pro" id="" maxlength="50">
-                <span>Correo Electronico 2</span>
-                <input type="email" name="email_2_pro" id="" maxlength="50">
-                <div class="buttons">
-                  <button type="submit" class="btn"><i class="far fa-save"></i></button> 
-                  <button class="btn"><i class="fas fa-arrow-up"></i></button>
-                </div>
-              </form>
-            </li>
-          </ul>
-        </li>
-      </ul>
-    </div>
-    <footer>
-      <span>Copyright 2020 Departamento Suministros</span>
-    </footer>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Jekyll v4.0.1">
+    <title>Clinica Vitalia | Seguridad</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/dashboard/">
+    <link href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" rel="stylesheet">
+    <!-- Bootstrap core CSS -->
+    <link href="../assets/dist/css/bootstrap.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="assets/styles/dashboard.css" rel="stylesheet">
+  </head>
+  <body>
+  <?php
+    printLayout ('ico/farma.ico','index.php', '../../../index.php','routes/inventario.php','routes/productos.php', 'routes/nuevoProducto.php',
+    'routes/historialProductos.php','#','routes/nuevaOrdenCompra.php','routes/listaOrdenesCompra.php','routes/proveedores.php','../seguridad/controllers/logout.php','../seguridad/routes/perfil.php',
+    '../recursoshumanos/','index.php','../contabilidad/','../citasmedicas/','../pacientes/','../seguridad/',1);
+?>
+<div class="container-fluid">
+  <div class="row">
+
+    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Dashboard</h1>
+        <div class="btn-toolbar mb-2 mb-md-0">
+          <div class="btn-group mr-2">
+            <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
+          </div>
+          <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
+            <span data-feather="calendar"></span>
+            This week
+          </button>
+        </div>
+      </div>
+      <div class="container mt-5">
+      </div>
+    </main>
   </div>
-<script>
-    onSubmit = (event) => {
-        event.preventDefault()
-        location.href=`php/buscar.php?p=${document.getElementById('busqueda').value}`;        
-    }
-    onSubmitPro = (event) => {
-        event.preventDefault()
-        location.href=`php/buscarProveedores.php?p=${document.getElementById('busqueda-pro').value}`;        
-    }
-    // enter text only
-    function soloLetras(e){
-       key = e.keyCode || e.which;
-       tecla = String.fromCharCode(key).toLowerCase();
-       letras = "abcdefghijklmnñopqrstuvwxyz";
-       especiales = "8-37-39-46";
-
-       tecla_especial = false
-       for(var i in especiales){
-            if(key == especiales[i]){
-                tecla_especial = true;
-                break;
-            }
-        }
-
-        if(letras.indexOf(tecla)==-1 && !tecla_especial){
-            return false;
-        }
-    }
-
-    // enter number only
-    function soloNumeros(e)
-    {
-      var patron = /^(\d+|\d+.\d{2})$/;
-      var key = window.Event ? e.which : e.keyCode;
-      return (key >= 48 && key <= 57 && patron)
-    }
-
- function validar(){
-  var number = document.getElementById('ruc').value;
-  var dto = number.length;
-  var valor;
-  var acu=0;
-  if(number==""){
-   alert('No has ingresado ningún dato, porfavor ingresar los datos correspondientes.');
-   }
-  else{
-   for (var i=0; i<dto; i++){
-   valor = number.substring(i,i+1);
-   if(valor==0||valor==1||valor==2||valor==3||valor==4||valor==5||valor==6||valor==7||valor==8||valor==9){
-    acu = acu+1;
-   }
-   }
-   if(acu==dto){
-    while(number.substring(10,13)!=001){
-     alert('Los tres últimos dígitos no tienen el código del RUC 001.');
-     return;
-    }
-    while(number.substring(0,2)>24){    
-     alert('Los dos primeros dígitos no pueden ser mayores a 24.');
-     return;
-    }
-    alert('El RUC está escrito correctamente');
-    alert('Se procederá a analizar el respectivo RUC.');
-    var porcion1 = number.substring(2,3);
-    if(porcion1<6){
-     alert('El tercer dígito es menor a 6, por lo \ntanto el usuario es una persona natural.\n');
-    }
-    else{
-     if(porcion1==6){
-      alert('El tercer dígito es igual a 6, por lo \ntanto el usuario es una entidad pública.\n');
-     }
-     else{
-      if(porcion1==9){
-       alert('El tercer dígito es igual a 9, por lo \ntanto el usuario es una sociedad privada.\n');
-      }
-     }
-    }
-   }
-   else{
-   alert("ERROR: Por favor no ingrese texto");
-   }
-  }
- }
-  </script>
-</body>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+      <script>window.jQuery || document.write('<script src="../assets/js/vendor/jquery.slim.min.js"><\/script>')</script><script src="../assets/dist/js/bootstrap.bundle.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+        <script src="components/scripts/dashboard.js"></script>          
+      </body>
 </html>
