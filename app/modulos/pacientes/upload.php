@@ -1,6 +1,6 @@
 <?php 
-include ("conexión.php");
-$cedula =
+include ("conexion.php");
+$cedula = $_POST["ced"];
 
 $nombre=$_FILES['arc']['name'];
 $guardado=$_FILES['arc']['tmp_name'];
@@ -22,5 +22,19 @@ if(!file_exists('arc')){
 	}
 }
 $ruta='arc/'.$nombre;
-echo $ruta;
+$registro="INSERT INTO doc(cedula, ruta) VALUES ('$cedula','$ruta')";
+$resultado = mysqli_query ($conectar,$registro);
+
+if($resultado ){
+?>
+<br>
+<h3> arhivo registrado exitosamente en base de datos</h3>
+<?php
+}else{
+    ?>
+    <br>
+    <h3> falla al registrar archivo en base de datos </h3>
+    <?php
+}
+
 ?>

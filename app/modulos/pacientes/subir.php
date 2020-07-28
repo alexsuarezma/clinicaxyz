@@ -134,7 +134,8 @@
       
       <H2>Subida de archivos</H2>
       <form action="upload.php" method="POST" enctype="multipart/form-data">
-       
+      <label for="ced">Cedula del paciente</label>
+       <input type="text" name="ced"><br>
        
         <label for="arc">Archivo </label>
         <input type="file" name="arc" >
