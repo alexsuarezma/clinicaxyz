@@ -14,9 +14,14 @@ class ComposerStaticInit24d8829d7555a69f26ff30657f7095c0
         'e69f7f6ee287b969198c3c9d6777bd38' => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer/bootstrap.php',
         '0d59ee240a4cd96ddbb4ff164fccea4d' => __DIR__ . '/..' . '/symfony/polyfill-php73/bootstrap.php',
         'b6b991a57620e2fb6b2f66f03fe9ddc2' => __DIR__ . '/..' . '/symfony/string/Resources/functions.php',
+        '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
     );
 
     public static $prefixLengthsPsr4 = array (
+        's' => 
+        array (
+            'setasign\\Fpdi\\' => 14,
+        ),
         'S' => 
         array (
             'Symfony\\Polyfill\\Php80\\' => 23,
@@ -40,13 +45,22 @@ class ComposerStaticInit24d8829d7555a69f26ff30657f7095c0
             'Psr\\Container\\' => 14,
             'PhpOption\\' => 10,
         ),
+        'M' => 
+        array (
+            'Mpdf\\' => 5,
+        ),
         'J' => 
         array (
             'JsonSchema\\' => 11,
         ),
+        'G' => 
+        array (
+            'Gravatar\\' => 9,
+        ),
         'D' => 
         array (
             'Dotenv\\' => 7,
+            'DeepCopy\\' => 9,
         ),
         'C' => 
         array (
@@ -59,6 +73,10 @@ class ComposerStaticInit24d8829d7555a69f26ff30657f7095c0
     );
 
     public static $prefixDirsPsr4 = array (
+        'setasign\\Fpdi\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/setasign/fpdi/src',
+        ),
         'Symfony\\Polyfill\\Php80\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-php80',
@@ -127,13 +145,25 @@ class ComposerStaticInit24d8829d7555a69f26ff30657f7095c0
         array (
             0 => __DIR__ . '/..' . '/phpoption/phpoption/src/PhpOption',
         ),
+        'Mpdf\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/mpdf/mpdf/src',
+        ),
         'JsonSchema\\' => 
         array (
             0 => __DIR__ . '/..' . '/justinrainbow/json-schema/src/JsonSchema',
         ),
+        'Gravatar\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/gravatarphp/gravatar/src',
+        ),
         'Dotenv\\' => 
         array (
             0 => __DIR__ . '/..' . '/vlucas/phpdotenv/src',
+        ),
+        'DeepCopy\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy',
         ),
         'Composer\\XdebugHandler\\' => 
         array (

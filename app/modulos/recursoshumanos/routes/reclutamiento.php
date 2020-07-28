@@ -1,21 +1,21 @@
 <?php 
-    require '../../../../database.php'; 
-    require '../components/layout.php';
-        $results = $conn->query("SELECT * FROM aspirante")->fetchAll(PDO::FETCH_OBJ);
+require '../../../../database.php'; 
+require '../components/layout.php';
+require '../components/modal.php';
+require '../../seguridad/controllers/functions/credenciales.php';
+
+    verificarAcceso("../../../../", "modulo_rrhh");
+        $results = $conn->query("SELECT * FROM aspirantes")->fetchAll(PDO::FETCH_OBJ);
 
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/dashboard/">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+    <title>Recursos Humanos | Reclutamiento</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-    <!-- Bootstrap core CSS -->
-    <link href="../assets/dist/css/bootstrap.css" rel="stylesheet">
+    <link href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" rel="stylesheet"> 
     <!-- Custom styles for this template -->
     <link href="../assets/styles/component/dashboard.css" rel="stylesheet">
     <style>
@@ -32,8 +32,12 @@
     </style>
 </head>
 <body>
-<?php
-  printLayout('../index.php', '../../../../index.html', 'contrato.php', 'selectPersonal.php', 'reclutamiento.php', 'historialPersonal.php');
+<?php          
+    // printLayout ($route, $homePage, $createPage, $personalPage, $reclutamiento, $historialPersonal, $asistencia,
+    // $logout,$ajuste,$rrhh,$suministro,$contabilidad,$ctas_medicas,$paciente,$seguridad);
+    printLayout('../index.php', '../../../../index.php', 'contrato.php', 'personal.php', 
+    'reclutamiento.php', 'historialPersonal.php','listaAsistencias.php','../../seguridad/controllers/logout.php','../../seguridad/routes/perfil.php',
+    '../index.php','../../suministro/','../../contabilidad/','../../citasmedicas/','../../pacientes/','../../seguridad/',5);
 ?>
 <div class="container-fluid">
   <div class="row">
@@ -52,43 +56,54 @@
                 </button>
             </div>
       </div>
-    <div class="container">
-      <input type="text" name="busqueda" id="busqueda" placeholder="Search for names.." title="Type in a name">
+    <div class="container mt-4">
+      <input type="search" name="busqueda" id="busqueda" placeholder="Busca por cedula, nombres, apellidos, cargo al que postula..." title="Type in a name">
     </div>
-            <div class="container" >
+            <div class="container mt-5" >
                 <ul class="list-group">
           
                       <?php
                         foreach ($results as $aspirante):?>
                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <span><?php echo $aspirante->cedula?></span>
-                        <span >Aspirante: <?php echo $aspirante->nombres?> <?php echo $aspirante->apellidos?></span>
-                        <span >Enviado: <?php echo $aspirante->created_at?></span>
+                        <span id="cedulaAspirante"><?php echo $aspirante->id_aspirante?></span>
+                        <span class='font-weight-bold'>Aspirante: <span class="font-weight-light"><?php echo $aspirante->nombres?> <?php echo $aspirante->apellidos?></span></span>
+                        <span>
+                          <span class='font-weight-bold'>Cargo al que postula: <span class="font-weight-light"><?php echo $aspirante->cargo_postula?></span></span>
+                        </span>
+                        <span class='font-weight-bold'>|Enviado desde: <span class="font-weight-light"><?php echo $aspirante->created_at?></span>|</span>
                         <span>
                         <a href="../components/viewDocuments.php?contrato=<?php echo $aspirante->fileDocument?>" ><i class="fas fa-file-contract" style="color:black;" title="Ver Curriculum" ></i></a>
-                        <a href="../components/viewAspirante.php?id=<?php echo $aspirante->cedula?>" ><i class="fas fa-external-link-alt" style="color:blue;" title="Ver Informacion"></i></a>
-                        <a href="../controllers/deleteFisic.php?id=<?php echo $aspirante->cedula?>&aspirante=si"><i class="fas fa-trash-alt" style="color:red;" title="Eliminar Aspirante"></i></a>
+                        <a href="../components/viewAspirante.php?id=<?php echo $aspirante->id_aspirante?>" ><i class="fas fa-external-link-alt" style="color:blue;" title="Ver Informacion"></i></a>
+                        <a id="delete" href="#"><i class="fas fa-trash-alt" style="color:red;" title="Eliminar Aspirante"></i></a>
                         </span>
                         </li>
                       <?php 
                         endforeach;
                       ?>    
-                    
-                    
-                    
                 </ul>
             </div>
+            <?php          
+                      printModal('Eliminar Aspirante','btn-delete','modal-delete','¡Hey!. Estas apunto de ELIMINAR información sensible. ¿Realmente desea ELIMINAR los datos de este aspirante?');
+            ?>
      </main>
    </div>
   </div>
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-  <script>window.jQuery || document.write('<script src="../assets/js/vendor/jquery.slim.min.js"><\/script>')</script><script src="../assets/dist/js/bootstrap.bundle.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
   <script src="../components/scripts/dashboard.js"></script>      
   <!-- <script type="text/javascript" src="../components/scripts/jquery.min.js"></script>    
   <script type="text/javascript" src="../components/scripts/searchFilter.js"></script>       -->
-  
+  <script>
+    $(document).ready(function(){
+        $('#delete').click(function(){
+            $("#modal-delete").modal('show');
+            $('#btn-delete').click(function(){
+              location.href=`../controllers/deleteFisic.php?id=${$('#cedulaAspirante').text()}&aspirante=si`;
+            });
+            
+        });
+     });
+  </script>
 </body>
 </html>

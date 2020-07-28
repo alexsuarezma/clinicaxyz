@@ -9,7 +9,7 @@ $(document).ready(function(){
         document.getElementById("update").className = document.getElementById("update").className.replace(" active", "");
     });
     $('#horario').click(function(){
-        $("#section").load("horario.html");
+        $("#section").load("asistencias.php");
         document.getElementById("horario").className = document.getElementById("horario").className+" active";
         document.getElementById("informacion").className = document.getElementById("informacion").className.replace(" active", "");
         document.getElementById("actividades").className = document.getElementById("actividades").className.replace(" active", "");
@@ -25,7 +25,7 @@ $(document).ready(function(){
         document.getElementById("update").className = document.getElementById("update").className.replace(" active", "");
     });
     $('#contrato').click(function(){
-        $("#section").load("contrato.html");
+        $("#section").load("generarContrato.php");
         document.getElementById("contrato").className = document.getElementById("contrato").className+" active";
         document.getElementById("horario").className = document.getElementById("horario").className.replace(" active", "");
         document.getElementById("informacion").className = document.getElementById("informacion").className.replace(" active", "");
@@ -48,7 +48,7 @@ $(document).ready(function(){
         $("#modal-delete").modal('show');
         $('#btn-delete').click(function(){
            location.href=`../controllers/lockScreen.php?id=${$('#ocultCedula').text()}`;
-        });
-        
+        });  
     });
+
 });

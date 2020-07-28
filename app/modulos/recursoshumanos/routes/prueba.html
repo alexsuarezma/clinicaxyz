@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    XHTML
+    <p>Esto es un párrafo Esto es un párrafo Esto es un párrafo Esto es un párrafo Esto es un párrafo Esto es un párrafo Esto es un párrafo </p>
+    
+    <p>
+    <img height="250" src="/wp-content/uploads/2012/12/jquery.jpg">
+    </p>
+        
+    <p class="prueba">Esto es un párrafo con class="prueba" Esto es un párrafo con class="prueba" Esto es un párrafo con class="prueba"</p>
+        
+    <input id="boton1" type="button" value="ocultar/mostrar parrafo">
+    <input id="boton2" type="button" value="ocultar/mostrar imagen">
+    <input id="boton3" type="button" value="ocultar/mostrar clase 'prueba'">
+
+    <p>Esto es un párrafo Esto es un párrafo Esto es un párrafo Esto es un párrafo Esto es un párrafo Esto es un párrafo Esto es un párrafo </p>
+     
+    <p>
+    <img height="250" src="/wp-content/uploads/2012/12/jquery.jpg">
+    </p>
+        
+    <p class="prueba">Esto es un párrafo con class="prueba" Esto es un párrafo con class="prueba" Esto es un párrafo con class="prueba"</p>
+        
+    <input id="boton1" type="button" value="ocultar/mostrar parrafo">
+    <input id="boton2" type="button" value="ocultar/mostrar imagen">
+    <input id="boton3" type="button" value="ocultar/mostrar clase 'prueba'">
+    <!-- Libreria jQuery -->
+    <script type="text/javascript" src="https://code.jquery.com/jquery.js"></script>
+     
+    <script type="text/javascript">
+        $(document).ready(function(){  
+            $("#openDocument").click(function () {
+                    $("#contratoView").toggle("slow");
+                });
+                $("#boton2").click(function () {
+                    $('img').toggle("slow");
+                });
+                $("#boton3").click(function () {
+                    $('.prueba').toggle("slow");
+                });
+        });
+    </script>
+</body>
+</html>

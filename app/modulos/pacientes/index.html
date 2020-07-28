@@ -131,6 +131,7 @@
     <main role="main" class="col-md-9  ml-sm-auto col-lg-10 px-md-4">
       <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
       </div> 
+<<<<<<< HEAD
         <form action="conexion.php" method="POST" class="form-vertical">
           <div class="form-group"> 
           <label for="cedula" class="col-sm-2 control-label"> C.I.: </label><br>
@@ -307,6 +308,90 @@
       <input type="submit" name="Enviar" value="Registrar" id="enviar" >
       <button> cancelar</button>
         </form>
+=======
+      <form action="registrar.php" method="POST">
+        <H2>REGISTRO DE PACIENTE</H2>
+        <label for="id">Cedula/Pasaporte:</label>
+        <input type="text" name="id" placeholder="***********" required >
+        <br>
+        <label for="nombre"> Nombre: </label>
+        <input type="text" name="nombre" placeholder="nombre" required>
+        <br>
+        <label for="apep">Apellido Paterno: </label>
+        <input type="text" name="apep" placeholder="Apellido Paterno" required>
+        <br>
+        <label for="apem">Apellido Materno: </label>
+        <input type="text" name="apem" placeholder="Apellido Materno" required>
+        <br>
+        <label for="ocup">Ocupación: </label>
+        <input type="text" name="ocup" placeholder="trabajo">
+        <br>
+        <label for="fech">Fecha de nacimiento:</label>
+        <input type="date" name="fech" required>
+        <br>
+        <label for="sexo">Sexo: </label>
+        <input type="radio" name="sexo" value="masculino">
+        <label for="sexo">Masculino</label>
+        <input type="radio" name="sexo" value="femenino">
+        <label for="sexo">Femenino</label>
+        <input type="radio" name="sexo" value="indefinido">
+        <label for="sexo">Indefinido</label>
+        <br>
+        <label for="país">Provincia: </label>
+        <input type="text" name="pais" placeholder="Guayas">
+        <br>
+        <label for="provincia">Ciudad: </label>
+        <input type="text" name="provincia" placeholder="Guayaquil">
+        <br>
+        <label for="ciudad">Zona: </label>
+        <input type="text" name="ciudad" placeholder="Guasmo">
+        <br>
+        <label for="telf">Teléfono: </label>
+        <input type="tel" name="telf" placeholder="*********">
+        <br>
+        <label for="cel">Celular: </label>
+        <input type="tel" name="cel" max="0999999999" placeholder="0*********">
+        <br>
+        <label for="dire">Dirección: </label>
+        <input type="textarea" name="dire" maxlength="40">
+        <br>
+        <label for="correo">Correo: </label>
+        <input type="email" name="correo" placeholder="tucorreo@example.com">
+        <br>
+        <label for="afil">¿Está afiliado? |</label>
+        <input type="radio" name="afil" value="si">
+        <label for="afil">Si</label>
+        <input type="radio" name="afil" value="no">
+        <label for="afil">No</label>
+        <br>
+        <label for="afiltip">Tipo de afiliación</label>
+        <input type="text" name="afiltip" >
+        <br>
+        <label for="discap">¿Posee alguna discapacidad? </label>
+        <input type="radio" name="discap" value="Si">
+        <label for="discap">Si </label>
+        <input type="radio" name="discap" value="No">
+        <label for="discap">No </label>
+        <br>
+        <label for="carnet">Carnet Conadis: </label>
+        <input type="text" name="carnet" >
+        <br>
+        <label for="discapsel">Discapacidad: </label>
+        <input type="text" name="discapsel">
+        <br>
+        <label for="por">Grado % </label>
+        <input type="number" name="por" >
+        <br>
+        
+        <input type="reset" name="Cancel">
+        
+        <input type="submit" name="Registrar">
+
+        <button type="button"  name="cancelar"><a href="https://clinicaxyz.herokuapp.com/">Cancelar</a></button>
+
+
+    </form>
+>>>>>>> 60553579c0bf16038e95a0c153b2b0345e3ff3c2
       </div>
       </div>
     </main>
