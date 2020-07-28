@@ -1,7 +1,8 @@
 <?php
+require '../../../../database.php';
 session_start();
-date_default_timezone_set('America/Guayaquil');
-$created = date('d')."/".date('m')."/".date('Y');
+
+$fecha = $conn->query("SELECT created_at FROM empleados WHERE id_empleados=".$_SESSION['cedula'])->fetchAll(PDO::FETCH_OBJ);
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -14,7 +15,7 @@ $created = date('d')."/".date('m')."/".date('Y');
 </head>
 <body>
     <div class='modal fade' name='elegirFechaContrato' id='elegirFechaContrato' data-backdrop='static' data-keyboard='false' tabindex='-1' role='dialog' aria-labelledby='staticBackdropLabe' aria-hidden='true'>
-        <div class='modal-dialog' style="max-width:800px;">
+        <div class='modal-dialog'>
             <div class='modal-content'>
                 <div class='modal-header'>
                     <h5 class='modal-title' id='staticBackdropLabel'>Contrato</h5>
@@ -25,12 +26,10 @@ $created = date('d')."/".date('m')."/".date('Y');
                         <label class="font-weight-bold">Selección de fechas</label>
                         <input type="hidden" name="type" value="<?php echo $_GET['type']?>">
                         <input type="hidden" name="id" value="<?php echo $_SESSION['cedula']?>">
+                        <input type="hidden" class="form-control" name="desde" id="desde" value="<?php echo substr($fecha[0]->created_at,0,8)?>" required>
                         <hr class="mt-1 mb-4 mr-5">
                         <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <input type="hidden" class="form-control" name="desde" id="desde" value="<?php echo $created?>" required>
-                            </div>
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-12">
                                 <label for="hasta">Escoge la fecha de finalización del contrato</label>
                                 <input type="date" class="form-control" name="hasta" id="hasta" required>
                             </div>

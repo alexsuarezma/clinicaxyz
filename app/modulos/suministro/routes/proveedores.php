@@ -19,141 +19,13 @@ $proveedor = $conn->query("SELECT * FROM proveedores WHERE deleted = 0 ORDER BY 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
     <link href="../assets/styles/dashboard.css" rel="stylesheet">
+    <link href="../assets/styles/cardProvedores.css" rel="stylesheet">
   </head>
-  <style>
-
-        .card {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            min-width: 0;
-            word-wrap: break-word;
-            background-color: #DCDCDC;
-            background-clip: border-box;
-            border: 0 solid transparent;
-            border-radius: 0;
-        }
-        .card {
-            margin-bottom: 30px;
-        }
-        .card-body {
-            flex: 1 1 auto;
-            padding: 1.57rem;
-        }
-
-        .note-has-grid .nav-link {
-            padding: .5rem
-        }
-
-        .note-has-grid .single-note-item .card {
-            border-radius: 10px
-        }
-
-        .note-has-grid .single-note-item .favourite-note {
-            cursor: pointer
-        }
-
-        .note-has-grid .single-note-item .side-stick {
-            position: absolute;
-            width: 3px;
-            height: 35px;
-            left: 0;
-            background-color: rgba(82, 95, 127, .5)
-        }
-
-        .note-has-grid .single-note-item .category-dropdown.dropdown-toggle:after {
-            display: none
-        }
-
-        .note-has-grid .single-note-item .category [class*=category-] {
-            height: 15px;
-            width: 15px;
-            display: none
-        }
-
-        .note-has-grid .single-note-item .category [class*=category-]::after {
-            content: "\f0d7";
-            font: normal normal normal 14px/1 FontAwesome;
-            font-size: 12px;
-            color: #fff;
-            position: absolute
-        }
-
-        .note-has-grid .single-note-item .category .category-business {
-            background-color: rgba(44, 208, 126, .5);
-            border: 2px solid #2cd07e
-        }
-
-        .note-has-grid .single-note-item .category .category-social {
-            background-color: rgba(44, 171, 227, .5);
-            border: 2px solid #2cabe3
-        }
-
-        .note-has-grid .single-note-item .category .category-important {
-            background-color: rgba(255, 80, 80, .5);
-            border: 2px solid #ff5050
-        }
-
-        .note-has-grid .single-note-item.all-category .point {
-            color: rgba(82, 95, 127, .5)
-        }
-
-        .note-has-grid .single-note-item.note-business .point {
-            color: rgba(44, 208, 126, .5)
-        }
-
-        .note-has-grid .single-note-item.note-business .side-stick {
-            background-color: rgba(44, 208, 126, .5)
-        }
-
-        .note-has-grid .single-note-item.note-business .category .category-business {
-            display: inline-block
-        }
-
-        .note-has-grid .single-note-item.note-favourite .favourite-note {
-            color: #ffc107
-        }
-
-        .note-has-grid .single-note-item.note-social .point {
-            color: rgba(44, 171, 227, .5)
-        }
-
-        .note-has-grid .single-note-item.note-social .side-stick {
-            background-color: rgba(44, 171, 227, .5)
-        }
-
-        .note-has-grid .single-note-item.note-social .category .category-social {
-            display: inline-block
-        }
-
-        .note-has-grid .single-note-item.note-important .point {
-            color: rgba(255, 80, 80, .5)
-        }
-
-        .note-has-grid .single-note-item.note-important .side-stick {
-            background-color: rgba(255, 80, 80, .5)
-        }
-
-   
-
-
-
-        @media (max-width:767.98px) {
-            .note-has-grid .single-note-item {
-                max-width: 100%
-            }
-        }
-
-        @media (max-width:991.98px) {
-            .note-has-grid .single-note-item {
-                max-width: 216px
-            }
-        }
-  </style>
+  
   <body>
 <?php
     printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventario.php','productos.php', 'nuevoProducto.php',
-    'historialProductos.php','#','nuevaOrdenCompra.php','listaOrdenesCompra.php','proveedores.php','../../seguridad/controllers/logout.php','../../seguridad/routes/perfil.php',
+    'historialProductos.php','historialOrdenCompra.php','nuevaOrdenCompra.php','listaOrdenesCompra.php','proveedores.php','../../seguridad/controllers/logout.php','../../seguridad/routes/perfil.php',
     '../../recursoshumanos/','../index.php','../../contabilidad/','../../citasmedicas/','../../pacientes/','../../seguridad/',2);
 ?>
 <div class="container-fluid">
@@ -177,6 +49,7 @@ $proveedor = $conn->query("SELECT * FROM proveedores WHERE deleted = 0 ORDER BY 
       <div class="container mt-5 mb-5">
            
 <div class="page-content container note-has-grid">
+    <a href="historialProveedores.php">Ver el historial de PROVEEDORES eliminados</a>
     <ul class="nav nav-pills p-3 bg-white mb-3 rounded-pill align-items-center">
         <li class="nav-item ml-auto">
             <a href="#" class="text-secondary d-flex align-items-center px-3" id="agregar" name="agregar" title="Agrega un nuevo provedoor para que se reflejen en las nuevas Ordenes de Compra"><i class="fas fa-plus-circle" style="font-size:30px;"></i></a>

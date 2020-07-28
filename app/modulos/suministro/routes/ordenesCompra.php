@@ -23,7 +23,7 @@ $orden = $conn->query("SELECT * FROM orden_compra as o, detalle_orden_compra AS 
   <body>
 <?php
 printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventario.php','productos.php', 'nuevoProducto.php',
-'historialProductos.php','#','nuevaOrdenCompra.php','listaOrdenesCompra.php','proveedores.php','../../seguridad/controllers/logout.php','../../seguridad/routes/perfil.php',
+'historialProductos.php','historialOrdenCompra.php','nuevaOrdenCompra.php','listaOrdenesCompra.php','proveedores.php','../../seguridad/controllers/logout.php','../../seguridad/routes/perfil.php',
 '../../recursoshumanos/','../index.php','../../contabilidad/','../../citasmedicas/','../../pacientes/','../../seguridad/',6);
 ?>
 <div class="container-fluid">
@@ -48,9 +48,30 @@ printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventa
         <hr class="mb-4">
     <form id="formRegistrar" action="../controllers/registrarInventario.php" method="POST" class="ml-2 mr-2">
             <div class="">
-                <p style="font-size:15px;" class="text-break font-weight-bold badge-pill badge-info">
+            <?php
+                if($orden[0]->estado == "registrado"):
+            ?>
+                <p style="font-size:15px;" class="text-break font-weight-bold badge-pill badge-success">
+                <i class="far fa-check-circle mr-5" style="font-size:28px;"></i>
+                    ¡¡Esta Orden Ya fue Registrada en el Inventario!!
+                </p>
+            <?php
+                elseif($orden[0]->estado == "espera"):
+            ?>
+                <p style="font-size:15px;" class="text-break font-weight-bold badge-pill badge-warning">
+                <i class="fas fa-exclamation-triangle mr-5" style="font-size:28px;"></i>
                     En cuanto acepten esta solicitud de Orden de Compra, podras registrar los productos.
                 </p>
+            <?php
+                elseif($orden[0]->estado == "aceptado"):
+            ?>
+                <p style="font-size:15px;" class="text-break font-weight-bold badge-pill badge-info">
+                <i class="fas fa-info-circle mr-5" style="font-size:28px;"></i>
+                    Esta solicitud de Orden de Compra ya fue aprobada, ya puedes seguir con el proceso y clickear registrar los productos en el INVENTARIO
+                </p>
+            <?php
+                endif;
+            ?>
             </div>
             <label class="font-weight-bold">INFORMACION SOLICITUD PARA ORDEN DE COMPRA</label>
             <hr class="mt-1 mb-4 mr-5">
@@ -147,29 +168,35 @@ printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventa
                     </tr> 
                 </tbody>
             </table>
-            <div class='modal-footer mt-2'>
-                <a id="cancelar" href="historialOrdenCompra.php" type='button' class="btn btn-light border-secondary" data-dismiss='modal'>Cancelar</a>
             <?php
-                 if($orden[0]->estado == "aceptado" && $orden[0]->registrado == 0):
-            ?>              
-                <button id='confirmacion' name='confirmacion' type='button' class='btn btn-primary font-weight-bold' style="width:400px;">Registrar Productos en Invenario</button>
-            <?php
-                else:
+                if($orden[0]->estado != "registrado"):
             ?>
-                <div class="">
-                    <p style="font-size:15px;" class="text-break font-weight-bold badge-pill badge-warning">
-                        El boton de registrar se habilitaria cuando se apruebe la orden de compra
-                    </p>
-                </div>
+                <div class='modal-footer mt-2'>
+                    <a id="cancelar" href="historialOrdenCompra.php" type='button' class="btn btn-light border-secondary" data-dismiss='modal'>Cancelar</a>
+                <?php
+                    if($orden[0]->estado == "aceptado" && $orden[0]->registrado == 0):
+                ?>              
+                    <button id='confirmacion' name='confirmacion' type='submit' class='btn btn-primary font-weight-bold' style="width:400px;">Registrar Productos en Invenario</button>
+                <?php
+                    else:
+                ?>
+                    <div class="">
+                        <p style="font-size:15px;" class="text-break font-weight-bold badge-pill badge-warning">
+                            El boton de registrar se habilitaria cuando se apruebe la orden de compra
+                        </p>
+                    </div>
+                <?php
+                    endif;
+                ?>
+                </div> 
             <?php
                 endif;
             ?>
-            </div> 
         </form>
       </div>
 
     </main>
-      <div class='modal fade' name='modal-registrar' id='modal-registrar' data-backdrop='static' data-keyboard='false' tabindex='-1' role='dialog' aria-labelledby='staticBackdropLabe' aria-hidden='true'>
+    <div class='modal fade' name='modal-registrar' id='modal-registrar' data-backdrop='static' data-keyboard='false' tabindex='-1' role='dialog' aria-labelledby='staticBackdropLabe' aria-hidden='true'>
         <div class='modal-dialog'>
             <div class='modal-content'>
                 <div class='modal-header'>

@@ -70,6 +70,42 @@ function buscarHasPro(consulta){
 } 
 
 
+function inventarioProv(consulta){
+    $.ajax({
+        url: '../controllers/consultas/inventarioProv.php' ,
+        type: 'POST' ,
+        dataType: 'html',
+        data: {
+            consulta: consulta
+        },
+    })
+    .done(function(respuesta){
+        $("#provedores").html(respuesta);
+    })
+    .fail(function(){
+        console.log("error");
+    });
+} 
+
+function inventarioOrdenes(consulta){
+    $.ajax({
+        url: '../controllers/consultas/inventarioOrdenes.php' ,
+        type: 'POST' ,
+        dataType: 'html',
+        data: {
+            consulta: consulta
+        },
+    })
+    .done(function(respuesta){
+        $("#ordenesCompra").html(respuesta);
+    })
+    .fail(function(){
+        console.log("error");
+    });
+} 
+
+
+
 
 $(document).on('change', '#proveedor', function() {
     // Does some stuff and logs the event to the console

@@ -25,7 +25,7 @@ $producto = $conn->query("SELECT * FROM productos AS p, categoria AS c WHERE (p.
   <body>
 <?php
 printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventario.php','productos.php', 'nuevoProducto.php',
-'historialProductos.php','#','nuevaOrdenCompra.php','listaOrdenesCompra.php','proveedores.php','../../seguridad/controllers/logout.php','../../seguridad/routes/perfil.php',
+'historialProductos.php','historialOrdenCompra.php','nuevaOrdenCompra.php','listaOrdenesCompra.php','proveedores.php','../../seguridad/controllers/logout.php','../../seguridad/routes/perfil.php',
 '../../recursoshumanos/','../index.php','../../contabilidad/','../../citasmedicas/','../../pacientes/','../../seguridad/',3);
 ?>
 <div class="container-fluid">
@@ -133,6 +133,7 @@ printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventa
                     <hr class="mt-1 mb-4 mr-5">
                     <div class="form-row">
                         <div class="form-group col-md-6">
+                            <input type="hidden" name="type" value="2">
                             <label for="codigoBarra">Código de barra</label>
                             <input type="text" class="form-control" name="codigoBarra" id="codigoBarra" onkeypress="return soloNumeros(event)" required>
                         </div>
@@ -198,6 +199,7 @@ printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventa
 <script src="../components/scripts/dashboard.js"></script> 
 <script src="../components/scripts/consulta.js"></script> 
 <script src="../../seguridad/controllers/validations/validations.js"></script> 
+<script src="../../recursoshumanos/controllers/validation/validation.js"></script>    
 <script>
 
   function editarProducto(id,codigoBarra,nombre,descripcion,precioUnitario,fechaElaboracion,fechaCaducidad,idCategoria,img){

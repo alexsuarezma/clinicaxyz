@@ -8,7 +8,7 @@ verificarAcceso("../../../../", "modulo_suministros");
 $q=$_GET['id'];
 $categoria = $conn->query("SELECT * FROM categoria ORDER BY nombre_cate ASC")->fetchAll(PDO::FETCH_OBJ);
 $producto = $conn->query("SELECT * FROM productos AS p, categoria AS c WHERE p.idcategoria_pr=c.idcategoria AND idproducto=".$_GET['id'])->fetchAll(PDO::FETCH_OBJ);
-$proveedorHasProduct = $conn->query("SELECT * FROM producto_has_proveedor AS has, proveedores AS p, ciudades AS c WHERE (has.idproveedor_has=p.idproveedor AND c.idciudades=p.ciudad_pro) AND idproducto_has=$q AND has.deleted = 0")->fetchAll(PDO::FETCH_OBJ);
+$proveedorHasProduct = $conn->query("SELECT * FROM producto_has_proveedor AS has, proveedores AS p, ciudades AS c WHERE (has.idproveedor_has=p.idproveedor AND c.idciudades=p.ciudad_pro) AND idproducto_has=$q AND (has.deleted = 0 AND p.deleted=0)")->fetchAll(PDO::FETCH_OBJ);
 $proveedor = $conn->query("SELECT * FROM proveedores WHERE deleted = 0 ORDER BY razon_social_empresa_pro ASC")->fetchAll(PDO::FETCH_OBJ);
 
 ?>
@@ -26,7 +26,7 @@ $proveedor = $conn->query("SELECT * FROM proveedores WHERE deleted = 0 ORDER BY 
   <body>
 <?php
 printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventario.php','productos.php', 'nuevoProducto.php',
-'historialProductos.php','#','nuevaOrdenCompra.php','listaOrdenesCompra.php','proveedores.php','../../seguridad/controllers/logout.php','../../seguridad/routes/perfil.php',
+'historialProductos.php','historialOrdenCompra.php','nuevaOrdenCompra.php','listaOrdenesCompra.php','proveedores.php','../../seguridad/controllers/logout.php','../../seguridad/routes/perfil.php',
 '../../recursoshumanos/','../index.php','../../contabilidad/','../../citasmedicas/','../../pacientes/','../../seguridad/',4);
 ?>
 <div class="container-fluid">
@@ -75,6 +75,7 @@ printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventa
             </div>
             <hr class="mt-1 mb-4 mr-5">
             <div class="form-row">
+            <input type="hidden" name="type" value="1">
             <input type="hidden" name="idproducto" id="idproducto" value="<?php echo $_GET['id']?>">
                 <div class="form-group col-md-6">
                     <label for="codigoBarra">Código de barra</label>
@@ -109,7 +110,7 @@ printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventa
                 <div class="col-md-6 mb-3">
                     <label for="validationServer14">Categoria</label>
                     <select class="custom-select" name="categoria" id="validationServer08" required>
-                    <option selected disabled value="<?php echo $producto[0]->fecha_elaboracion_pr?>"><?php echo $producto[0]->nombre_cate?></option>
+                    <option selected value="<?php echo $producto[0]->idcategoria_pr?>"><?php echo $producto[0]->nombre_cate?></option>
                     <option disabled value="">Seleccione...</option>
                         <?php
                         foreach ($categoria as $Categorias):
