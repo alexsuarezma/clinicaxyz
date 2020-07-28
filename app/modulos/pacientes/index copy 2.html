@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Jekyll v4.0.1">
+    <title>Dashboard Template · Bootstrap</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/dashboard/">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <!-- Bootstrap core CSS -->
+<link href="../assets/dist/css/bootstrap.css" rel="stylesheet">
+
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+    </style>
+    <!-- Custom styles for this template -->
+    <link href="dashboard.css" rel="stylesheet">
+  </head>
+  <body>
+    <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+  <a class="navbar-brand col-md-3 col-lg-2 mr-0 px-3" href="#">Company name</a>
+  <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-toggle="collapse" data-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
+  <ul class="navbar-nav px-3">
+    <li class="nav-item text-nowrap">
+      <a class="nav-link" href="#">Sign out</a>
+    </li>
+  </ul>
+</nav>
+
+<div class="container-fluid">
+  <div class="row">
+    
+    <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+      <div class="sidebar-sticky pt-3">
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a class="nav-link active" href="index.html">
+              
+              <span data-feather="home"></span>
+              Registrar <span class="sr-only">(current)</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <span data-feather="file"></span>
+              Revisar
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <span data-feather="shopping-cart"></span>
+              Citas
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <span data-feather="users"></span>
+              Laboratorios
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <span data-feather="bar-chart-2"></span>
+              Pagos
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="subir.php">
+              <span data-feather="bar-chart-2"></span>
+              Archivos
+            </a>
+          </li>
+        </ul>
+
+       
+      </div>
+    </nav>
+<!-----------------------
+--------------------------
+------------------------------------
+----------------------------->
+    <main role="main" class="col-md-9  ml-sm-auto col-lg-10 px-md-4">
+      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+      </div> 
+       <!-- <form action="" class="form-vertical">
+          <div class="form-group"> 
+          <label for="fci" class="col-sm-2 control-label"> C.I.: </label><br>
+          <div class="col-sm-10">
+          <input type="text" class="form-control" name="fci" placeholder="Cédula" id="cedula"><br>
+</div>  
+</div>
+
+<div class="form-group"> 
+        <label for="fnom" class="col-sm-2 control-label">Nombres:</label><br>
+        <div class="col-sm-10">
+      <input type="text" class="form-control" id="fname" name="fnom" placeholder="Nombre"><br>
+</div></div>
+
+<div class="form-group"> 
+      <label for="fapell1" class="col-sm-2 control-label" placeholder="Apellido Paterno">Apellido Paterno:</label><br>
+      <div class="col-sm-10">
+      <input type="text"  class="form-control" id="fapelli1" name="fapell1" placeholder="Apellido paterno"><br>
+    </div></div>
+
+      <div class="form-group"> 
+      <label for="fapell2" class="col-sm-2 control-label">Apellido Materno: </label><br>
+      <div class="col-sm-10">
+      <input type="text"  class="form-control" id="fapelli2" name="fapell2" placeholder="Apellido materno"><br>
+    </div></div>
+
+      <div class="form-group"> 
+      <label for="fnac" class="col-sm-2 control-label">Fecha de nacimiento:</label><br>
+      <div class="col-sm-10">
+      <input type="date"  class="form-control" id="nac" name="fnac" ><br>
+    </div></div>
+
+      <div class="form-group"> 
+      <label for="fsex" class="col-sm-2 control-label">Sexo:</label><br>
+      <div class="col-sm-10">
+      <input type="radio"  class="form-control" id="male" name="gender" value="male">
+    </div></div>
+
+      <div class="form-group"> 
+      <label for="male" class="col-sm-2 control-label">Hombre</label><br>
+      <div class="col-sm-10">
+      <input type="radio"  class="form-control" id="female" name="gender" value="female">
+    </div></div>
+      <div class="form-group"> 
+      <label for="female" class="col-sm-2 control-label">Mujer</label><br>
+      <label for="citi" class="col-sm-2 control-label">Ciudad:</label><br>
+      <div class="col-sm-10">
+      <input list="citi"  class="form-control">
+    
+      
+      <datalist id="citi">
+        <option value="Guayaquil"></option>
+        <option value="Durán">
+        <option value="Samborondón">
+        <option value="Daule">
+        <option value="Milagro">
+        
+      </datalist>
+    </div></div>
+      <br>
+      <div class="form-group"> 
+      <label for="ftel" class="col-sm-2 control-label">Teléfono:</label><br>
+      <div class="col-sm-10">
+      <input type="number"  class="form-control" id="tel" name="ftel" placeholder="*********"><br>
+    </div></div>
+      <div class="form-group"> 
+      <label for="fcel" class="col-sm-2 control-label">Celular:</label><br>
+      <div class="col-sm-10">
+      <input type="number"  class="form-control" id="cel" name="fcel" placeholder="09********"><br>
+    </div></div>
+      <div class="form-group"> 
+      <label for="fmail" class="col-sm-2 control-label">Email:</label><br>
+      <div class="col-sm-10">
+      <input type="text"  class="form-control" id="email" name="fmail" placeholder="tucorreo@mail.com"><br>
+    </div></div>
+      <div class="form-group"> 
+      <label for="fdir" class="col-sm-2 control-label">Dirección:</label><br>
+      <div class="col-sm-10">
+      <input type="text"  class="form-control" id="direc" name="fdir" placeholder="Dirección"><br>
+    </div></div>
+  
+    <label for="afil" class="col-sm-2 control-label">Afiliación</label><br>
+      <div class="col-sm-10">
+      <input list="afil"  class="form-control">
+    
+      
+      <datalist id="afil">
+        <option value="Ninguna"></option>
+        <option value="Relación de dependencia"></option>
+        <option value="Emprendedor"></option>
+        <option value="Profesional en libre ejercicio"></option>
+        <option value="Administrador de un negocio"></option>
+        <option value="Dueño de empresa unipersonal"></option>
+        <option value="Trabajador no remunerado del hogar"></option>
+      </datalist>
+    </div>
+    <br>
+
+    <div class="form-group"> 
+      <label for="ftel" class="col-sm-2 control-label">Teléfono:</label><br>
+      <div class="col-sm-10">
+      <input type="number"  class="form-control" id="tel" name="ftel" placeholder="*********"><br>
+    </div></div>
+
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    </div> 
+
+    <div class="form-group"> 
+      <label for="titles" class="col-sm-2 control-label">Discapacidad</label><br>
+      </div>
+<div class="form-group"> 
+      <label for="si" class="col-sm-2 control-label">Si</label><br>
+      <div class="col-sm-10">
+      <input type="radio"  class="form-control" id="si" name="disc" value="Si">
+    </div></div>
+
+      <div class="form-group"> 
+      <label for="no" class="col-sm-2 control-label">No</label><br>
+      <div class="col-sm-10">
+      <input type="radio"  class="form-control" id="no" name="disc" value="No">
+    </div></div>
+
+<br>
+
+<div class="form-group"> 
+  <label for="conad" class="col-sm-2 control-label"> Conadis: </label><br>
+  <div class="col-sm-10">
+  <input type="text" class="form-control" name="conad" placeholder="xx.xxx" id="conad"><br>
+</div>  
+
+
+
+<label for="discap" class="col-sm-2 control-label">Discapacidad</label><br>
+      <div class="col-sm-10">
+      <input list="discap"  class="form-control">
+    
+      
+      <datalist id="discap">
+        <option value="Lenguaje"></option>
+        <option value="Física"></option>
+        <option value="Auditiva"></option>
+        <option value="Visual"></option>
+        <option value="Intelectual"></option>
+        <option value="Psicosocial"></option>
+        
+      </datalist>
+    </div>
+    <br>
+
+
+    <label for="grad" class="col-sm-2 control-label">Grado (%)</label><br>
+      <div class="col-sm-10">
+      <input list="grad"  class="form-control">
+    
+      
+      <datalist id="grad">
+        <option value="30"></option>
+        <option value="33"></option>
+        <option value="40"></option>
+        <option value="45"></option>
+        <option value="55"></option>
+        <option value="65"></option>
+        <option value="70"></option>
+        
+      </datalist>
+    </div>
+    <br> 
+     
+    
+
+
+
+
+      <input type="submit" name="Enviar" value="Registrar" id="enviar" >
+      <button> cancelar</button>
+        </form>-->
+      </div>
+      </div>
+    </main>
+  
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+      <script>window.jQuery || document.write('<script src="../assets/js/vendor/jquery.slim.min.js"><\/script>')</script><script src="../assets/dist/js/bootstrap.bundle.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+        <script src="dashboard.js"></script></body>
+</html>
