@@ -99,6 +99,13 @@
                                     </div><span class="badge badge-secondary">6</span>
                                 </div>
                             </a>
+                            <a class="list-group-item" id="documentos" href="#documentos">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div><i class="fe-icon-shopping-bag mr-1 text-muted"></i>
+                                        <div class="d-inline-block font-weight-medium text-uppercase">Documentos</div>
+                                    </div><span class="badge badge-secondary">6</span>
+                                </div>
+                            </a>
                             <a class="list-group-item" id="contrato" href="#contrato">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <?php

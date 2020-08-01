@@ -3,7 +3,7 @@
     session_start();
 
     $id = $_SESSION['cedula'];    
-            $records = $conn->prepare("SELECT * FROM empleados AS e, cargo_empleados AS c, horario_empleado AS h, cargo_horario AS ch, area_empleados AS a, ciudades AS ci WHERE (e.id_cargo_horario_emp = ch.id_cargo_horario 
+            $records = $conn->prepare("SELECT * FROM empleados AS e, cargo_empleados AS c, horario_empleado AS h, cargo_horario AS ch, area_empleados AS a, ciudades AS ci, contrato_empleado AS ce WHERE (e.id_empleados=ce.id_empleados_cont AND e.id_cargo_horario_emp = ch.id_cargo_horario 
             AND ch.id_horario_ch = h.id_horario_empleado AND ch.id_cargo_ch = c.id_cargo AND c.id_area_cargo = a.id_area AND ci.idciudades = e.id_ciudad_emp) AND id_empleados = :cedula");
             $records->bindParam(':cedula', $id);
             $records->execute();

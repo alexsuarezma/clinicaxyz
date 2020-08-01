@@ -3,6 +3,7 @@ $(document).ready(function(){
     $('#informacion').click(function(){
         $("#section").load("information.php");
         document.getElementById("informacion").className = document.getElementById("informacion").className+" active";
+        document.getElementById("documentos").className = document.getElementById("documentos").className.replace(" active", "");
         document.getElementById("horario").className = document.getElementById("horario").className.replace(" active", "");
         document.getElementById("actividades").className = document.getElementById("actividades").className.replace(" active", "");
         document.getElementById("contrato").className = document.getElementById("contrato").className.replace(" active", "");
@@ -11,6 +12,7 @@ $(document).ready(function(){
     $('#horario').click(function(){
         $("#section").load("asistencias.php");
         document.getElementById("horario").className = document.getElementById("horario").className+" active";
+        document.getElementById("documentos").className = document.getElementById("documentos").className.replace(" active", "");
         document.getElementById("informacion").className = document.getElementById("informacion").className.replace(" active", "");
         document.getElementById("actividades").className = document.getElementById("actividades").className.replace(" active", "");
         document.getElementById("contrato").className = document.getElementById("contrato").className.replace(" active", "");
@@ -19,6 +21,16 @@ $(document).ready(function(){
     $('#actividades').click(function(){
         $("#section").load("actividades.html");
         document.getElementById("actividades").className = document.getElementById("actividades").className+" active";
+        document.getElementById("documentos").className = document.getElementById("documentos").className.replace(" active", "");
+        document.getElementById("horario").className = document.getElementById("horario").className.replace(" active", "");
+        document.getElementById("informacion").className = document.getElementById("informacion").className.replace(" active", "");
+        document.getElementById("contrato").className = document.getElementById("contrato").className.replace(" active", "");
+        document.getElementById("update").className = document.getElementById("update").className.replace(" active", "");
+    });
+    $('#documentos').click(function(){
+        $("#section").load("documentos.php");
+        document.getElementById("documentos").className = document.getElementById("documentos").className+" active";
+        document.getElementById("actividades").className = document.getElementById("actividades").className.replace(" active", "");
         document.getElementById("horario").className = document.getElementById("horario").className.replace(" active", "");
         document.getElementById("informacion").className = document.getElementById("informacion").className.replace(" active", "");
         document.getElementById("contrato").className = document.getElementById("contrato").className.replace(" active", "");
@@ -27,6 +39,7 @@ $(document).ready(function(){
     $('#contrato').click(function(){
         $("#section").load("generarContrato.php");
         document.getElementById("contrato").className = document.getElementById("contrato").className+" active";
+        document.getElementById("documentos").className = document.getElementById("documentos").className.replace(" active", "");
         document.getElementById("horario").className = document.getElementById("horario").className.replace(" active", "");
         document.getElementById("informacion").className = document.getElementById("informacion").className.replace(" active", "");
         document.getElementById("actividades").className = document.getElementById("actividades").className.replace(" active", "");
@@ -37,6 +50,7 @@ $(document).ready(function(){
         $('#btn-update').click(function(){
             $("#section").load("updateInformation.php");
             document.getElementById("update").className = document.getElementById("update").className+" active";
+            document.getElementById("documentos").className = document.getElementById("documentos").className.replace(" active", "");
             document.getElementById("horario").className = document.getElementById("horario").className.replace(" active", "");
             document.getElementById("actividades").className = document.getElementById("actividades").className.replace(" active", "");
             document.getElementById("contrato").className = document.getElementById("contrato").className.replace(" active", "");
@@ -47,7 +61,7 @@ $(document).ready(function(){
     $('#delete').click(function(){
         $("#modal-delete").modal('show');
         $('#btn-delete').click(function(){
-           location.href=`../controllers/lockScreen.php?id=${$('#ocultCedula').text()}`;
+           location.href=`../controllers/lockScreen.php?type=2`;
         });  
     });
 

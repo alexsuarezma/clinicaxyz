@@ -15,7 +15,7 @@ $orden = $conn->query("SELECT * FROM orden_compra as o, detalle_orden_compra AS 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
-    <title> Suministro | Orden de Compra</title>
+    <title> Suministro | Requerimiento de Compra</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
     <link href="../assets/styles/dashboard.css" rel="stylesheet">
@@ -48,30 +48,12 @@ printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventa
         <hr class="mb-4">
     <form id="formRegistrar" action="../controllers/registrarInventario.php" method="POST" class="ml-2 mr-2">
             <div class="">
-            <?php
-                if($orden[0]->estado == "registrado"):
-            ?>
-                <p style="font-size:15px;" class="text-break font-weight-bold badge-pill badge-success">
-                <i class="far fa-check-circle mr-5" style="font-size:28px;"></i>
-                    ¡¡Esta Orden Ya fue Registrada en el Inventario!!
-                </p>
-            <?php
-                elseif($orden[0]->estado == "espera"):
-            ?>
-                <p style="font-size:15px;" class="text-break font-weight-bold badge-pill badge-warning">
-                <i class="fas fa-exclamation-triangle mr-5" style="font-size:28px;"></i>
-                    En cuanto acepten esta solicitud de Orden de Compra, podras registrar los productos.
-                </p>
-            <?php
-                elseif($orden[0]->estado == "aceptado"):
-            ?>
+            
                 <p style="font-size:15px;" class="text-break font-weight-bold badge-pill badge-info">
                 <i class="fas fa-info-circle mr-5" style="font-size:28px;"></i>
-                    Esta solicitud de Orden de Compra ya fue aprobada, ya puedes seguir con el proceso y clickear registrar los productos en el INVENTARIO
+                    Departamento de suministro solicito una Orden de Requerimiento, necesitas generar una acción en ella.
                 </p>
-            <?php
-                endif;
-            ?>
+         
             </div>
             <label class="font-weight-bold">INFORMACION SOLICITUD PARA ORDEN DE COMPRA</label>
             <hr class="mt-1 mb-4 mr-5">
@@ -88,8 +70,19 @@ printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventa
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
-                    <label for="estadoPedido">Estado</label>
-                    <input type="text" class="form-control" name="estadoPedido" id="estadoPedido" value="<?php echo $orden[0]->estado?>" readonly required>
+                    <label for="estadoPedido">Estado <span class="text-warning font-weight-bold" style="font-size:12px;">Porfavor Seleciona un estado para concluir el proceso de esta orden de requerimiento</span> </label>
+                    <select class="custom-select" name="estadoPedido" id="estadoPedido" required>
+                    <option selected disabled value="<?php echo $orden[0]->estado?>">En espera</option>
+                    <option disabled value="">Seleccione...</option>
+                        <option value="aceptado">Aceptar</option>
+                        <option value="rechazado">Denegado</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row" id="comentarioBox" style="display:none;">
+                <div class="col-md-6 mb3">
+                    <label for="comentario">Porfavor, agrega un comentario </label>
+                    <textarea rows="2" class="form-control" name="comentario" id="comentario" disabled required></textarea>
                 </div>
             </div>
             <div class="d-flex justify-content-between">
@@ -168,30 +161,11 @@ printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventa
                     </tr> 
                 </tbody>
             </table>
-            <?php
-                if($orden[0]->estado != "registrado"):
-            ?>
                 <div class='modal-footer mt-2'>
                     <a id="cancelar" href="historialOrdenCompra.php" type='button' class="btn btn-light border-secondary" data-dismiss='modal'>Cancelar</a>
-                <?php
-                    if($orden[0]->estado == "aceptado" && $orden[0]->registrado == 0):
-                ?>              
-                    <button id='confirmacion' name='confirmacion' type='submit' class='btn btn-primary font-weight-bold' style="width:400px;">Registrar Productos en Invenario</button>
-                <?php
-                    else:
-                ?>
-                    <div class="">
-                        <p style="font-size:15px;" class="text-break font-weight-bold badge-pill badge-warning">
-                            El boton de registrar se habilitaria cuando se apruebe la orden de compra
-                        </p>
-                    </div>
-                <?php
-                    endif;
-                ?>
+                    <button id='confirmacion' name='confirmacion' type='submit' class='btn btn-primary font-weight-bold' style="width:200px;">Enviar Respuesta</button>
                 </div> 
-            <?php
-                endif;
-            ?>
+
         </form>
       </div>
 
@@ -206,7 +180,7 @@ printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventa
                     </button>
                 </div>
                 <div class='modal-body'>
-                    ¡Hey!. ¿Estas seguro de eliminar este articulo de tu ORDEN DE COMPRA?.
+                    ¡Hey!. Estas apunto de enviar la respuesta a esta Orden de Requerimiento. ¿Realmente deseas continuar con el proceso?.
                 </div>
                 <div class='modal-footer mt-2'>
                     <button id="btn-cancelar" type='button' class="btn btn-light border-secondary" data-dismiss='modal'>Cancelar</button>
@@ -222,7 +196,19 @@ printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventa
 <script src="../components/scripts/dashboard.js"></script> 
 <script src="../components/scripts/consulta.js"></script> 
 <script src="../../recursoshumanos/controllers/validation/validation.js"></script> 
-   
+<script>
+    
+    $(document).on('change', '#estadoPedido', function() {
+            if ($(this).val() == "rechazado") {
+                $("#comentarioBox").css("display", "block")  
+                document.getElementById('comentario').disabled=false;    
+            }else{
+                $("#comentarioBox").css("display", "none")
+                document.getElementById('comentario').disabled=true;    
+            }
+    });
+
+</script>
       </body>
 </html>
 
