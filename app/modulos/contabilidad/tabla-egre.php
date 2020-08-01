@@ -5,13 +5,13 @@ require_once "clases/conexion.php";
 $obj= new conectar();
 $conexion=$obj->conexion();
 
-$sql="SELECT id_cta,
-cod_cta,
-nom_cta,
-tipo_cta,
-ing_cta,
-egre_cta
-from cuentas";
+$sql="SELECT id_eg,
+fech_eg,
+det_eg,
+sub_eg,
+iva_eg,
+total_eg
+from egresos";
 $result=mysqli_query($conexion,$sql);
 ?>
 
@@ -20,22 +20,22 @@ $result=mysqli_query($conexion,$sql);
 	<table class="table table-hover table-condensed table-bordered" id="iddatatable">
 		<thead style="background-color: #5DADE2 ;color: white; font-weight: bold;">
 			<tr>
-				<td>Codigo</td>
-				<td>Nombre</td>
-				<td>Tipo</td>
-				<td>Ingreso</td>
-				<td>Egresos</td>
+				<td>Fecha</td>
+				<td>Detalle</td>
+				<td>Subtotal</td>
+				<td>IVA</td>
+				<td>Total</td>
 				<td>Editar</td>
 			
 			</tr>
 		</thead>
 		<tfoot style="background-color: #ccc;color: white; font-weight: bold;">
 			<tr>
-				<td>Codigo</td>
-				<td>Nombre</td>
-				<td>Tipo</td>
-				<td>Ingreso</td>
-				<td>Egresos</td>
+				<td>Fecha</td>
+				<td>Detalle</td>
+				<td>Subtotal</td>
+				<td>IVA</td>
+				<td>Total</td>
 				<td>Editar</td>
 				
 			</tr>
