@@ -9,8 +9,8 @@
   verificarAcceso("../../../../", "modulo_rrhh");
   
 
-    $created = date('d')."/".date('m')."/".date('Y');
-    $creacion = date('d')."/".date('m')."/".date('Y')." ".date("H").":".date("i").":".date("s");
+    $created = date("Y-m-d H:i:s");
+  
     
     $ciudades = $conn->query("SELECT * FROM ciudades ORDER BY nombre ASC")->fetchAll(PDO::FETCH_OBJ);
     $areas = $conn->query("SELECT * FROM area_empleados ORDER BY nombre_area ASC")->fetchAll(PDO::FETCH_OBJ);
@@ -36,7 +36,9 @@
               $stmt = $conn->prepare($sql);
               $stmt->bindParam(':username', $_POST['nombres']);
               //CAMBIAR LA CONTRASEÑA BASE FORMATO // asuarez27/20  (primeraletradeprimer nombre, primerapellido, diay año en el que se registra)
-              $password = password_hash(123, PASSWORD_BCRYPT);
+              $cadena = explode(' ',trim(utf8_decode($_POST['apellidos'])));
+              $autogenerate = strtolower( substr( $_POST['nombres'],0,1 ) ).strtolower( $cadena[0] ).$_POST['cedula'];
+              $password = password_hash($autogenerate, PASSWORD_BCRYPT);
               $stmt->bindParam(':password', $password);
               
                 if($stmt->execute()){
@@ -58,31 +60,44 @@
 
                       if($stmt->execute()){
                         //crear al empleado
-                        $ruta = "../assets/static/contratos/";
-                        $archivo = $ruta.$_FILES["fileDocument"]["name"];
-                          if(!file_exists($ruta)){
-                            mkdir($ruta);
-                          }
 
-                          if(!file_exists($archivo)){
-                              $resultado = @move_uploaded_file($_FILES["fileDocument"]["tmp_name"],$archivo);
-                                if($resultado){//seguardo
-                                }else{//nose guardo
-                                }
-                          }else{echo "ya existe";}
+
+                        // Subir documento
+                        $ruta = "../assets/static/contratos/".$_POST['cedula']."/documentos/";
+                        
+                        $cadena = explode(' ',trim(utf8_decode($_POST['apellidos'])));
+                        $archivo = $ruta.strtolower( substr( $_POST['nombres'],0,1 ) ).strtolower($cadena[0])."documentos";
+
+                        if(!file_exists($ruta)){
+                            mkdir($ruta,0777,true);
+                        }
+
+                        if(!file_exists($archivo)){
+                            @move_uploaded_file($_FILES["fileDocument"]["tmp_name"],$archivo);
+                        }else{
+                            $cont=1;
+                            while(file_exists($archivo.$cont)){
+                              $cont++;
+                            }
+                            
+                            @move_uploaded_file($_FILES["fileDocument"]["tmp_name"],$archivo.$cont);
+                            $archivo=$archivo.$cont;
+                                
+                        }
+                        // termina subida de documento
 
                             try {
-                                    $name= $_POST["nombres"]." ".$_POST["apellidos"];
-                                    $gravatar = "https://ui-avatars.com/api/?name=$name&size=160";
+                                    $name= ucwords(trim(utf8_decode($_POST["nombres"])))."+".ucwords(trim(utf8_decode($_POST["apellidos"])));
+                                    $gravatar = "https://ui-avatars.com/api/?name=$name&size=160&bold=true";
             
                                     $sql = "INSERT INTO empleados 
                                         (id_empleados,profileimage,medico,nombres,apellidos,direccion,nacionalidad,fecha_nacimiento,parroquia,id_ciudad_emp,telefono,celular,email,sexo,estado_civil,
-                                        nombres_conyuge,apellidos_conyuge,documentos_descripcion,fileDocument,file_contrato,load_contrato,disponible,tipo_contrato,deleted,created_at,update_at,id_usuario_emp,id_cargo_horario_emp) VALUES (:id_empleados,:profileimage,:medico,:nombres,:apellidos,:direccion,:nacionalidad,:fecha_nacimiento,:parroquia,:id_ciudad_emp,:telefono,:celular,:email,:sexo,:estado_civil,:nombres_conyuge,:apellidos_conyuge,:documentos_descripcion,:fileDocument,:file_contrato,:load_contrato,:disponible,:tipo_contrato,:deleted,:created_at,:update_at,:id_usuario_emp,:id_cargo_horario_emp)";
+                                        nombres_conyuge,apellidos_conyuge,load_contrato,load_documento,disponible,deleted,created_at,update_at,id_usuario_emp,id_cargo_horario_emp) VALUES (:id_empleados,:profileimage,:medico,:nombres,:apellidos,:direccion,:nacionalidad,:fecha_nacimiento,:parroquia,:id_ciudad_emp,:telefono,:celular,:email,:sexo,:estado_civil,:nombres_conyuge,:apellidos_conyuge,:load_contrato,:load_documento,:disponible,:deleted,:created_at,:update_at,:id_usuario_emp,:id_cargo_horario_emp)";
                                     $stmt = $conn->prepare($sql);
                                     $stmt->bindParam(':id_empleados', $_POST['cedula']);
                                     $stmt->bindParam(':profileimage', $gravatar);
-                                    $stmt->bindParam(':nombres',$_POST['nombres']);
-                                    $stmt->bindParam(':apellidos',$_POST['apellidos']);
+                                    $stmt->bindParam(':nombres',ucwords(trim(utf8_decode($_POST['nombres']))));
+                                    $stmt->bindParam(':apellidos',ucwords(trim(utf8_decode($_POST['apellidos']))));
                                     $stmt->bindParam(':direccion',$_POST['direccion']);
                                     $stmt->bindParam(':nacionalidad',$_POST['nacionalidad']);
                                     $stmt->bindParam(':fecha_nacimiento',$_POST['fechaNacimiento']);
@@ -95,14 +110,11 @@
                                     $stmt->bindParam(':estado_civil',$_POST['estadoCivil']);
                                     $stmt->bindParam(':nombres_conyuge',$_POST['nombresConyuge']);
                                     $stmt->bindParam(':apellidos_conyuge',$_POST['apellidosConyuge']);
-                                    $stmt->bindParam(':documentos_descripcion',$_POST['documentosDescription']);
-                                    $stmt->bindParam(':fileDocument', $archivo);
-                                    $stmt->bindValue(':file_contrato','', PDO::PARAM_STR);
                                     $stmt->bindValue(':load_contrato', 0, PDO::PARAM_INT);
-                                    $stmt->bindParam(':tipo_contrato', $_POST['tipoContrato']);
+                                    $stmt->bindValue(':load_documento', 1, PDO::PARAM_INT);
                                     $stmt->bindValue(':deleted', 0, PDO::PARAM_INT);
                                     $stmt->bindValue(':disponible', 1, PDO::PARAM_INT);
-                                    $stmt->bindValue(':created_at', $creacion);
+                                    $stmt->bindValue(':created_at', $created);
                                     $stmt->bindValue(':update_at', null, PDO::PARAM_INT);
                                     //PONER CARGO_HORARIO   QUE REFERENCIA AL CARGO (PERO DETALLA EL HORARIO/JORNADA)
                                     $stmt->bindParam(':id_cargo_horario_emp',$_POST['horario']);
@@ -115,7 +127,29 @@
                                     }
                                   
                                       if($stmt->execute()){
-            
+
+                                        $sql = "INSERT INTO contrato_empleado (tipo_contrato,file_contrato,activo,id_empleados_cont,created_at,updated_at) VALUES (:tipo_contrato,:file_contrato,:activo,:id_empleados_cont,:created_at,:updated_at)";                    
+                                        $stmt = $conn->prepare($sql);                              
+                                        $stmt->bindValue(':tipo_contrato', null, PDO::PARAM_INT);
+                                        $stmt->bindValue(':file_contrato', null, PDO::PARAM_INT);
+                                        $stmt->bindValue(':activo', 1, PDO::PARAM_INT);
+                                        $stmt->bindValue(':updated_at', null, PDO::PARAM_INT);
+                                        $stmt->bindParam(':created_at', $created);
+                                        $stmt->bindParam(':id_empleados_cont', $_POST['cedula']);
+                                        $stmt->execute();
+
+                                        $sql = "INSERT INTO documento_empleado (descripcion,file_document,activo,id_empleados_doc,created_at,updated_at) VALUES (:descripcion,:file_document,:activo,:id_empleados_doc,:created_at,:updated_at)";                    
+                                        $stmt = $conn->prepare($sql);                              
+                                        $stmt->bindParam(':descripcion',$_POST['documentosDescription']);
+                                        $stmt->bindParam(':file_document', $archivo);
+                                        $stmt->bindValue(':activo', 1, PDO::PARAM_INT);
+                                        $stmt->bindValue(':updated_at', null, PDO::PARAM_INT);
+                                        $stmt->bindParam(':created_at', $created);
+                                        $stmt->bindParam(':id_empleados_doc', $_POST['cedula']);
+                                        $stmt->execute();
+
+
+
                                             if($_POST['cargo'] == 22){
                                                 $sql = "INSERT INTO empleados_medico 
                                                 (id_empleados_medico,id_especialidad_medico) VALUES (:id_empleados_medico,:id_especialidad_medico)";                    

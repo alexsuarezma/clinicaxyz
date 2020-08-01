@@ -1,36 +1,55 @@
 <?php
 require '../../../../database.php';
+require '../components/modal.php';
 session_start();
 $id = $_SESSION['cedula'];    
-            $records = $conn->prepare("SELECT * FROM empleados WHERE id_empleados = :cedula");
-            $records->bindParam(':cedula', $id);
-            $records->execute();
-            $results = $records->fetch(PDO::FETCH_ASSOC);
-            if(isset($_POST['guardar'])){
-                //fileContrato
-                $ruta = "../assets/static/contratos/";
-                $archivo = $ruta.$_FILES["fileContrato"]["name"];
-                if(!file_exists($ruta)){
-                    mkdir($ruta);
-                }
 
-                if(!file_exists($archivo)){
-                    $resultado = @move_uploaded_file($_FILES["fileContrato"]["tmp_name"],$archivo);
-                    if($resultado){//seguardo
-                    }else{//nose guardo
-                    }
-                }else{echo "ya existe";}
 
-                $sql = "UPDATE empleados SET file_contrato=:file_contrato,tipo_contrato=:tipo_contrato,load_contrato=:load_contrato WHERE id_empleados=:id_empleados";
-                $stmt = $conn->prepare($sql);
-                $stmt->bindParam(':id_empleados', $id);
-                $stmt->bindParam(':file_contrato', $archivo);
-                $stmt->bindParam(':tipo_contrato', $_POST['tipoContrato']);
-                $stmt->bindValue(':load_contrato', 1, PDO::PARAM_INT);
-                $stmt->execute();
-                header("Location:profile.php?id=$id");
-            }
-?>
+
+$records = $conn->prepare("SELECT * FROM empleados AS e, contrato_empleado AS c WHERE (e.id_empleados=c.id_empleados_cont) AND id_empleados_cont = :cedula AND activo = 1");
+$records->bindParam(':cedula', $id);
+$records->execute();
+$results = $records->fetch(PDO::FETCH_ASSOC);
+
+
+if(isset($_POST['guardar'])){
+    // Subir documento
+ 
+    $ruta = "../assets/static/contratos/".utf8_decode($results['id_empleados'])."/";
+    $cadena = explode(' ',trim(utf8_decode($results['apellidos'])));
+ 
+    $archivo = $ruta.strtolower( substr( $results['nombres'],0,1 ) ).strtolower($cadena[0])."contrato".$_POST['tipoContrato'];
+    
+    if(!file_exists($ruta)){
+        mkdir($ruta,0777,true);
+    }
+    
+    if(!file_exists($archivo)){
+        @move_uploaded_file($_FILES["fileContrato"]["tmp_name"],$archivo);
+    }else{
+        $cont=1;
+        while(file_exists($archivo.$cont)){
+            $cont++;
+        }
+
+        @move_uploaded_file($_FILES["fileContrato"]["tmp_name"],$archivo.$cont);
+        $archivo=$archivo.$cont;
+    }
+    // termina subida de documento
+    date_default_timezone_set('America/Guayaquil');
+    $created = date("Y-m-d H:i:s");
+    
+    $sql = "UPDATE empleados AS e, contrato_empleado AS c SET file_contrato=:file_contrato,tipo_contrato=:tipo_contrato,load_contrato=:load_contrato,updated_at=:updated_at WHERE (e.id_empleados=c.id_empleados_cont) AND id_empleados=:id_empleados AND activo = 1";
+    $stmt = $conn->prepare($sql);
+    $stmt->bindParam(':id_empleados', $id);
+    $stmt->bindParam(':file_contrato', $archivo);
+    $stmt->bindParam(':tipo_contrato', $_POST['tipoContrato']);
+    $stmt->bindValue(':load_contrato', 1, PDO::PARAM_INT);
+    $stmt->bindParam(':updated_at', $created);
+        $stmt->execute();
+        header("Location:profile.php?id=$id");
+    }
+    ?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -140,8 +159,7 @@ $id = $_SESSION['cedula'];
                 <div class='modal-footer mt-2'>
                     <button id='guardar' name='guardar' type='submit' class='btn btn-primary font-weight-bold' style="width:200px;">Subir Contrato</button>
                 </div> 
-            </form>
-            
+            </form>           
         <?php
             else:
         ?>
@@ -160,17 +178,24 @@ $id = $_SESSION['cedula'];
             </form>
             <hr class="">        
             <div id="contratoView" style="display:none;"> 
-                <object data="<?php echo $results['file_contrato'];?>" type="application/pdf" width="800" height="780"> 
-                    alt:<a href="<?php echo $results['file_contrato'];?>">contrato</a> 
+                <object data="<?php echo utf8_encode($results['file_contrato']);?>" type="application/pdf" width="800" height="780"> 
+                    alt:<a href="<?php echo utf8_encode($results['file_contrato']);?>">contrato</a> 
                 </object> 
             </div> 
             <hr class="mt-3 mb-4">   
             <form id="documentOtraPestaña" class="ml-2 mr-2">
                 <div class="form-row">               
                     <div class="form-group col-md-12 d-flex justify-content-end">
-                        <a class="text-info" href="../components/viewDocuments.php?contrato=<?php echo $results['file_contrato'];?>" target="_blank">
+                        <a class="text-info" href="../components/viewDocuments.php?contrato=<?php echo utf8_encode($results['file_contrato']);?>" target="_blank">
                             <i class="fas fa-external-link-square-alt mr-2"></i> 
                             Abrir el documento en otra pestaña
+                        </a>
+                    </div>
+                </div>
+                <div class="form-row mt-5">
+                    <div class="form-group col-md-12 d-flex justify-content-center">
+                        <a class="text-danger" data-toggle="modal" href="#finalizarContrato" >
+                            Dar de baja este contrato, y generar un nuevo contrato.
                         </a>
                     </div>
                 </div>
@@ -178,6 +203,35 @@ $id = $_SESSION['cedula'];
         <?php
             endif;
         ?>
+         <h6 class="font-weight-bold mt-5"> Historial de contratos con el empleado.</h6>
+            <?php
+                $contrato = $conn->query("SELECT * FROM contrato_empleado WHERE id_empleados_cont = ".$_SESSION['cedula']." AND activo = 0 ORDER BY updated_at DESC")->fetchAll(PDO::FETCH_OBJ);
+                    foreach($contrato as $Contratos):
+            ?>
+                <form id="documentOtraPestaña" class="ml-2 mr-2">
+                <hr class="mt-1 mb-4">
+                    <div class="form-row">               
+                        <div class="form-group col-md-6 d-flex justify-content-center">
+                            <span class="font-weight-bold">
+                                Contrato: </span>
+                                 <?php echo $Contratos->tipo_contrato?>, <span class="font-weight-bold"> Finalizado:
+                            </span> <?php echo $Contratos->updated_at?>
+                        </div>
+                        <div class="form-group col-md-6 d-flex justify-content-end">
+                            <a class="" href="../components/viewDocuments.php?contrato=<?php echo utf8_encode($Contratos->file_contrato);?>" target="_blank">
+                                <i class="fas fa-external-link-square-alt mr-2"></i> 
+                                Abrir el documento en otra pestaña
+                            </a>
+                        </div>
+                    </div>
+                </form> 
+            <?php
+                endforeach;
+            ?>
+         <?php      
+                printModal('Finalizar Contrato, para generar uno nuevo con el empleado','finalizar','finalizarContrato','¡Hey!. Estas apunto de ELIMINAR información sensible. ¿Realmente desea FINALIZAR el contrato con este empleado?');
+        ?>
+<script src="../controllers/validation/validation.js"></script>   
 <script type="text/javascript">
     $(document).ready(function(){  
         $("#openDocument").click(function () {
@@ -185,6 +239,9 @@ $id = $_SESSION['cedula'];
                 $("#contratoView").toggle("showOrHide");
                 $("#documentOtraPestaña").toggle("slow");
             });
+        $("#finalizar").click(function () {
+            location.href=`../controllers/lockScreen.php?type=1`;
+        });
     });
 </script>
 </body>

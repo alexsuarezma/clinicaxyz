@@ -2,8 +2,8 @@
 require 'components/layout.php';
 require '../../../database.php';
 require '../seguridad/controllers/functions/credenciales.php';
-
-
+// redirección 5 seconds
+// header("Refresh: 5; URL=index.php");
 verificarAcceso("../../../", "modulo_rrhh");
 
 

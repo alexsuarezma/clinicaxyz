@@ -5,6 +5,7 @@ $id = $_SESSION['cedula'];
     $asistencia = $conn->query("SELECT * FROM asistencia_empleado WHERE id_empleado_asis = $id ORDER BY start ASC")->fetchAll(PDO::FETCH_OBJ);
     $horasTrabajadas = "00:00:00";
     $horasRetraso = "00:00:00";
+    
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -71,12 +72,20 @@ $id = $_SESSION['cedula'];
             //AGREGAR BOTONES Y POSICIONAMIENTO
             $('#calendar').fullCalendar({
                 header: {
-                    left:'today,prev,next',
+                    left:'today,prev,next,Miboton',
                     center:'title',
-                    right:'month,basicWeek,basicDay,agendaWeek,agendaDay'
+                    right:'month,basicWeek,basicDay'
+                },
+                customButtons:{
+                    Miboton:{
+                        text:"Buscar",
+                        click:function(){
+                            $("#busqueda").modal();
+                        }
+                    }  
                 }, 
                     //MARCAR EVENTOS
-                events:`../controllers/consultaAsistencia.php?cedula=${document.getElementById('cedula').value}`,
+                events:`../controllers/consultaAsistencia.php?cedula=${$('#cedula').val()}`,
                 eventClick:function(calEvent,jsEvent,view){
                     $('#tituloEvento').html(`${calEvent.nombres} ${calEvent.apellidos}`);
                     $('#horaEntrada').html(calEvent.hora_entrada);
@@ -91,6 +100,51 @@ $id = $_SESSION['cedula'];
             });
         });
     </script>
+
+<div class='modal fade' name='busqueda' id='busqueda' data-backdrop='static' data-keyboard='false' tabindex='-1' role='dialog' aria-labelledby='staticBackdropLabe' aria-hidden='true'>
+        <div class='modal-dialog'>
+            <div class='modal-content'>
+                <div class='modal-header'>
+                    <h5 class='modal-title' id='staticBackdropLabel'>Busqueda </h5>
+                    </button>
+                </div>
+                <div class='modal-body'>
+                    <form method="POST" action="listaAsistencias.php" class="ml-2 mr-2">
+                        <label class="font-weight-bold">Selección a tu busqueda</label>
+                        <input type="hidden" name="id" value="<?php echo $_SESSION['cedula']?>" required>
+                        <hr class="mt-1 mb-4 mr-5">
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="estadoBusqueda">Estado</label>
+                                <select class="custom-select" name="estadoBusqueda" id="estadoBusqueda" required>
+                                <option selected disabled value="">Seleccione...</option>
+                                    <option value="Puntual">Puntual</option>
+                                    <option value="Atrasado">Atrasado</option>
+                                    <option value="Indistinto">Indistinto</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="rango">Escoge el rango</label>
+                                <select class="custom-select" name="rango" id="rango" required>
+                                <option selected disabled value="">Seleccione...</option>
+                                    <option value="hoy">Hoy</option>
+                                    <option value="ayer">Ayer</option>
+                                    <option value="semana">Esta Semana</option>
+                                    <option value="mes">Esta Mes</option>
+                                    <option value="anio">Este Año</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class='modal-footer mt-2'>
+                            <button id="cancelar" type='button' class="btn btn-light border-secondary" data-dismiss='modal'>Cancelar</button>
+                            <button id='enviar' name='enviar' type='submit' class='btn btn-primary font-weight-bold' style="width:200px;">Buscar</button>
+                        </div> 
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 <div class="modal fade" id="datosAsistencia" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
