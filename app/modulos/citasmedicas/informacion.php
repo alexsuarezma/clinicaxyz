@@ -1,5 +1,20 @@
 <?php 
 error_reporting(E_ALL ^ E_NOTICE);
+require '../../../database.php';
+require '../seguridad/controllers/functions/credenciales.php';
+
+
+
+if ($_SESSION['nombre_credencial']=='paciente') {
+ verificarAcceso("../../../", "paciente");
+}
+
+if ($_SESSION['nombre_credencial']=='Admin Ctas. Medicas') {
+ verificarAcceso("../../../", "modulo_ctas_medicas");
+}
+
+
+
 
 include 'conexion.php';
 
@@ -7,12 +22,9 @@ include 'conexion.php';
 $fila_b="";
 $var="";
 
-
-
-
 $cedula=$_GET['id_cedula'];
   $sentencia_buscar="SELECT *,ciu.nombre as ci_nom,pro.nombre as pro_nom from citas as ci join pacientes as pa on ci.paciente=pa.idpacientes
-join hora as ho on ci.id_hora=ho.id_hora
+
 join provincias as pro on pa.provincia=pro.idprovincias
 join ciudades as ciu on  pa.ciudad=ciu.idciudades where pa.idpacientes='$cedula' order by idcitas ;
  ";
@@ -25,7 +37,7 @@ if (isset($_POST['buscar'])) {
 	
 	$cedula=$_POST['cedula'];
 	$sentencia_buscar="SELECT *,ciu.nombre as ci_nom,pro.nombre as pro_nom from citas as ci join pacientes as pa on ci.paciente=pa.idpacientes
-join hora as ho on ci.id_hora=ho.id_hora
+
 join provincias as pro on pa.provincia=pro.idprovincias
 join ciudades as ciu on  pa.ciudad=ciu.idciudades where pa.idpacientes='$cedula' order by idcitas  ;
  ";
@@ -49,7 +61,7 @@ join ciudades as ciu on  pa.ciudad=ciu.idciudades where pa.idpacientes='$cedula'
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Historial clinico</title>
+	  <title>Historial clínico</title>
     <meta charset="utf-8">
      <meta http-equiv="content-type" content="text/html; charset=utf-8" /> 
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -70,7 +82,7 @@ join ciudades as ciu on  pa.ciudad=ciu.idciudades where pa.idpacientes='$cedula'
 </head>
 <body>
 <br><br>
-<center>	<h2>Historial clinico del paciente</h2></center>
+<center>	<h2>Historial clínico</h2></center>
 <br><br>
 
 <?php  echo $var; ?>
@@ -80,37 +92,30 @@ join ciudades as ciu on  pa.ciudad=ciu.idciudades where pa.idpacientes='$cedula'
 
 <div class="col-md-3 mb-2" style="position: relative; left: -15px;">
     <label for="inputPassword2" class="sr-only">Buscar:</label>
-    <input type="text" class="form-control" id="cedula" name="cedula" placeholder="Ingrese # Cedula">
+    <input type="text" class="form-control" id="cedula" name="cedula" placeholder="Ingrese número de cédula">
 </div>
 	<button  style="position: relative; top: -47px; left: 300px;" type="submit" class="btn btn-primary mb-3" id="buscar" name="buscar">Buscar</button>
 
 
 
 <br>
-
-
-
 </form>
 <center>
 <table class="table" style="width: 1000px;">
   <thead class="thead-light">
     <tr>
       <th scope="col">#</th>
-      <th scope="col">Nombre</th>
-      <th scope="col">Apellido</th>
+      <th scope="col">Nombres</th>
+      <th scope="col">Apellidos</th>
       <th scope="col">Editar</th>
     </tr>
   </thead>
   <tbody>
-
-
     <?php 
     while ($fila_b=mysqli_fetch_array($resultado_b)) {
       $id_paciente=$fila_b['idpacientes'];
       
       ?>
-
-
     <tr>
       <th scope="row"><?php echo $fila_b['idcitas']; ?>  </th>
       <td><?php echo $fila_b['nombres']; ?> </td>
@@ -125,9 +130,5 @@ join ciudades as ciu on  pa.ciudad=ciu.idciudades where pa.idpacientes='$cedula'
   </tbody>
 </table>
 </center>
-
-
-
-
 </body>
 </html>

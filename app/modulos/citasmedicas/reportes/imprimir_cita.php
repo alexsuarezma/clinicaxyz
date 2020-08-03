@@ -1,10 +1,10 @@
 <?php
-	//SESSION_START();  // lo bloquei hasta que pase el loging.php los datos xD :V recuerda ponerle el ! al if de abajo xD
-	if(isset($_SESSION["user"]))
+SESSION_START();  // lo bloquei hasta que pase el loging.php los datos xD :V recuerda ponerle el ! al if de abajo xD
+	if(!isset($_SESSION["username"]))
 	{
   
 					
-    	header("Location: index.php");
+    	header("Location: ../../../../index.php");
 
     	require('fpdf/fpdf.php');
 
@@ -202,7 +202,7 @@ function morepagestable($datas, $lineheight=13) {
 
 	$pdf->SetFont('Arial','U',10);
 
-	$pdf->Cell(30,6,$row['hora'],0,0,'');
+	$pdf->Cell(30,6,$row['id_hora'],0,0,'');
 
 	$pdf->Ln(12);
 
@@ -240,7 +240,7 @@ function morepagestable($datas, $lineheight=13) {
 	$pdf->SetFont('Arial','',10);
 
 
-	$pdf->write(10,utf8_decode(" Por favos, en caso de NO poder asistir a la consulta de "));
+	$pdf->write(10,utf8_decode(" Por favor, en caso de NO poder asistir a la consulta de "));
 	$pdf->SetFont('Arial','B',10);
 	$pdf->write(10,utf8_decode($row['descripcion']));
 	$pdf->SetFont('Arial','',10);

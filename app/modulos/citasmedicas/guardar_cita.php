@@ -1,4 +1,5 @@
 <?php 
+ error_reporting(E_ALL ^ E_NOTICE);
  date_default_timezone_set('AMERICA/GUAYAQUIL');
 	include 'conexion.php';
 	$id_paciente_re=$_POST['id_pa'];
@@ -25,10 +26,7 @@ $saldo=$mostrar_row['saldo_tarjeta'];
 $id_tj=$mostrar_row['idtarjetas'];
 
 if ($mostrar>0) {
-	 echo $msj="existe";
-
-
-
+	
 
 if ($saldo>15) {
 
@@ -54,11 +52,9 @@ if ($saldo>15) {
 
                 if ($conteo < 13 ) {
                 	    
-
-                	    $sql_consulta="SELECT * from citas where fecha='$fecha' and id_hora='$hora' ";
-                	    $sql_consulta_conteo=mysqli_query($conexion,$sql_consulta);
-                	    $total=mysqli_num_rows($sql_consulta_conteo);
-
+                        $sql_consulta="SELECT * from citas_medica where fecha='$fecha' and id_hora='$hora' and id_empleados= '$especialista' ";
+                        $sql_consulta_conteo=mysqli_query($conexion,$sql_consulta);
+                        $total=mysqli_num_rows($sql_consulta_conteo);
                 	    if ($total<1) {
 
                 	    	   $guardar_cita="INSERT into citas values('','$fecha','$hora','$id_paciente_re','Pendiente','','','')";
@@ -108,9 +104,12 @@ if ($saldo>15) {
 
               mysqli_query($conexion,$sentencia_pago);
 
-	  echo ("<script LANGUAGE='JavaScript'>
+	 echo ("<script LANGUAGE='JavaScript'>
     window.alert('Consulta programada exitosamente ');
+    target = '_blank';
     window.location.href='reportes/imprimir_cita.php?id_alu= ".$id." ';
+
+
     </script>");
 	
 

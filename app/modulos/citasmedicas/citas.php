@@ -1,13 +1,17 @@
 <?php 
+error_reporting(E_ALL ^ E_NOTICE);
+require '../../../database.php';
+require '../seguridad/controllers/functions/credenciales.php';
+
+
+verificarAcceso("../../../", "modulo_ctas_medicas");
+
  date_default_timezone_set('AMERICA/GUAYAQUIL');
 include "conexion.php";
 
 $fecha_actual= date("Y-m-d");
 
 $hora_actual=date("H-i-s");
-
-
-
 
 function tiempo_session()
 {
@@ -41,24 +45,21 @@ function tiempo_session()
 }
 
 
-
-    
- 
-
+$cedula_d=$_SESSION['cedula_d'];
 ?>
-
-
 <html>
 <head>
-	<title>Citas</title>
- <meta charset="utf-8">
+	<title>Citas agendadas</title>
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Jekyll v4.0.1">
-    <title></title>
-
     <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/checkout/">
+    <link rel="icon" type="image/png" href="logo1.png" />
+
+    
+  <!-- copia este!!! -->   <link href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" rel="stylesheet">
 
     <!-- Bootstrap core CSS -->
 <link href="../assets/dist/css/bootstrap.css" rel="stylesheet">
@@ -81,22 +82,148 @@ else
 }
 </script>
 
-<img src="logo1.png" style="width: 150px; height: 150px; position: relative; left: 50px;">
 
-<h2 class="" style="text-align:center;">Citas Agendadas</h2>
+   <header>
+  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+    <a class="navbar-brand" href="../../../index.php">
+      <span style="font-weight:normal;">Clinica</span>
+      <span style="font-weight:bold;">Vitalia</span>
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+        
+        </li>
+      </ul>
+
+      <?php 
+        session_start();
+        
+          if(!empty($_SESSION['user_id'])): 
+            require '../../../database.php';
+                $credenciales = $conn->query("SELECT * FROM usuario_credencial WHERE id_usuario_uc =".$_SESSION['user_id'])->fetchAll(PDO::FETCH_OBJ);
+                $_SESSION['modulo_rrhh'] = 0;
+                $_SESSION['modulo_suministros'] = 0;
+                $_SESSION['modulo_contabilidad'] = 0;
+                $_SESSION['modulo_ctas_medicas'] = 0;
+                $_SESSION['modulo_pacientes'] = 0;
+                $_SESSION['modulo_seguridad'] = 0;
+                $_SESSION['paciente'] = 0;
+                $_SESSION['nombre_credencial'] = "";
+                
+                foreach ($credenciales as $idCredencial){ 
+
+                    $records = $conn->prepare("SELECT * FROM usuario_credencial AS uc, credencial_base AS c, usuario AS u WHERE (uc.id_credencialbase_uc = c.id_credencial AND uc.id_usuario_uc = u.id_usuario) AND id_usuario_credencial = :id_usuario_credencial");
+                    $records->bindParam(':id_usuario_credencial', $idCredencial->id_usuario_credencial);
+                    $records->execute();
+                    $results = $records->fetch(PDO::FETCH_ASSOC); 
+                    if($results['modulo_rrhh'] == 1){
+                      $_SESSION['modulo_rrhh'] = 1;
+                    }
+                    if($results['modulo_suministros'] == 1){
+                      $_SESSION['modulo_suministros'] = 1;
+                    }
+                    if($results['modulo_contabilidad'] == 1){
+                      $_SESSION['modulo_contabilidad'] = 1;
+                    }
+                    if($results['modulo_ctas_medicas'] == 1){
+                      $_SESSION['modulo_ctas_medicas'] = 1;
+                    }
+                    if($results['modulo_pacientes'] == 1){
+                      $_SESSION['modulo_pacientes'] = 1;
+                    }
+                    if($results['paciente'] == 1){
+                      $_SESSION['paciente'] = 1;
+                    }
+                    if($results['modulo_seguridad'] == 1) {
+                      $_SESSION['modulo_seguridad'] = 1;
+                    }
+                    if($_SESSION['nombre_credencial'] == ""){
+                      $_SESSION['nombre_credencial'] = strtoupper($results['nombre_credencial']);
+                    }else{
+                      $_SESSION['nombre_credencial'] = $_SESSION['nombre_credencial'].", ".strtoupper($results['nombre_credencial']);
+                    }
+                }
+                
+                $_SESSION['username'] = ucwords($results['username']);
+                
+
+      ?>
+          
+          <span class="navbar-text mr-4"><?php echo $_SESSION['username']?></span>
+          <a class='nav-link dropdown-toggle' style='color: white;' href='#' id='navbarDropdownMenuLink' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+            <i class="fas fa-th-large" ></i>
+          </a>  
+          <div class='dropdown-menu dropdown-menu-right mr-1 mb-2' style="width:400px;" aria-labelledby='navbarDropdownMenuLink'>
+            <span class="dropdown-item font-weight-bold border-bottom border-info mb-2" style="text-align:center;"><?php echo $_SESSION['nombre_credencial']?></span>
+            <?php
+              if($_SESSION['modulo_rrhh'] == 1){
+                echo "<a class='dropdown-item mt-2' href='../recursoshumanos/'><i class='fas fa-people-carry mr-2'></i> Recursos Humanos</a>";
+              }
+              if($_SESSION['modulo_suministros'] == 1){
+                echo "<a class='dropdown-item' href='../suministro/index.php'><i class='fas fa-dolly-flatbed mr-2'></i> Suministros</a>";
+              }
+              if($_SESSION['modulo_contabilidad'] == 1){
+                echo "<a class='dropdown-item' href='../contabilidad/index.php'><i class='fas fa-balance-scale mr-2'></i> Contabilidad</a>";
+              }
+              if($_SESSION['modulo_ctas_medicas'] == 1){
+                echo "<a class='dropdown-item' href='../citasmedicas/citas.php'><i class='fas fa-notes-medical mr-3'></i> Citas agendadas</a>";
+                echo "<a class='dropdown-item' href='../citasmedicas/historial_clinico.php'><i class='fas fa-notes-medical mr-3'></i>Historial clinico</a>";
+              }
+              if($_SESSION['modulo_pacientes'] == 1){
+                echo "<a class='dropdown-item' href='../pacientes/index copy 2.html'><i class='fas fa-procedures mr-2'></i> Modulo Pacientes</a>";
+              }
+              if($_SESSION['modulo_seguridad'] == 1){
+                echo "<a class='dropdown-item' href='../seguridad/'><i class='fas fa-user-shield mr-2'></i> Modulo Seguridad</a>";
+              }
+              if($_SESSION['paciente'] == 1){
+                echo "<a class='dropdown-item' href='../pacientes/index copy 2.html'><i class='fas fa-procedures mr-2'></i> Paciente</a>";
+
+                echo "<a class='dropdown-item' href='index.php'><i class='fas fa-notes-medical mr-3'></i> Citas Medicas</a>";
+
+                echo "<a class='dropdown-item' href='historial_clinico.php'><i class='fas fa-notes-medical mr-3'></i>Historial clínico</a>";
+              }
+              
+            ?>            
+            <!-- <a class='dropdown-item' href='#'><i class='fas fa-file-medical-alt mr-3'></i> Historial Clinico</a> -->
+            <hr class="ml-4 mr-4 mt-2">
+            <a class='dropdown-item mt-2' style="float:right;" href='../seguridad/routes/perfil.php'><span class="float-right">Ajustes de Usuario</span></a>
+            <a class='dropdown-item' style="float:right;" href='#'><span class="float-right">Another</span></a>
+            <a class='dropdown-item' style="float:right;" href='../seguridad/controllers/logout.php'><span class="float-right">Cerrar Sesión</span></a>
+          </div>
+       
+      <?php else: ?>
+        <span class="navbar-text">
+          <a class='' href='app/modulos/seguridad/routes/login.php'>Iniciar sesión</a>
+        </span>   
+      <?php endif; ?>
+      
+      <!-- <li class='justify-content-end'>
+        
+      </li> -->
+    </div>
+  </nav>
+</header>
+<br><br>
+
+<br><br>
+<h2 class="" style="text-align:center;">Citas agendadas</h2>
 <center>
 	<table class="table table-striped" style="position: relative; top: 80px; width: 90%">
   <thead>
     <tr>
       <th scope="col">#</th>
-      <th scope="col">Nombre</th>
-      <th scope="col">Apellido</th>
-      <th scope="col">Cedula</th>
-      <th scope="col">Fecha cita</th>
-      <th scope="col">hora cita</th>
+      <th scope="col">Nombres</th>
+      <th scope="col">Apellidos</th>
+      <th scope="col">Cédula</th>
+      <th scope="col">Fecha</th>
+      <th scope="col">Hora</th>
       <th scope="col">Especialidad</th>
       <th scope="col">Especialista</th>
-      <th scope="col">Estado de la cita</th>
+      <th scope="col">Estado</th>
       <th scope="col">Editar</th>
       <th scope="col">Cancelar</th>
        <!--<th scope="col">Eliminar</th>  -->
@@ -108,21 +235,20 @@ else
     <?php
   
     include "conexion.php";
-    $sentencia="SELECT * FROM citas_medicas where fecha='$fecha_actual' order by idcitas";
+    $sentencia="SELECT * FROM citas_medica where fecha='$fecha_actual' and id_empleados='$cedula_d' order by idcitas";
 
 
 $result=mysqli_query($conexion, $sentencia);
      while ($row = mysqli_fetch_array($result)){   
      	?>
-
-	<th><?php echo $row['idcitas'] ?> </th>
+	  <th><?php echo $row['idcitas'] ?> </th>
     <th><?php echo $row['nombres'] ?> </th>
-	<th><?php echo $row['ape_paterno']." ".$row['ape_mat'] ?> </th>
+  	<th><?php echo utf8_decode($row['ape_paterno'])." ".utf8_decode($row['ape_mat']) ?> </th>
     <th><?php echo $row['idpacientes'] ?> </th>
     <th><?php echo $row['fecha'] ?> </th>
-    <th><?php echo $row['hora'] ?> </th>
+    <th><?php echo $row['id_hora'] ?> </th>
     <th><?php echo $row['descripcion'] ?> </th>
-    <th><?php echo $row['nombreD']." ".$row['apellidos']; ?> </th>
+    <th><?php echo utf8_decode($row['nombreD'])." ".utf8_decode($row['apellidos']); ?> </th> 
     <th><?php echo $row['estado'] ?> </th>
 
     <?php 
@@ -162,16 +288,12 @@ mysqli_query($conexion,$sql_cambio);
     <th><button type="button" name="" id="" class="btn btn-danger"  onClick="return preguntar(<?php echo $row['idcitas']; ?>)"> Cancelar</button></th>
 <?php }elseif ($row['estado']=='No realizado') { ?>
 	
-	<th> <a href onclick="alert('Cita no realizada');"> <img src="no_rea.png" style="width: 30px; height: 20px; border-radius:50px;"></a> </th>
+	<th> <a href onclick="alert('Cita no realizada');"> <img src="no_realizado.png" style="width: 30px; height: 20px; border-radius:50px;"></a> </th>
    <th><button type="button" name="" id="" class="btn btn-danger"  onClick="return preguntar(<?php echo $row['idcitas']; ?>)"> Cancelar</button></th>
 <?php	}elseif ($row['estado']=='Cancelado' ) { ?>
   
   <th> Cita cancelada</th>
-
-
-	<!--<th> <a href=""> <img src="eliminar.png" style="width: 30px; height: 20px; border-radius: 50px;"></a> </th> -->
-  
-
+	<!--<th> <a href=""> <img src="eliminar.png" style="width: 30px; height: 20px; border-radius: 50px;"></a> </th> -->  
   <th>Cancelada</th>
 <?php } ?>
   </tr>

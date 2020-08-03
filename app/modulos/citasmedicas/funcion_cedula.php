@@ -51,20 +51,20 @@ $dis=(($dis + 1)* 10);//luego ese numero lo multiplico x 10, consiguiendo asi la
 $digito=($dis - $suma);
 if($digito==10){ $digito='0'; }else{ }//si la suma nos resulta 10, el decimo digito es cero
 if ($digito==$ult_digito){//comparo los digitos final y ultimo
-echo "Cedula Correcta ";
+echo "Cédula Correcta";
 }else{
-echo "Cedula Incorrecta";
+echo "Cédula Incorrecta";
 }
 }else{
-echo "Este Nro de Cedula no corresponde a ninguna provincia del ecuador";
+echo "Este N° de cédula no corresponde a ninguna provincia del Ecuador";
 }
 
 
 }else{
-echo "Es un Numero y tiene solo".$total_caracteres;
+echo "Es un número y tiene solo ".$total_caracteres;
 }
 }else{
-echo "Esta Cedula no corresponde a un Nro de Cedula de Ecuador";
+echo "No corresponde a un N° de cédula de Ecuador";
 }
 }
 }
