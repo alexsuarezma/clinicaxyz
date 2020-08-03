@@ -106,7 +106,9 @@
                 echo "<a class='dropdown-item' href='app/modulos/contabilidad/index.php'><i class='fas fa-balance-scale mr-2'></i> Contabilidad</a>";
               }
               if($_SESSION['modulo_ctas_medicas'] == 1){
-                echo "<a class='dropdown-item' href='app/modulos/citasmedicas/index.php'><i class='fas fa-notes-medical mr-3'></i> Citas Medicas</a>";
+                echo "<a class='dropdown-item' href='app/modulos/citasmedicas/citas.php'><i class='fas fa-notes-medical mr-3'></i> Citas agendadas</a>";
+
+                echo "<a class='dropdown-item' href='app/modulos/citasmedicas/historial_clinico.php'><i class='fas fa-notes-medical mr-3'></i>Historial clinico</a>";
               }
               if($_SESSION['modulo_pacientes'] == 1){
                 echo "<a class='dropdown-item' href='app/modulos/pacientes/index copy 2.html'><i class='fas fa-procedures mr-2'></i> Modulo Pacientes</a>";
@@ -115,7 +117,13 @@
                 echo "<a class='dropdown-item' href='app/modulos/seguridad/'><i class='fas fa-user-shield mr-2'></i> Modulo Seguridad</a>";
               }
               if($_SESSION['paciente'] == 1){
-                echo "<a class='dropdown-item' href='app/modulos/pacientes/index copy 2.html'><i class='fas fa-procedures mr-2'></i> Paciente</a>";
+                echo "<a class='dropdown-item' href='app/modulos/pacientes/index copy 2.html'><i class='fas fa-procedures mr-2'></i> Pacientes</a>";
+
+                echo "<a class='dropdown-item' href='app/modulos/citasmedicas/index.php'><i class='fas fa-notes-medical mr-3'></i> Citas Medicas</a>";
+
+                echo "<a class='dropdown-item' href='app/modulos/citasmedicas/historial_clinico.php'><i class='fas fa-notes-medical mr-3'></i> historial clinico </a>";
+
+
               }
               
             ?>            

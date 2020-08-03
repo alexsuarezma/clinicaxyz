@@ -43,8 +43,9 @@ require '../../../../database.php';
                   $results = $records->fetch(PDO::FETCH_ASSOC);
 
                   $_SESSION['user_credential'] = $results['id_credencial'];
-                  
+                  $_SESSION['cedula_d']=$cedula;
                   header("Location: ../../../../");
+
               }else{
                 $message = 'Lo sentimos, las credenciales que ingreso no son correctas';
               }
