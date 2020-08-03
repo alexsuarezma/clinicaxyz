@@ -33,7 +33,7 @@ printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventa
 
     <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
       <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">PRODUCTOS</h1>
+        <h1 class="h2">CATALOGO DE PRODUCTOS/PROVEEDOR</h1>
         <div class="btn-toolbar mb-2 mb-md-0">
           <div class="btn-group mr-2">
             <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
@@ -62,6 +62,7 @@ printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventa
                         <div class="product-image"> 
                             <img src="<?php echo $Productos->img_pr?>" alt="194x228" class="img-thumbnail"> 
                         </div>
+                        <span class="btn btn-light ml-3" style="font-size:14px;"><a  onclick="eliminarProducto('<?php echo $Productos->idproducto?>')" data-toggle="modal" href="#modal-delete">Dar de Baja</a></span>
                     </div>
                     <div class="col-md-7 col-sm-12 col-xs-12">
                         <div class="product-deatil">
@@ -87,10 +88,10 @@ printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventa
                                    <span class="font-weight-bold">Elab:</span> <span><?php echo $Productos->fecha_elaboracion_pr?></span></br>
                                    <span class="font-weight-bold">Caduc:</span> <span><?php echo $Productos->fecha_caducidad_pr?></span>
                                 </div>
-                                <div class="col-md-4 col-sm-6 col-xs-6">
+                                <div class="col-md-4">
                                     <div class="mt-3">
-                                        <span class="mr-1"><a onclick="editarProducto('<?php echo $Productos->idproducto?>','<?php echo $Productos->codigo_barra_pr?>','<?php echo $Productos->nombre_pr?>','<?php echo $Productos->descripcion_pr?>','<?php echo $Productos->precio_unitario_pr?>','<?php echo $Productos->fecha_elaboracion_pr?>','<?php echo $Productos->fecha_caducidad_pr?>','<?php echo $Productos->idcategoria?>','<?php echo $Productos->img_pr?>')" data-toggle="modal" href="#informationProducto"><i class="fas fa-info-circle" style="font-size:20px;" title="Editar información del producto"></i></a></span>
-                                        <span class="mr-1"><a  onclick="eliminarProducto('<?php echo $Productos->idproducto?>')" data-toggle="modal" href="#modal-delete"><i class="fa fa-trash remove-note" style="color:red; font-size:20px;" title="Eliminar PROOVEDOR"></i></a></span>
+                                        <span class="ml-5"><a onclick="editarProducto('<?php echo $Productos->idproducto?>','<?php echo $Productos->codigo_barra_pr?>','<?php echo $Productos->nombre_pr?>','<?php echo $Productos->descripcion_pr?>','<?php echo $Productos->precio_unitario_pr?>','<?php echo $Productos->fecha_elaboracion_pr?>','<?php echo $Productos->fecha_caducidad_pr?>','<?php echo $Productos->idcategoria?>','<?php echo $Productos->img_pr?>')" data-toggle="modal" href="#informationProducto"><i class="fas fa-info-circle" style="font-size:20px;" title="Editar información del producto"></i></a></span>
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -108,7 +109,7 @@ printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventa
       </div>
     </main>
     <?php 
-        printModal('Dar de baja al PRODUCTO','btn-delete','modal-delete','¡Hey!. Estas apunto de DAR DE BAJA a este producto, se ELIMINARAN de la lista para futuras Ordenes de Compra.</br> ¿Realmente desea continuar con el proceso?');
+        printModal('Ocultar PRODUCTO','btn-delete','modal-delete','Al dar de baja a este producto, se OCULTARA de la lista para futuras Ordenes de Compra. <span class="text-info">(EL INVENTARIO NO SE VERA AFECTADO)</span></br> ¿Realmente desea continuar con el proceso?');
     ?>
     <div class='modal fade' name='informationProducto' id='informationProducto' data-backdrop='static' data-keyboard='false' tabindex='-1' role='dialog' aria-labelledby='staticBackdropLabe' aria-hidden='true'>
         <div class='modal-dialog' style="max-width:800px;" >

@@ -55,6 +55,14 @@
             $salida.="    </tbody>
                 </table>";
         }
+        $sql= "SELECT * FROM productos WHERE idproducto=$q";
+
+        $results = $conn->query($sql);
+        $results = $results->fetch_assoc();
+        
+        if($results['deleted']==1){
+            $salida.="<span class='font-weight-bold text-danger'>Actualmente este producto ha sido dado de baja. Significa que no se podran realizar futuras ordenes de compra para llenar el stock, el stock actual en inventario sigue vendiendose sin afectaciones hasta agotar existencias.</span>";    
+        }
     }else{
         $salida.="";
     }

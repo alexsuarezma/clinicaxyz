@@ -1,10 +1,12 @@
 <?php
 require '../../../../database.php';
-require '../components/layout.php';
+require '../components/layoutContabilidad.php';
 require '../../recursoshumanos/components/modal.php';
 require '../../seguridad/controllers/functions/credenciales.php';
+date_default_timezone_set('America/Guayaquil');
 
-verificarAcceso("../../../../", "modulo_suministros");
+$created = date("Y-m-d");
+verificarAcceso("../../../../", "modulo_contabilidad");
 $orden = $conn->query("SELECT * FROM orden_compra as o, detalle_orden_compra AS de, producto_has_proveedor AS has, proveedores AS pr, productos AS pd WHERE (de.id_orden_compra_dt =o.id_orden_compra AND de.id_prod_has_prov=has.idproducto_has_proveedor AND has.idproveedor_has=pr.idproveedor AND has.idproducto_has=pd.idproducto) AND id_orden_compra=".$_GET['id'])->fetchAll(PDO::FETCH_OBJ);
 
 ?>
@@ -15,16 +17,14 @@ $orden = $conn->query("SELECT * FROM orden_compra as o, detalle_orden_compra AS 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
-    <title> Suministro | Requerimiento de Compra</title>
+    <title> Contabilidad | Requerimiento de Compra</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
     <link href="../assets/styles/dashboard.css" rel="stylesheet">
   </head>
   <body>
 <?php
-printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventario.php','productos.php', 'nuevoProducto.php',
-'historialProductos.php','historialOrdenCompra.php','nuevaOrdenCompra.php','listaOrdenesCompra.php','proveedores.php','../../seguridad/controllers/logout.php','../../seguridad/routes/perfil.php',
-'../../recursoshumanos/','../index.php','../../contabilidad/','../../citasmedicas/','../../pacientes/','../../seguridad/',6);
+printLayout ();
 ?>
 <div class="container-fluid">
   <div class="row">
@@ -46,14 +46,28 @@ printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventa
      
     <div class="container mt-5 mb-5">
         <hr class="mb-4">
-    <form id="formRegistrar" action="../controllers/registrarInventario.php" method="POST" class="ml-2 mr-2">
+    <form id="formRegistrar" onsubmit="onSubmit(event)" action="../controllers/aceptarRequerimiento.php" method="POST" class="ml-2 mr-2">
             <div class="">
-            
+            <?php
+                if($orden[0]->estado == "espera"):
+            ?>
                 <p style="font-size:15px;" class="text-break font-weight-bold badge-pill badge-info">
                 <i class="fas fa-info-circle mr-5" style="font-size:28px;"></i>
                     Departamento de suministro solicito una Orden de Requerimiento, necesitas generar una acción en ella.
                 </p>
-         
+            <?php elseif($orden[0]->estado == "aceptado"):?>
+                <p style="font-size:15px;" class="text-break font-weight-bold badge-pill badge-info">
+                <i class="fas fa-info-circle mr-5" style="font-size:28px;"></i>
+                    Esta solicitud de Orden de Compra ya fue
+                        aprobada
+                     , Porfavor. En cuanto se realice el pago cambia el estado a "Pagado".
+                </p>
+            <?php elseif($orden[0]->estado == "pagado"):?>
+                <p style="font-size:15px;" class="text-break font-weight-bold badge-pill badge-success">
+                <i class="fas fa-info-circle mr-5" style="font-size:28px;"></i>
+                    Esta solicitud de Orden de Compra ya fue pagada!.
+                </p>
+            <?php endif;?>
             </div>
             <label class="font-weight-bold">INFORMACION SOLICITUD PARA ORDEN DE COMPRA</label>
             <hr class="mt-1 mb-4 mr-5">
@@ -65,17 +79,26 @@ printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventa
                 </div>
                 <div class="form-group col-md-6">
                     <label for="fechaPago">Fecha de pago de la Orden</label>
-                    <input type="input" class="form-control" name="fechaPago" value="<?php echo $orden[0]->fecha_pago?>" id="fechaPago" readonly required>
+                    <input type="hidden" name="fechaPago" value="<?php echo $created;?>">
+                    <input type="input" class="form-control" value="<?php echo $created?>" id="" readonly>
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="estadoPedido">Estado <span class="text-warning font-weight-bold" style="font-size:12px;">Porfavor Seleciona un estado para concluir el proceso de esta orden de requerimiento</span> </label>
                     <select class="custom-select" name="estadoPedido" id="estadoPedido" required>
-                    <option selected disabled value="<?php echo $orden[0]->estado?>">En espera</option>
-                    <option disabled value="">Seleccione...</option>
-                        <option value="aceptado">Aceptar</option>
-                        <option value="rechazado">Denegado</option>
+                    <?php if($orden[0]->estado=="espera"):?>
+                        <option selected disabled value="">En espera</option>
+                        <option disabled value="">Seleccione...</option>
+                            <option value="aceptado">Aceptar</option>
+                            <option value="rechazado">Denegado</option>
+                    <?php elseif($orden[0]->estado == "aceptado"):?>
+                        <option selected disabled value="">Aceptado</option>
+                        <option disabled value="">Seleccione...</option>
+                        <option value="pagado">Pagado</option>
+                    <?php elseif($orden[0]->estado == "pagado"):?>
+                        <option selected disabled value="">Pagado</option>
+                    <?php endif;?>
                     </select>
                 </div>
             </div>
@@ -107,6 +130,7 @@ printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventa
                 <?php
                     $count=0;
                     $total=0;
+                    $subTotal=0;
                     $cantidad=0;
                      foreach ($orden as $ordenDetalle): 
                             $count++;                   
@@ -145,9 +169,35 @@ printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventa
                     </tr>
                 <?php 
                         $cantidad += $ordenDetalle->cantidad;
-                        $total += $ordenDetalle->cantidad * $ordenDetalle->precio_unitario;
+                        $subTotal += $ordenDetalle->cantidad * $ordenDetalle->precio_unitario;
                     endforeach;
+                    $total = $subTotal+($subTotal*0.12);
                 ?>
+
+
+                <tr>
+                    <th></th>
+                    <th style="width:250px;"></th>
+                    <th style="width:250px;"></th>
+                    <th style="width:250px;"></th>
+                    <th style="width:150px;"></th>
+                    <th style="width:150px;">Precio Subtotal</th>
+                    <th style="width:50px;">
+                        <?php echo ($subTotal)?>
+                    </th>
+                </tr> 
+                <tr>
+                    <th></th>
+                    <th style="width:250px;"></th>
+                    <th style="width:250px;"></th>
+                    <th style="width:250px;"></th>
+                    <th style="width:150px;"></th>
+                    <th style="width:150px;">IVA 12%</th>
+                    <th style="width:50px;">
+                        <?php echo ($subTotal*0.12)?>
+                    </th>
+                </tr> 
+
                  <tr>
                         <th></th>
                         <th style="width:250px;"></th>
@@ -161,10 +211,13 @@ printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventa
                     </tr> 
                 </tbody>
             </table>
-                <div class='modal-footer mt-2'>
-                    <a id="cancelar" href="historialOrdenCompra.php" type='button' class="btn btn-light border-secondary" data-dismiss='modal'>Cancelar</a>
-                    <button id='confirmacion' name='confirmacion' type='submit' class='btn btn-primary font-weight-bold' style="width:200px;">Enviar Respuesta</button>
-                </div> 
+            <input type="hidden" name="total" value="<?php echo $total?>">
+                <?php if($orden[0]->estado!="pagado"):?>
+                    <div class='modal-footer mt-2'>
+                        <a id="cancelar" href="historialRequerimientos.php" type='button' class="btn btn-light border-secondary" data-dismiss='modal'>Cancelar</a>
+                        <button id='confirmacion' name='confirmacion' type='submit' class='btn btn-primary font-weight-bold' style="width:200px;">Enviar Respuesta</button>
+                    </div> 
+                <?php endif;?>
 
         </form>
       </div>
@@ -207,9 +260,16 @@ printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventa
                 document.getElementById('comentario').disabled=true;    
             }
     });
-
+    onSubmit = (event) => {
+        event.preventDefault()
+        $('#modal-registrar').modal('show');
+        $('#btn-registrar').click(function(){
+            document.getElementById('formRegistrar').submit();
+        })
+    }
 </script>
       </body>
 </html>
+
 
 

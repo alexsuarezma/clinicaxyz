@@ -94,7 +94,7 @@ printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventa
                     <div class="row">
                       <div class="col">
                           <form name="formEditar" method="POST" action="../controllers/updatePvp.php" class="ml-2 mr-2">
-                              <label class="font-weight-bold text-danger mt-2">Si desdeas, solo puedes editar el precio de venta al público PVP.</label>
+                              <label class="font-weight-bold text-danger mt-2">Si deseas, solo puedes editar el precio de venta al público PVP.</label>
                               <hr class="mt-1 mr-5">
                               <ul class="nav nav-pills p-3 bg-white rounded-pill align-items-center">
                                   <li class="nav-item ml-auto">

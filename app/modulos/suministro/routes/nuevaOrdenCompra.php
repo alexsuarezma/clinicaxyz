@@ -60,10 +60,10 @@ printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventa
                     <label for="fechaPedido">Fecha de pedido de la Orden</label>
                     <input type="text" class="form-control" name="fechaPedido" id="fechaPedido" value="<?php echo $creacion?>" readonly required>
                 </div>
-                <div class="form-group col-md-6">
+                <!-- <div class="form-group col-md-6">
                     <label for="fechaPago">Fecha de pago de la Orden</label>
                     <input type="date" class="form-control" name="fechaPago" id="fechaPago" required>
-                </div>
+                </div> -->
             </div>
             <div class="d-flex justify-content-between">
                 <label class="font-weight-bold mt-3">Agrega los productos para esta Orden</label>

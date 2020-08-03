@@ -11,7 +11,7 @@ $stmt = $conn->prepare($sql);
 $stmt->bindParam(':created_at', $created);
 $stmt->bindValue(':update_at', null, PDO::PARAM_INT);
 $stmt->bindParam(':fecha_pedido',$pedido);
-$stmt->bindParam(':fecha_pago', $_POST['fechaPago']);
+$stmt->bindValue(':fecha_pago', null, PDO::PARAM_INT);
 $stmt->bindValue(':estado','espera', PDO::PARAM_STR);
 $stmt->bindValue(':registrado', 0, PDO::PARAM_INT);
 
@@ -19,12 +19,6 @@ if($stmt->execute()){
     $idLast = $conn->lastInsertId();
     //LUEGO DETALLES
     foreach ( $_POST['idHasProv'] as $id ) { 
-        // echo '</br>';
-        // echo $id; 
-        // echo '</br>';
-        // echo $_POST['cantOc'][$count];
-        // echo '</br>';
-        // echo '</br>';
         $sql = "INSERT INTO detalle_orden_compra (cantidad,precio_unitario,id_prod_has_prov,id_orden_compra_dt) VALUES (:cantidad,:precio_unitario,:id_prod_has_prov,:id_orden_compra_dt)";                    
         $stmt = $conn->prepare($sql);                              
         $stmt->bindParam(':cantidad', $_POST['cantOc'][$count]);

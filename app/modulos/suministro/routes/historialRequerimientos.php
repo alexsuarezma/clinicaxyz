@@ -1,11 +1,11 @@
 <?php
 require '../../../../database.php';
-require '../components/layout.php';
+require '../components/layoutContabilidad.php';
 require '../../recursoshumanos/components/modal.php';
 require '../../seguridad/controllers/functions/credenciales.php';
 
-verificarAcceso("../../../../", "modulo_suministros");
-$orden = $conn->query("SELECT * FROM orden_compra WHERE estado='espera'")->fetchAll(PDO::FETCH_OBJ);
+verificarAcceso("../../../../", "modulo_contabilidad");
+$orden = $conn->query("SELECT * FROM orden_compra WHERE estado='aceptado' OR estado='espera' ORDER BY estado ASC")->fetchAll(PDO::FETCH_OBJ);
 
 ?>
 
@@ -22,16 +22,14 @@ $orden = $conn->query("SELECT * FROM orden_compra WHERE estado='espera'")->fetch
   </head>
   <body>
 <?php
-    printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventario.php','productos.php', 'nuevoProducto.php',
-    'historialProductos.php','historialOrdenCompra.php','nuevaOrdenCompra.php','listaOrdenesCompra.php','proveedores.php','../../seguridad/controllers/logout.php','../../seguridad/routes/perfil.php',
-    '../../recursoshumanos/','../index.php','../../contabilidad/','../../citasmedicas/','../../pacientes/','../../seguridad/',8);
+    printLayout ();
 ?>
 <div class="container-fluid">
   <div class="row">
 
     <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
       <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">ORDENES DE COMPRA EN PROCESO AGENDADAS |EN ESPERA|</h1>
+        <h1 class="h2">ORDENES DE COMPRA EN PROCESO |EN ESPERA|ACEPTADAS|</h1>
         <div class="btn-toolbar mb-2 mb-md-0">
           <div class="btn-group mr-2">
             <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
@@ -83,7 +81,7 @@ $orden = $conn->query("SELECT * FROM orden_compra WHERE estado='espera'")->fetch
                     <?php
                         elseif($ordenDetalle->estado== "aceptado"):
                     ?>
-                        <td style="width:200px;"><span class="font-weight-bold text-info"><?php echo strtoupper($ordenDetalle->estado)?></span> <i class="fas fa-exclamation text-warning" style="font-size:15px; cursor:pointer;" title="¡ESTA ORDEN YA FUE ACEPTADA YA PUEDES REGISTRARLA EN EL INVENTARIO!"></i></td>                      
+                        <td style="width:200px;"><span class="font-weight-bold text-info"><?php echo strtoupper($ordenDetalle->estado)?></span> <i class="fas fa-exclamation text-warning" style="font-size:15px; cursor:pointer;" title="¡ESTE REQUERIMIENTO FUE ACEPTADO REGISTRA EL PAGO CUANDO SE REALICE!"></i></td>                      
                     <?php
                         elseif($ordenDetalle->estado== "cancelado"):
                     ?>
@@ -105,7 +103,7 @@ $orden = $conn->query("SELECT * FROM orden_compra WHERE estado='espera'")->fetch
                         endif;
                     ?>
                     <td style="width:100px;">
-                        <a href="ordenesCompra.php?id=<?php echo $ordenDetalle->id_orden_compra?>">Ver Orden <i class="fas fa-arrow-right"></i></a>
+                        <a href="requerimientoCompra.php?id=<?php echo $ordenDetalle->id_orden_compra?>">Ver Orden <i class="fas fa-arrow-right"></i></a>
                         </br>
                       detalle
                       <a class=" ml-2" data-toggle="collapse" href="#collapse<?php echo $ordenDetalle->id_orden_compra?>" role="button" aria-expanded="false" aria-controls="collapse<?php echo $ordenDetalle->id_orden_compra?>">

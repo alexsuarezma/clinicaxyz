@@ -63,11 +63,18 @@ printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventa
                     En cuanto acepten esta solicitud de Orden de Compra, podras registrar los productos.
                 </p>
             <?php
-                elseif($orden[0]->estado == "aceptado"):
+                elseif($orden[0]->estado == "aceptado" || $orden[0]->estado == "pagado"):
             ?>
                 <p style="font-size:15px;" class="text-break font-weight-bold badge-pill badge-info">
                 <i class="fas fa-info-circle mr-5" style="font-size:28px;"></i>
-                    Esta solicitud de Orden de Compra ya fue aprobada, ya puedes seguir con el proceso y clickear registrar los productos en el INVENTARIO
+                    Esta solicitud de Orden de Compra ya fue
+                    <?php if($orden[0]->estado == "pagado"):
+                        echo $orden[0]->estado;    
+                    ?>                    
+                    <?php else:?>
+                        aprobada
+                    <?php endif;?>
+                     , ya puedes seguir con el proceso y clickear registrar los productos en el INVENTARIO
                 </p>
             <?php
                 endif;
@@ -115,6 +122,7 @@ printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventa
                     $count=0;
                     $total=0;
                     $cantidad=0;
+                    $subTotal=0;
                      foreach ($orden as $ordenDetalle): 
                             $count++;                   
                 ?>
@@ -152,9 +160,33 @@ printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventa
                     </tr>
                 <?php 
                         $cantidad += $ordenDetalle->cantidad;
-                        $total += $ordenDetalle->cantidad * $ordenDetalle->precio_unitario;
+                        $subTotal += $ordenDetalle->cantidad * $ordenDetalle->precio_unitario;
                     endforeach;
+                    $total = $subTotal+($subTotal*0.12);
                 ?>
+              <tr>
+                    <th></th>
+                    <th style="width:250px;"></th>
+                    <th style="width:250px;"></th>
+                    <th style="width:250px;"></th>
+                    <th style="width:150px;"></th>
+                    <th style="width:150px;">Precio Subtotal</th>
+                    <th style="width:50px;">
+                        <?php echo ($subTotal)?>
+                    </th>
+                </tr> 
+                <tr>
+                    <th></th>
+                    <th style="width:250px;"></th>
+                    <th style="width:250px;"></th>
+                    <th style="width:250px;"></th>
+                    <th style="width:150px;"></th>
+                    <th style="width:150px;">IVA 12%</th>
+                    <th style="width:50px;">
+                        <?php echo ($subTotal*0.12)?>
+                    </th>
+                </tr> 
+
                  <tr>
                         <th></th>
                         <th style="width:250px;"></th>
@@ -174,7 +206,7 @@ printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventa
                 <div class='modal-footer mt-2'>
                     <a id="cancelar" href="historialOrdenCompra.php" type='button' class="btn btn-light border-secondary" data-dismiss='modal'>Cancelar</a>
                 <?php
-                    if($orden[0]->estado == "aceptado" && $orden[0]->registrado == 0):
+                    if(($orden[0]->estado == "aceptado" || $orden[0]->estado == "pagado") && $orden[0]->registrado == 0):
                 ?>              
                     <button id='confirmacion' name='confirmacion' type='submit' class='btn btn-primary font-weight-bold' style="width:400px;">Registrar Productos en Invenario</button>
                 <?php

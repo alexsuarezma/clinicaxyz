@@ -1,3 +1,8 @@
+<?php
+ require '../../../database.php';
+ $orden = $conn->query("SELECT * FROM orden_compra WHERE estado='espera'")->rowCount();
+ $conn=null;
+?>
 <!doctype html>
 <html lang="es">
   <head>
@@ -81,9 +86,9 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">
+            <a class="nav-link" href="../suministro/routes/historialRequerimientos.php">
               <span data-feather="bar-chart-2"></span>
-              Requerimientos
+              Requerimientos <span class='badge badge-info'><?php if ($orden > 0): echo $orden; endif; ?></span>
             </a>
           </li>
           <li class="nav-item">

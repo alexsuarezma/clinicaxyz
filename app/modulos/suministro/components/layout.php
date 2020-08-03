@@ -74,7 +74,7 @@ $historialOrdenCompra,$provee,$logout,$ajuste,$rrhh,$suministro,$contabilidad,$c
       echo "<li class='nav-item'>";
       echo "<a class='nav-link $routes[8]' href=$inventario>";
       echo "<span data-feather='home'></span>";
-      echo "Inventario <span class='sr-only'>(current)</span>";
+      echo "Inventario de Productos<span class='sr-only'>(current)</span>";
       echo "</a>";
       echo "</li>";
       echo "<li class='nav-item'>";
@@ -106,7 +106,7 @@ $historialOrdenCompra,$provee,$logout,$ajuste,$rrhh,$suministro,$contabilidad,$c
 
       echo "<h6 class='sidebar-heading d-flex justify-content-start align-items-center px-3 mt-2 mb-2 text-muted'>";
       echo "<span class='mr-3' data-feather='briefcase'></span>";
-      echo "Gestión Productos";
+      echo "Catalogo Productos/Proveedor";
       echo "<a class='d-flex align-items-center text-muted ml-5' href='#' aria-label='Add a new report'>";
       echo "  <a data-toggle='collapse' href='#collapseExample' role='button' aria-expanded='false' aria-controls='collapseExample'>
             <span data-feather='plus-circle'></span></a>";
@@ -116,19 +116,19 @@ $historialOrdenCompra,$provee,$logout,$ajuste,$rrhh,$suministro,$contabilidad,$c
         <li class='nav-item ml-3'>
         <a class='nav-link $routes[2]' href=$products>
         <span data-feather='file-text'></span>
-            Lista de Productos
+            Lista de Productos/Proveedor
         </a>
         </li>
         <li class='nav-item ml-3'>
         <a class='nav-link $routes[3]' href=$nuevoProducts>
         <span data-feather='file-text'></span>
-            Nuevo Producto
+            Agregar Producto (Catalogo)
         </a>
         </li>
         <li class='nav-item ml-3'>
         <a class='nav-link $routes[4]' href=$historialProducts>
         <span data-feather='file-text'></span>
-            Historial de productos |Deshabilitados|
+            Historial de productos |No Publicados|
         </a>
         </li>
       </div>";
@@ -146,7 +146,7 @@ $historialOrdenCompra,$provee,$logout,$ajuste,$rrhh,$suministro,$contabilidad,$c
         <li class='nav-item ml-3'>
         <a class='nav-link $routes[5]' href=$ordeneCompra>
         <span data-feather='file-text'></span>
-            Ordenes de Compra Generadas
+            Ordenes de Compra Registradas
         </a>
         </li>
          <li class='nav-item ml-3'>

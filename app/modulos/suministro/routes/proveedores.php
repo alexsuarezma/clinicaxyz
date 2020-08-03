@@ -68,7 +68,7 @@ $proveedor = $conn->query("SELECT * FROM proveedores WHERE deleted = 0 ORDER BY 
                         <span class="side-stick"></span>
                         <h5 class="note-title mb-0"><?php echo $Proveedores->razon_social_empresa_pro?></h5>
                         <p class="note-date font-12 text-muted"><?php echo $Proveedores->numero_identificacion_pro?></br> <?php echo $Proveedores->nombre_representante_legal_pro?></p>
-                        
+                        <span class="text-right"><a href="saldoProveedores.php?id=<?php echo $Proveedores->idproveedor?>">Historial de Pagos</a></span>
                         <div class="note-content">
                             <p class="note-inner-content text-muted" data-notecontent="Blandit tempus porttitor aasfs. Integer posuere erat a ante venenatis.">
                                 <?php echo $Proveedores->direccion_pro?>. <?php echo $Proveedores->ciudad_pro?>
@@ -76,7 +76,7 @@ $proveedor = $conn->query("SELECT * FROM proveedores WHERE deleted = 0 ORDER BY 
                         </div>
                         <div class="d-flex align-items-center">
                             <span class="mr-1"><a onclick="editarProveedor('<?php echo $Proveedores->idproveedor?>','<?php echo $Proveedores->numero_identificacion_pro?>','<?php echo $Proveedores->razon_social_empresa_pro?>','<?php echo $Proveedores->nombre_representante_legal_pro?>','<?php echo $Proveedores->direccion_pro?>','<?php echo $Proveedores->ciudad_pro?>','<?php echo $Proveedores->telefono_1_pro?>','<?php echo $Proveedores->telefono_2_pro?>','<?php echo $Proveedores->email_1_pro?>','<?php echo $Proveedores->email_2_pro?>')" data-toggle="modal" href="#informationProveedor"><i class="fas fa-edit text-info" style="font-size:20px;" title="Ver información del PROVEEDOR"></i></a></span>
-                            <span class="mr-1"><a  onclick="eliminarProveedor('<?php echo $Proveedores->idproveedor?>')" data-toggle="modal" href="#modal-delete"><i class="fa fa-trash remove-note" style="color:red; font-size:20px;" title="Eliminar PROOVEDOR"></i></a></span>
+                            <span class="ml-4 btn btn-light text-danger"><a  onclick="eliminarProveedor('<?php echo $Proveedores->idproveedor?>')" data-toggle="modal" style="text-decoration:none; color:red;" href="#modal-delete"> Dar de baja</a></span>
                         </div>
                     </div>
                 </div>
@@ -185,7 +185,7 @@ $proveedor = $conn->query("SELECT * FROM proveedores WHERE deleted = 0 ORDER BY 
       </div>
     </main>
     <?php 
-        printModal('Dar de baja al PROVEEDOR','btn-delete','modal-delete','¡Hey!. Estas apunto de DAR DE BAJA a este PROVEEDOR, estas apunto de ELIMINARLO de la lista en nuevas Ordenes de Compra. ¿Realmente desea continuar con el proceso?');
+        printModal('Dar de baja al PROVEEDOR','btn-delete','modal-delete','Estas apunto de DAR DE BAJA a este PROVEEDOR, se OCULTARA de la lista en nuevas Ordenes de Compra. ¿Realmente desea continuar con el proceso?');
     ?>
     <div class='modal fade' name='informationProveedor' id='informationProveedor' data-backdrop='static' data-keyboard='false' tabindex='-1' role='dialog' aria-labelledby='staticBackdropLabe' aria-hidden='true'>
         <div class='modal-dialog' style="max-width:800px;" >
@@ -276,6 +276,46 @@ $proveedor = $conn->query("SELECT * FROM proveedores WHERE deleted = 0 ORDER BY 
                       </div> 
                     </form>
                 </div>
+                <table class="table colored-header datatable project-list">
+            <thead>
+                <tr>
+                    <th>Orden de Compra</th>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Precio Unitario</th>
+                    <th>Total a pagar</th>
+                    <th>Estado</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php
+            foreach ($inventario as $Inventarios):
+            ?>
+                <tr>
+                    <th><?php echo $Inventarios->codigo_barra_pr?></th>
+                    <td><?php echo $Inventarios->nombre_pr?></td>
+                    <td><?php echo $Inventarios->stock?></td>
+                    <td><?php echo $Inventarios->precio_unitario_pvp?></td>
+                    <td><?php echo $Inventarios->precio_unitario_pr?></td>
+                    <td>
+                    
+                    </td>
+                </tr>
+                <tr>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th>Saldo Pendiente</th>
+                    <th>Estado</th>
+                    <th></th>
+                </tr>
+            <?php 
+                endforeach;
+            ?> 
+            </tbody>
+        </table>
             </div>
         </div>
   </div>

@@ -31,7 +31,7 @@ printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventa
 
     <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
       <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">ORDENES DE COMPRA EN PROCESO |EN ESPERA|ACEPTADO|</h1>
+        <h1 class="h2">ORDENES DE COMPRA EN PROCESO |EN ESPERA|ACEPTADO|PAGADO</h1>
         <div class="btn-toolbar mb-2 mb-md-0">
           <div class="btn-group mr-2">
             <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
@@ -65,7 +65,7 @@ printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventa
          <table class="table colored-header datatable project-list">
               <tbody>
                 <?php 
-                  if($ordenDetalle->estado== "aceptado"):
+                  if($ordenDetalle->estado== "aceptado" || $ordenDetalle->estado== "pagado"):
                 ?>
                   <tr style="border: 1px solid #57D4DA;">
                 <?php
@@ -81,13 +81,13 @@ printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventa
                     ?>
                       <td style="width:200px;"><?php echo strtoupper($ordenDetalle->estado)?> <i class="far fa-question-circle text-info" style="font-size:15px; cursor:pointer;" title="Esta Orden se encuentra en revision por el departamento de contabilidad"></i></td>
                     <?php
-                        elseif($ordenDetalle->estado== "aceptado"):
+                        elseif($ordenDetalle->estado== "aceptado" || $ordenDetalle->estado== "pagado"):
                     ?>
                         <td style="width:200px;"><span class="font-weight-bold text-info"><?php echo strtoupper($ordenDetalle->estado)?></span> <i class="fas fa-exclamation text-warning" style="font-size:15px; cursor:pointer;" title="¡ESTA ORDEN YA FUE ACEPTADA YA PUEDES REGISTRARLA EN EL INVENTARIO!"></i></td>                      
                     <?php
-                        elseif($ordenDetalle->estado== "cancelado"):
+                        elseif($ordenDetalle->estado== "rechazado"):
                     ?>
-                        <td style="width:200px;"><span class="font-weight-bold text-danger"><?php echo strtoupper($ordenDetalle->estado)?></span> <i class="fas fa-radiation text-danger" style="font-size:15px; cursor:pointer;" title="¡ESTA ORDEN FUE CANCELADA!"></i></td>                      
+                        <td style="width:200px;"><span class="font-weight-bold text-danger"><?php echo strtoupper($ordenDetalle->estado)?></span> <i class="fas fa-radiation text-danger" style="font-size:15px; cursor:pointer;" title="¡ESTA ORDEN FUE RECHAZADA!"></i></td>                      
                     <?php
                         endif;
                     ?>

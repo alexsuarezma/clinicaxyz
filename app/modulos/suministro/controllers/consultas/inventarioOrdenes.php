@@ -40,13 +40,13 @@
                             <td>".$fila['created_at']."</td>
                             <td><a href='ordenesCompra.php?id=".$fila['id_orden_compra_oci']."'>Registro</a></td>
                         </tr>
-                    </tbody>
-                </table>";
+                   ";
                 
             }               
         }
     }else{
-        $salida.="";
+        $salida.=" </tbody>
+        </table>";
     }
 
 
