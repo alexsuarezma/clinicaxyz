@@ -6,6 +6,53 @@ require '../controllers/functions/credenciales.php';
 
 verificarAcceso("../../../../", "modulo_seguridad");
 
+
+$credenciales = $conn->query("SELECT * FROM usuario_credencial WHERE id_usuario_uc =".$_SESSION['user_id'])->fetchAll(PDO::FETCH_OBJ);
+$_SESSION['modulo_rrhh'] = 0;
+$_SESSION['modulo_suministros'] = 0;
+$_SESSION['modulo_contabilidad'] = 0;
+$_SESSION['modulo_ctas_medicas'] = 0;
+$_SESSION['modulo_pacientes'] = 0;
+$_SESSION['modulo_seguridad'] = 0;
+$_SESSION['paciente'] = 0;
+$_SESSION['nombre_credencial'] = "";
+
+foreach ($credenciales as $idCredencial){ 
+
+    $records = $conn->prepare("SELECT * FROM usuario_credencial AS uc, credencial_base AS c, usuario AS u WHERE (uc.id_credencialbase_uc = c.id_credencial AND uc.id_usuario_uc = u.id_usuario) AND id_usuario_credencial = :id_usuario_credencial");
+    $records->bindParam(':id_usuario_credencial', $idCredencial->id_usuario_credencial);
+    $records->execute();
+    $results = $records->fetch(PDO::FETCH_ASSOC); 
+    if($results['modulo_rrhh'] == 1){
+      $_SESSION['modulo_rrhh'] = 1;
+    }
+    if($results['modulo_suministros'] == 1){
+      $_SESSION['modulo_suministros'] = 1;
+    }
+    if($results['modulo_contabilidad'] == 1){
+      $_SESSION['modulo_contabilidad'] = 1;
+    }
+    if($results['modulo_ctas_medicas'] == 1){
+      $_SESSION['modulo_ctas_medicas'] = 1;
+    }
+    if($results['modulo_pacientes'] == 1){
+      $_SESSION['modulo_pacientes'] = 1;
+    }
+    if($results['paciente'] == 1){
+      $_SESSION['paciente'] = 1;
+    }
+    if($results['modulo_seguridad'] == 1) {
+      $_SESSION['modulo_seguridad'] = 1;
+    }
+    if($_SESSION['nombre_credencial'] == ""){
+      $_SESSION['nombre_credencial'] = strtoupper($results['nombre_credencial']);
+    }else{
+      $_SESSION['nombre_credencial'] = $_SESSION['nombre_credencial'].", ".strtoupper($results['nombre_credencial']);
+    }
+}
+
+
+
 $_SESSION['insertar'] = verificarAccion($conn, "modulo_seguridad", "insertar");
 $_SESSION['actualizar'] = verificarAccion($conn, "modulo_seguridad", "actualizar");
 $_SESSION['crear_usuarios'] = verificarAccion($conn, "modulo_seguridad", "crear_usuarios");
