@@ -1,5 +1,7 @@
 <?php
+require '../../../database.php';
 require "clases/conexion.php";
+
 $obj= new conectar();
 $conexion=$obj->conexion();
 
@@ -7,7 +9,9 @@ $sql="SELECT SUM(total_eg) as mtotal FROM egresos
           ";
       $result=mysqli_query($conexion,$sql);
       $ver=mysqli_fetch_row($result);
-
+      
+$orden = $conn->query("SELECT * FROM orden_compra WHERE estado='espera'")->rowCount();
+$conn=null;
 ?>
 
 <!doctype html>
@@ -97,9 +101,9 @@ $sql="SELECT SUM(total_eg) as mtotal FROM egresos
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">
+            <a class="nav-link" href="../suministro/routes/historialRequerimientos.php">
               <span data-feather="bar-chart-2"></span>
-              Requerimientos
+              Requerimientos <span class='badge badge-info'><?php if ($orden > 0): echo $orden; endif; ?></span>
             </a>
           </li>
           <li class="nav-item">

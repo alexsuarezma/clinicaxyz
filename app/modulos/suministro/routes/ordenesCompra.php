@@ -63,6 +63,13 @@ printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventa
                     En cuanto acepten esta solicitud de Orden de Compra, podras registrar los productos.
                 </p>
             <?php
+                elseif($orden[0]->estado == "rechazado"):
+            ?>
+                <p style="font-size:15px;" class="text-break font-weight-bold badge-pill badge-danger">
+                <i class="fas fa-exclamation-triangle mr-5" style="font-size:28px;"></i>
+                   Esta Orden de Compra ha sido rechazada, y archivada. Lee los comentarios si deseas saber le motivo y poder generar otra.
+                </p>
+            <?php
                 elseif($orden[0]->estado == "aceptado" || $orden[0]->estado == "pagado"):
             ?>
                 <p style="font-size:15px;" class="text-break font-weight-bold badge-pill badge-info">
@@ -98,6 +105,14 @@ printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventa
                     <label for="estadoPedido">Estado</label>
                     <input type="text" class="form-control" name="estadoPedido" id="estadoPedido" value="<?php echo $orden[0]->estado?>" readonly required>
                 </div>
+            <?php
+                if($orden[0]->estado == "rechazado"):
+            ?>
+                <div class="form-group col-md-6">
+                    <label for="estadoPedido" class="text-danger">Comentarios de Orden Rechazada</label></br>
+                    <span><?php echo $orden[0]->comentario?></span>
+                </div>
+            <?php endif; ?>
             </div>
             <div class="d-flex justify-content-between">
                 <label class="font-weight-bold mt-3">Productos de esta Orden</label>
@@ -201,7 +216,7 @@ printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventa
                 </tbody>
             </table>
             <?php
-                if($orden[0]->estado != "registrado"):
+                if($orden[0]->estado != "registrado" ):
             ?>
                 <div class='modal-footer mt-2'>
                     <a id="cancelar" href="historialOrdenCompra.php" type='button' class="btn btn-light border-secondary" data-dismiss='modal'>Cancelar</a>
@@ -209,6 +224,14 @@ printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventa
                     if(($orden[0]->estado == "aceptado" || $orden[0]->estado == "pagado") && $orden[0]->registrado == 0):
                 ?>              
                     <button id='confirmacion' name='confirmacion' type='submit' class='btn btn-primary font-weight-bold' style="width:400px;">Registrar Productos en Invenario</button>
+                <?php
+                    elseif($orden[0]->estado == "rechazado"):
+                ?>
+                    <div class="">
+                        <p style="font-size:15px;" class="text-break font-weight-bold badge-pill badge-danger mt-3">
+                            Esta Orden de compra fue rechazada.
+                        </p>
+                    </div>
                 <?php
                     else:
                 ?>
@@ -221,6 +244,7 @@ printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventa
                     endif;
                 ?>
                 </div> 
+        
             <?php
                 endif;
             ?>

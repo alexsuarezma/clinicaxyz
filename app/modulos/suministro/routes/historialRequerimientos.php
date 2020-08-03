@@ -5,7 +5,7 @@ require '../../recursoshumanos/components/modal.php';
 require '../../seguridad/controllers/functions/credenciales.php';
 
 verificarAcceso("../../../../", "modulo_contabilidad");
-$orden = $conn->query("SELECT * FROM orden_compra WHERE estado='aceptado' OR estado='espera' ORDER BY estado ASC")->fetchAll(PDO::FETCH_OBJ);
+$orden = $conn->query("SELECT * FROM orden_compra WHERE estado='aceptado' OR estado='espera' ORDER BY fecha_pedido DESC")->fetchAll(PDO::FETCH_OBJ);
 
 ?>
 
