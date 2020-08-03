@@ -107,7 +107,7 @@ $proveedor = $conn->query("SELECT * FROM proveedores WHERE deleted = 0 ORDER BY 
                               <div class="form-row">
                                   <div class="form-group col-md-6">
                                       <label for="numeroIdentificacion">Numero identificación</label>
-                                      <input type="text" class="form-control" name="numeroIdentificacion" id="numeroIdentificacion"onkeypress="return soloNumeros(event)" onchange="verificarCedula(this);" maxlength="10" required>
+                                      <input type="text" class="form-control" name="numeroIdentificacion" id="numeroIdentificacion"onkeypress="return soloNumeros(event)" onchange="validarRuc(this);" maxlength="13" required>
                                   </div>
                                   <div class="form-group col-md-6">
                                       <label for="razonSocial">Razon social de la empresa</label>
@@ -144,11 +144,11 @@ $proveedor = $conn->query("SELECT * FROM proveedores WHERE deleted = 0 ORDER BY 
                               <div class="form-row">
                                   <div class="form-group col-md-6">
                                       <label for="telefonoUno">Primer telefono de contacto</label>
-                                      <input type="text" class="form-control" name="telefonoUno" id="telefonoUno" onchange="validarTelefono(this);" onkeypress="return soloNumeros(event)" maxlength="7" required>
+                                      <input type="text" class="form-control" name="telefonoUno" id="telefonoUno" onchange="validarCelular(this);" onkeypress="return soloNumeros(event)" maxlength="10" required>
                                   </div>
                                   <div class="form-group col-md-6">
                                       <label for="telefonoDos">Segundo telefono de contacto</label>
-                                      <input type="text" class="form-control" name="telefonoDos" id="telefonoDos" onchange="validarTelefono(this);" onkeypress="return soloNumeros(event)" maxlength="7" required>
+                                      <input type="text" class="form-control" name="telefonoDos" id="telefonoDos" onchange="validarCelular(this);" onkeypress="return soloNumeros(event)" maxlength="10" required>
                                   </div>
                               </div>
                               <div class="form-row">
@@ -204,7 +204,7 @@ $proveedor = $conn->query("SELECT * FROM proveedores WHERE deleted = 0 ORDER BY 
                             <input type="hidden" name="idProveedorEdit" id="idProveedorEdit">
                             <div class="form-group col-md-6">
                                 <label for="numeroIdentificacionEdit">Numero identificación</label>
-                                <input type="text" class="form-control" name="numeroIdentificacionEdit" id="numeroIdentificacionEdit"onkeypress="return soloNumeros(event)" onchange="verificarCedula(this);" maxlength="10" required>
+                                <input type="text" class="form-control" name="numeroIdentificacionEdit" id="numeroIdentificacionEdit"onkeypress="return soloNumeros(event)" onchange="validarRuc(this);" maxlength="13" required>
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="razonSocialEdit">Razon social de la empresa</label>
@@ -241,11 +241,11 @@ $proveedor = $conn->query("SELECT * FROM proveedores WHERE deleted = 0 ORDER BY 
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label for="telefonoUnoEdit">Primer telefono de contacto</label>
-                                <input type="text" class="form-control" name="telefonoUnoEdit" id="telefonoUnoEdit" required>
+                                <input type="text" class="form-control" name="telefonoUnoEdit" id="telefonoUnoEdit" onchange="validarCelular(this);" onkeypress="return soloNumeros(event)" maxlength="10" required>
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="telefonoDosEdit">Segundo telefono de contacto</label>
-                                <input type="text" class="form-control" name="telefonoDosEdit" id="telefonoDosEdit" onchange="validarTelefono(this);" onkeypress="return soloNumeros(event)" maxlength="7" required>
+                                <input type="text" class="form-control" name="telefonoDosEdit" id="telefonoDosEdit" onchange="validarCelular(this);" onkeypress="return soloNumeros(event)" maxlength="10" required>
                             </div>
                         </div>
                         <div class="form-row">
@@ -327,6 +327,7 @@ $proveedor = $conn->query("SELECT * FROM proveedores WHERE deleted = 0 ORDER BY 
 <script src="../components/scripts/dashboard.js"></script> 
 <script src="../components/scripts/consulta.js"></script> 
 <script src="../../seguridad/controllers/validations/validations.js"></script> 
+<script src="../components/scripts/validations.js"></script> 
 <script>
   function editarProveedor(id,identificador,razonSocial,representante,direccion,ciudad,telefono1,telefono2,email1,email2){
     document.getElementById('idProveedorEdit').value = id;

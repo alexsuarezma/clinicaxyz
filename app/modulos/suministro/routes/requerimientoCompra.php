@@ -101,6 +101,14 @@ printLayout ();
                     <?php endif;?>
                     </select>
                 </div>
+                    <?php
+                        if($orden[0]->estado == "rechazado"):
+                    ?>
+                        <div class="form-group col-md-6">
+                            <label for="estadoPedido" class="text-danger">Comentarios de Orden Rechazada</label></br>
+                            <span><?php echo $orden[0]->comentario?></span>
+                        </div>
+                    <?php endif;?>
             </div>
             <div class="form-row" id="comentarioBox" style="display:none;">
                 <div class="col-md-6 mb3">
@@ -213,10 +221,21 @@ printLayout ();
             </table>
             <input type="hidden" name="total" value="<?php echo $total?>">
                 <?php if($orden[0]->estado!="pagado"):?>
-                    <div class='modal-footer mt-2'>
-                        <a id="cancelar" href="historialRequerimientos.php" type='button' class="btn btn-light border-secondary" data-dismiss='modal'>Cancelar</a>
-                        <button id='confirmacion' name='confirmacion' type='submit' class='btn btn-primary font-weight-bold' style="width:200px;">Enviar Respuesta</button>
-                    </div> 
+                    <?php
+                        if($orden[0]->estado == "rechazado"):
+                    ?>
+                        <div class="">
+                            <p style="font-size:15px;" class="text-break font-weight-bold badge-pill badge-danger mt-3">
+                                Esta Orden de compra fue rechazada.
+                            </p>
+                        </div>
+                    <?php else:?>
+                            <div class='modal-footer mt-2'>
+                                <a id="cancelar" href="historialRequerimientos.php" type='button' class="btn btn-light border-secondary" data-dismiss='modal'>Cancelar</a>
+                                <button id='confirmacion' name='confirmacion' type='submit' class='btn btn-primary font-weight-bold' style="width:200px;">Enviar Respuesta</button>
+                            </div> 
+                    <?php endif;?>
+                    
                 <?php endif;?>
 
         </form>

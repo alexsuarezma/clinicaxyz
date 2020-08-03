@@ -18,6 +18,7 @@ $asistencia = $conn->query("SELECT * FROM asistencia_empleado AS a, empleados AS
 if(isset($_POST['id'])){
     $name = $conn->query("SELECT nombres,apellidos,jornada,inicio,finalizacion FROM empleados AS e, cargo_empleados AS c, horario_empleado AS h, cargo_horario AS ch WHERE (e.id_cargo_horario_emp = ch.id_cargo_horario 
     AND ch.id_horario_ch = h.id_horario_empleado) AND id_empleados=".$_POST['id'])->fetchAll(PDO::FETCH_OBJ);
+
         if($_POST['rango']=='hoy' || $_POST['rango']=='ayer'){
             if($_POST['rango']=='ayer'){
                 $day=$day-1;
@@ -74,15 +75,14 @@ if(isset($_POST['id'])){
         }
 }
 
-
-if(isset($_POST['jornada'])){
-    $jornada='';
+if(isset($_POST['rango']) && !isset($_POST['id'])){
+    
         if($_POST['rango']=='hoy' || $_POST['rango']=='ayer'){
             if($_POST['rango']=='ayer'){
                 $day=$day-1;
             }
 
-        }elseif($_POST['rango']=='semana' || $_POST['rango']=='mes' || $_POST['rango']=="anio"){
+        }elseif($_POST['rango']=='semana' || $_POST['rango']=='mes' || $_POST['rango']=='Mes Anterior' || $_POST['rango']=="anio"){
             $semanas=semanasMes(date("m"),date("Y"));
             //  TENGO QUE SABER EN QUE DIA ESTOY PARA SABER EN QUE SEMANA ESTOY
             if($_POST['rango']=='semana'){
@@ -113,26 +113,29 @@ if(isset($_POST['jornada'])){
                 $fin=date('Y')."-12-31";
             }
 
-        }
-
-        if($_POST['jornada']!='Indistinto'){
-            $jornada = "AND h.jornada='".$_POST['jornada']."'";
-        }
-//EDIT!!!
-        if($_POST['estadoBusqueda']=="Indistinto"){
-            if($_POST['rango']=='hoy' || $_POST['rango']=='ayer'){
-            
-                $day=date('Y')."-".date('m')."-".$day;
-                $asistencia = $conn->query("SELECT * FROM empleados AS e, cargo_empleados AS c, cargo_horario AS ch, horario_empleado AS h, asistencia_empleado AS a  WHERE (a.id_empleado_asis = e.id_empleados AND e.id_cargo_horario_emp = ch.id_cargo_horario AND ch.id_horario_ch = h.id_horario_empleado) $jornada AND start = '$day' ORDER BY start ASC")->fetchAll(PDO::FETCH_OBJ);
-
-            }elseif($_POST['rango']=='semana' || $_POST['rango']=='mes' || $_POST['rango']=="anio"){
-                
-                $asistencia = $conn->query("SELECT * FROM empleados AS e, cargo_empleados AS c, cargo_horario AS ch, horario_empleado AS h, asistencia_empleado AS a  WHERE (a.id_empleado_asis = e.id_empleados AND e.id_cargo_horario_emp = ch.id_cargo_horario AND ch.id_horario_ch = h.id_horario_empleado) $jornada  AND (start BETWEEN '$inicio' AND '$fin') ORDER BY start ASC")->fetchAll(PDO::FETCH_OBJ);
+            if($_POST['rango']=='Mes Anterior'){
+                $esteDia=semanasMes(date("m"),date("Y"));
+                $inicio=date('Y')."-".(date('m')-1)."-".$esteDia[0]['inicio'];
+                $fin=date('Y')."-".date('m')."-".$esteDia[0]['inicio'];
             }
 
-        }else{
+        }
 
-            $asistencia = $conn->query("SELECT * FROM empleados AS e, cargo_empleados AS c, cargo_horario AS ch, horario_empleado AS h, asistencia_empleado AS a  WHERE (a.id_empleado_asis = e.id_empleados AND e.id_cargo_horario_emp = ch.id_cargo_horario AND ch.id_horario_ch = h.id_horario_empleado) $jornada AND (title='".$_POST['estadoBusqueda']."' AND start BETWEEN '$inicio' AND '$fin') ORDER BY start ASC")->fetchAll(PDO::FETCH_OBJ);
+
+        
+// //EDIT!!!
+        if($_POST['estadoBusqueda']=="Indistinto"){
+            if($_POST['rango']=='hoy' || $_POST['rango']=='ayer'){            
+                $day=date('Y')."-".date('m')."-".$day;
+                $asistencia = $conn->query("SELECT * FROM asistencia_empleado  AS a, empleados AS e WHERE a.id_empleado_asis = e.id_empleados AND start = '$day' ORDER BY start ASC")->fetchAll(PDO::FETCH_OBJ);
+            }elseif($_POST['rango']=='semana' || $_POST['rango']=='mes' || $_POST['rango']=='Mes Anterior' || $_POST['rango']=="anio"){
+                
+                $asistencia = $conn->query("SELECT * FROM asistencia_empleado AS a, empleados AS e WHERE a.id_empleado_asis = e.id_empleados AND start BETWEEN '$inicio' AND '$fin' ORDER BY start ASC")->fetchAll(PDO::FETCH_OBJ);
+            }
+        }
+        else{
+
+            $asistencia = $conn->query("SELECT * FROM asistencia_empleado AS a, empleados AS e WHERE a.id_empleado_asis = e.id_empleados AND (title='".$_POST['estadoBusqueda']."' AND start BETWEEN '$inicio' AND '$fin') ORDER BY start ASC")->fetchAll(PDO::FETCH_OBJ);
         }
 }
 
@@ -180,6 +183,7 @@ if(isset($_POST['jornada'])){
                 </button>
             </div>
       </div>
+      
     <div class="container mt-4 mb-5">
             <?php
                 if(isset($_POST['id'])):
@@ -197,19 +201,6 @@ if(isset($_POST['jornada'])){
                 if(isset($_POST['id'])):
             ?>
                 <input type="hidden" name="id" value="<?php echo $_POST['id']?>">
-            <?php
-                else:
-            ?>
-                <div class="form-group col-md-3">
-                    <label for="jornada">Jornada</label>
-                    <select class="custom-select" name="jornada" id="jornada" required>
-                        <option selected disabled value="">Seleccione...</option>
-                        <option value="Completa">Completa</option>
-                        <option value="Matutino">Matutino</option>
-                        <option value="Vespertino">Vespertino</option>
-                        <option value="Indistinto">Indistinto</option>
-                    </select>
-                </div>
             <?php
                 endif;
             ?>
@@ -259,6 +250,7 @@ if(isset($_POST['jornada'])){
                         <option value="ayer">Ayer</option>
                         <option value="semana">Esta Semana</option>
                         <option value="mes">Este Mes</option>
+                        <option value="Mes Anterior">Mes Anterior</option>
                         <option value="anio">Este Año</option>
                     </select>
                 </div>
@@ -290,77 +282,80 @@ if(isset($_POST['jornada'])){
                                     </tr>
                                 </thead>
                                 <tbody>
-                                <?php
-                                foreach ($asistencia as $Asistencias):
-                                ?>
-                                    <tr>
-                                        <th style="width:100px;"><?php echo $Asistencias->start?></th>
-                                        <td><?php echo $Asistencias->dia_semana?></td>
-                                        <td style="width:60px;"><?php echo $Asistencias->hora_entrada?></td>
-                                        <td style="width:60px;">
-                                            <?php 
-                                                if($Asistencias->hora_salida == null):
-                                                    echo '<span class="font-weight-bold text-danger">No Marco Salida</span>';
-                                                else:
-                                                    echo $Asistencias->hora_salida;
-                                                endif;
-                                            
-                                            ?>
-                                        </td>
-                                        <td><?php echo $Asistencias->jornada?></td>
-                                            <?php
-                                                if($Asistencias->title == "Puntual"):
-                                            ?>
-                                                <td><span class="badge badge-success" style="font-size:14px;"><?php echo $Asistencias->title?></span></td>
-                                            <?php
-                                                elseif($Asistencias->title == "Atrasado"):
-                                            ?>
-                                                <td><span class="badge badge-danger" style="font-size:14px;"><?php echo $Asistencias->title?></span></td>
-                                            <?php
-                                                endif;
-                                            ?>
-                                        <td><?php 
-                                            if($Asistencias->hora_salida != null):
-                                                $totalDia = "00:00:00";
-                                                $horaA= new DateTime($Asistencias->hora_entrada);
-                                                $horaB= new DateTime($Asistencias->hora_salida);
-                                                $diferent = $horaB->diff($horaA);
-                                                $totalDia = strtotime( $diferent->format('%H hours %i minutes %s seconds'),strtotime( $totalDia));
-                                                $totalDia   =  date ( 'H:i:s' , $totalDia );
-                                                echo $totalDia;
-                                            else:
-                                                echo '<span class="text-danger ml-4">?</span>';
-                                            endif;
-                                            ?></td>
-                                        <td><?php echo $Asistencias->atraso_asis?></td>
-                                        <td><?php echo $Asistencias->salida_antes_asis?></td>
-                                        <th style="width:200px;"><?php echo $Asistencias->nombres.' '.$Asistencias->apellidos;?></th>
-                                    </tr>
-                                <?php
-                                        
-                                            if(isset($_POST['id'])):
-                                       
-                                                    if($Asistencias->hora_salida != null){
-                                                        $horaEntrada = new DateTime($Asistencias->hora_entrada);//horaEntrada
-                                                        $horaSalida = new DateTime($Asistencias->hora_salida);//horaMarca
+                                        <?php
+                                        foreach ($asistencia as $Asistencias):
+                                        ?>
+                                            <tr>
+                                                <th style="width:100px;"><?php echo $Asistencias->start?></th>
+                                                <td><?php echo $Asistencias->dia_semana?></td>
+                                                <td style="width:60px;"><?php echo $Asistencias->hora_entrada?></td>
+                                                <td style="width:60px;">
+                                                    <?php 
+                                                        if($Asistencias->hora_salida == null):
+                                                            echo '<span class="font-weight-bold text-danger">No Marco Salida</span>';
+                                                        else:
+                                                            echo $Asistencias->hora_salida;
+                                                        endif;
+                                                    
+                                                    ?>
+                                                </td>
+                                                <td><?php echo $Asistencias->jornada?></td>
+                                                    <?php
+                                                        if($Asistencias->title == "Puntual"):
+                                                    ?>
+                                                        <td><span class="badge badge-success" style="font-size:14px;"><?php echo $Asistencias->title?></span></td>
+                                                    <?php
+                                                        elseif($Asistencias->title == "Atrasado"):
+                                                    ?>
+                                                        <td><span class="badge badge-danger" style="font-size:14px;"><?php echo $Asistencias->title?></span></td>
+                                                    <?php
+                                                        endif;
+                                                    ?>
+                                                <td>
+                                                    <?php 
+                                                        if($Asistencias->hora_salida != null):
+                                                            $totalDia = "00:00:00";
+                                                            $horaA= new DateTime($Asistencias->hora_entrada);
+                                                            $horaB= new DateTime($Asistencias->hora_salida);
+                                                            $diferent = $horaB->diff($horaA);
+                                                            $totalDia = strtotime( $diferent->format('%H hours %i minutes %s seconds'),strtotime( $totalDia));
+                                                            $totalDia   =  date ( 'H:i:s' , $totalDia );
+                                                            echo $totalDia;
+                                                        else:
+                                                            echo '<span class="text-danger ml-4">?</span>';
+                                                        endif;
+                                                    ?>
+                                                </td>
+                                                <td><?php echo $Asistencias->atraso_asis?></td>
+                                                <td><?php echo $Asistencias->salida_antes_asis?></td>
+                                                <th style="width:200px;"><?php echo $Asistencias->nombres.' '.$Asistencias->apellidos;?></th>
+                                            </tr>
 
-                                                        $diferencia = $horaSalida->diff($horaEntrada);
-                                                        
-                                                        $horasTrabajadas  = strtotime ( $diferencia->format('%H hours %i minutes %s seconds'), strtotime ( $horasTrabajadas ) ) ;  
-                                                        $horasTrabajadas   =  date ( 'H:i:s' , $horasTrabajadas );
-                                                    }
-                                                    //ACUMULACIÓN DE ATRASOS
-                                                    if($Asistencias->atraso_asis != null){
-                                                        $horaEntradaRetraso = new DateTime($Asistencias->atraso_asis);//horaEntrada
-                                                        $horaAux = new DateTime('00:00:00');//horaMarca
-                                                        $diferencia = $horaAux->diff($horaEntradaRetraso);
-                                                        $horasRetraso  = strtotime ( $diferencia->format('%H hours %i minutes %s seconds'), strtotime ( $horasRetraso ) ) ;  
-                                                        $horasRetraso   =  date ( 'Y-m-d H:i:s' , $horasRetraso );
-                                                    }
-                                            endif;
-                                            
-                                    endforeach;
-                                ?> 
+                                        <?php
+                                                
+                                                if(isset($_POST['id'])):
+                                        
+                                                        if($Asistencias->hora_salida != null){
+                                                            $horaEntrada = new DateTime($Asistencias->hora_entrada);//horaEntrada
+                                                            $horaSalida = new DateTime($Asistencias->hora_salida);//horaMarca
+
+                                                            $diferencia = $horaSalida->diff($horaEntrada);
+                                                            
+                                                            $horasTrabajadas  = strtotime ( $diferencia->format('%H hours %i minutes %s seconds'), strtotime ( $horasTrabajadas ) ) ;  
+                                                            $horasTrabajadas   =  date ( 'Y-m-d H:i:s' , $horasTrabajadas );
+                                                        }
+                                                        //ACUMULACIÓN DE ATRASOS
+                                                        if($Asistencias->atraso_asis != null){
+                                                            $horaEntradaRetraso = new DateTime($Asistencias->atraso_asis);//horaEntrada
+                                                            $horaAux = new DateTime('00:00:00');//horaMarca
+                                                            $diferencia = $horaAux->diff($horaEntradaRetraso);
+                                                            $horasRetraso  = strtotime ( $diferencia->format('%H hours %i minutes %s seconds'), strtotime ( $horasRetraso ) ) ;  
+                                                            $horasRetraso   =  date ( 'Y-m-d H:i:s' , $horasRetraso );
+                                                        }
+                                                endif;
+                                                
+                                            endforeach;
+                                        ?> 
                                 </tbody>
                             </table>
                             <?php
