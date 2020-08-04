@@ -3,8 +3,8 @@ require '../../../../database.php';
 session_start();
 $id = $_SESSION['cedula'];  
     $asistencia = $conn->query("SELECT * FROM asistencia_empleado WHERE id_empleado_asis = $id ORDER BY start ASC")->fetchAll(PDO::FETCH_OBJ);
-    $horasTrabajadas = "00:00:00";
-    $horasRetraso = "00:00:00";
+    $horasTrabajadas = "0000-00-00 00:00:00";
+    $horasRetraso = "0000-00-00 00:00:00";
     
 ?>
 <!DOCTYPE html>
@@ -38,35 +38,35 @@ $id = $_SESSION['cedula'];
         </div>
     </div>
       <?php
-          foreach ($asistencia as $Asistencias):
+        //   foreach ($asistencia as $Asistencias):
       
-              if($Asistencias->hora_salida != null){
-                  $horaEntrada = new DateTime($Asistencias->hora_entrada);//horaEntrada
-                  $horaSalida = new DateTime($Asistencias->hora_salida);//horaMarca
+        //       if($Asistencias->hora_salida != null){
+        //           $horaEntrada = new DateTime($Asistencias->hora_entrada);//horaEntrada
+        //           $horaSalida = new DateTime($Asistencias->hora_salida);//horaMarca
 
-                  $diferencia = $horaSalida->diff($horaEntrada);
+        //           $diferencia = $horaSalida->diff($horaEntrada);
                   
-                  $horasTrabajadas  = strtotime ( $diferencia->format('%H hours %i minutes %s seconds'), strtotime ( $horasTrabajadas ) ) ;  
-                  $horasTrabajadas   =  date ( 'H:i:s' , $horasTrabajadas );
-              }
-              //ACUMULACIÓN DE ATRASOS
-              if($Asistencias->atraso_asis != null){
-                  $horaEntradaRetraso = new DateTime($Asistencias->atraso_asis);//horaEntrada
-                  $horaAux = new DateTime('00:00:00');//horaMarca
-                  $diferencia = $horaAux->diff($horaEntradaRetraso);
+        //           $horasTrabajadas  = strtotime ( $diferencia->format('%H hours %i minutes %s seconds'), strtotime ( $horasTrabajadas ) ) ;  
+        //           $horasTrabajadas   =  date ( 'H:i:s' , $horasTrabajadas );
+        //       }
+        //       //ACUMULACIÓN DE ATRASOS
+        //       if($Asistencias->atraso_asis != null){
+        //           $horaEntradaRetraso = new DateTime($Asistencias->atraso_asis);//horaEntrada
+        //           $horaAux = new DateTime('00:00:00');//horaMarca
+        //           $diferencia = $horaAux->diff($horaEntradaRetraso);
 
-                  $horasRetraso = strtotime ( $diferencia->format('%H hours %i minutes %s seconds'), strtotime ( $horasRetraso ) ) ;  
-                  $horasRetraso = date ( 'H:i:s' , $horasRetraso );
-              }
+        //           $horasRetraso = strtotime ( $diferencia->format('%H hours %i minutes %s seconds'), strtotime ( $horasRetraso ) ) ;  
+        //           $horasRetraso = date ( 'H:i:s' , $horasRetraso );
+        //       }
               
-          endforeach;
+        //   endforeach;
       ?> 
       <!-- END PROJECT TABLE -->
-      <hr class="mt-1 mb-4 ml-5">
+      <!-- <hr class="mt-1 mb-4 ml-5">
       <div class="d-flex justify-content-end mr-5">
           <div class="mr-5"><span style="font-size:14px;" class="badge badge-danger">Horas de retraso: </span> <span ><?php echo $horasRetraso;?></span></div>
           <div class="mr-5"><span style="font-size:14px;" class="badge badge-success">Horas Trabajadas: </span> <span ><?php echo $horasTrabajadas;?></span></div>
-      </div>
+      </div> -->
     <script>
         $(document).ready(function(){
             //AGREGAR BOTONES Y POSICIONAMIENTO
@@ -120,6 +120,7 @@ $id = $_SESSION['cedula'];
                                 <option selected disabled value="">Seleccione...</option>
                                     <option value="Puntual">Puntual</option>
                                     <option value="Atrasado">Atrasado</option>
+                                    <option value="Falta">Falta</option>
                                     <option value="Indistinto">Indistinto</option>
                                 </select>
                             </div>
@@ -130,7 +131,8 @@ $id = $_SESSION['cedula'];
                                     <option value="hoy">Hoy</option>
                                     <option value="ayer">Ayer</option>
                                     <option value="semana">Esta Semana</option>
-                                    <option value="mes">Esta Mes</option>
+                                    <option value="mes">Este Mes</option>
+                                    <option value="Mes Anterior">Mes Anterior</option>
                                     <option value="anio">Este Año</option>
                                 </select>
                             </div>

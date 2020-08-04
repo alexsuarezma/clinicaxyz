@@ -24,7 +24,7 @@ if(isset($_POST['id'])){
                 $day=$day-1;
             }
 
-        }elseif($_POST['rango']=='semana' || $_POST['rango']=='mes' || $_POST['rango']=="anio"){
+        }elseif($_POST['rango']=='semana' || $_POST['rango']=='mes' || $_POST['rango']=='Mes Anterior' || $_POST['rango']=="anio"){
             $semanas=semanasMes(date("m"),date("Y"));
             //  TENGO QUE SABER EN QUE DIA ESTOY PARA SABER EN QUE SEMANA ESTOY
             if($_POST['rango']=='semana'){
@@ -55,6 +55,12 @@ if(isset($_POST['id'])){
                 $fin=date('Y')."-12-31";
             }
 
+            if($_POST['rango']=='Mes Anterior'){
+                $esteDia=semanasMes(date("m"),date("Y"));
+                $inicio=date('Y')."-".(date('m')-1)."-".$esteDia[0]['inicio'];
+                $fin=date('Y')."-".date('m')."-".$esteDia[0]['inicio'];
+            }
+
         }
 
         if($_POST['estadoBusqueda']=="Indistinto"){
@@ -63,7 +69,7 @@ if(isset($_POST['id'])){
                 $day=date('Y')."-".date('m')."-".$day;
                 $asistencia = $conn->query("SELECT * FROM asistencia_empleado AS a, empleados AS e WHERE a.id_empleado_asis = e.id_empleados AND id_empleado_asis=".$_POST['id']." AND start = '$day' ORDER BY start ASC")->fetchAll(PDO::FETCH_OBJ);
 
-            }elseif($_POST['rango']=='semana' || $_POST['rango']=='mes' || $_POST['rango']=="anio"){
+            }elseif($_POST['rango']=='semana' || $_POST['rango']=='mes' || $_POST['rango']=='Mes Anterior' || $_POST['rango']=="anio"){
                 
 
                 $asistencia = $conn->query("SELECT * FROM asistencia_empleado AS a, empleados AS e WHERE a.id_empleado_asis = e.id_empleados AND id_empleado_asis=".$_POST['id']." AND start BETWEEN '$inicio' AND '$fin' ORDER BY start ASC")->fetchAll(PDO::FETCH_OBJ);
@@ -222,6 +228,7 @@ if(isset($_POST['rango']) && !isset($_POST['id'])){
 
                         <option value="Puntual">Puntual</option>
                         <option value="Atrasado">Atrasado</option>
+                        <option value="Falta">Falta</option>
                         <option value="Indistinto">Indistinto</option>
                     </select>
                 </div>
@@ -299,13 +306,21 @@ if(isset($_POST['rango']) && !isset($_POST['id'])){
                                                     
                                                     ?>
                                                 </td>
-                                                <td><?php echo $Asistencias->jornada?></td>
+                                                <?php if($Asistencias->jornada == null):?>
+                                                        <td>-</td>
+                                                <?php else:?>
+                                                        <td><?php echo $Asistencias->jornada?></td>
+                                                <?php endif;?>
                                                     <?php
                                                         if($Asistencias->title == "Puntual"):
                                                     ?>
                                                         <td><span class="badge badge-success" style="font-size:14px;"><?php echo $Asistencias->title?></span></td>
                                                     <?php
                                                         elseif($Asistencias->title == "Atrasado"):
+                                                    ?>
+                                                        <td><span class="badge badge-danger" style="font-size:14px;"><?php echo $Asistencias->title?></span></td>
+                                                    <?php
+                                                        elseif($Asistencias->title == "Falta"):
                                                     ?>
                                                         <td><span class="badge badge-danger" style="font-size:14px;"><?php echo $Asistencias->title?></span></td>
                                                     <?php

@@ -1,7 +1,7 @@
 <?php
 function printLayout ($img,$route,$homePage,$inventario,$products,$nuevoProducts,$historialProducts,$ordeneCompra,$nuevaOrdenCompra,
 $historialOrdenCompra,$provee,$logout,$ajuste,$rrhh,$suministro,$contabilidad,$ctas_medicas,$paciente,$seguridad,$active){
-    
+
     $routes[8]= [];
   
 
@@ -158,10 +158,11 @@ $historialOrdenCompra,$provee,$logout,$ajuste,$rrhh,$suministro,$contabilidad,$c
         <li class='nav-item ml-3'>
         <a class='nav-link $routes[7]' href=$historialOrdenCompra>
         <span data-feather='file-text'></span>
-            Historial Orden de Compra
-        </a>
-        </li>
-      </div>";
+          Historial Orden de Compra "; 
+          
+
+        echo "</a>
+        </li></div>";
       // echo "<li class='nav-item'>";
       // echo "<a class='nav-link $routes[5]' href=$historialPersonal>";
       // echo "<span data-feather='file-text'></span>";

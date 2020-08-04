@@ -52,7 +52,6 @@ printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventa
                     <th>Codigo De Barra</th>
                     <th>Producto</th>
                     <th>En Stock</th>
-                    <th>Precio Unitario PVP</th>
                     <th>Precio Unitario</th>
                     <th>Categoria</th>
                     <th></th>
@@ -66,10 +65,9 @@ printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventa
                     <th><?php echo $Inventarios->codigo_barra_pr?></th>
                     <td><?php echo $Inventarios->nombre_pr?></td>
                     <td><?php echo $Inventarios->stock?></td>
-                    <td><?php echo $Inventarios->precio_unitario_pvp?></td>
                     <td><?php echo $Inventarios->precio_unitario_pr?></td>
                     <td>
-                    <span class="mr-1"><a onclick="informacion('<?php echo $Inventarios->idproducto?>','<?php echo $Inventarios->codigo_barra_pr?>','<?php echo $Inventarios->nombre_pr?>','<?php echo $Inventarios->descripcion_pr?>','<?php echo $Inventarios->precio_unitario_pr?>','<?php echo $Inventarios->fecha_elaboracion_pr?>','<?php echo $Inventarios->fecha_caducidad_pr?>','<?php echo $Inventarios->idcategoria?>','<?php echo $Inventarios->img_pr?>','<?php echo $Inventarios->precio_unitario_pvp?>')" data-toggle="modal" href="#informationProducto"><i class="fas fa-info-circle" style="font-size:20px;" title="Visualizar información del producto"></i></a></span>
+                    <span class="mr-1"><a onclick="informacion('<?php echo $Inventarios->idproducto?>','<?php echo $Inventarios->codigo_barra_pr?>','<?php echo $Inventarios->nombre_pr?>','<?php echo $Inventarios->descripcion_pr?>','<?php echo $Inventarios->precio_unitario_pr?>','<?php echo $Inventarios->fecha_elaboracion_pr?>','<?php echo $Inventarios->fecha_caducidad_pr?>','<?php echo $Inventarios->idcategoria?>','<?php echo $Inventarios->img_pr?>')" data-toggle="modal" href="#informationProducto"><i class="fas fa-info-circle" style="font-size:20px;" title="Visualizar información del producto"></i></a></span>
                     </td>
                 </tr>
             <?php 
@@ -93,7 +91,7 @@ printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventa
                 <div class='modal-body'>               
                     <div class="row">
                       <div class="col">
-                          <form name="formEditar" method="POST" action="../controllers/updatePvp.php" class="ml-2 mr-2">
+                          <!-- <form name="formEditar" method="POST" action="../controllers/updatePvp.php" class="ml-2 mr-2">
                               <label class="font-weight-bold text-danger mt-2">Si deseas, solo puedes editar el precio de venta al público PVP.</label>
                               <hr class="mt-1 mr-5">
                               <ul class="nav nav-pills p-3 bg-white rounded-pill align-items-center">
@@ -113,8 +111,8 @@ printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventa
                               <div class='modal-footer mt-2'>
                                   <button id='confirmacion-update' name='confirmacion-update' type='submit' class='btn btn-primary font-weight-bold' style="width:200px;">Guardar Cambios</button>
                               </div> 
-                          </form>
-                          <hr class="mt-1 mr-5">
+                          </form> -->
+                          <hr class="mt-5 mr-5">
                           <form class="ml-2 mr-2">
                               <img src="" id="imgProducto" alt="194x228" class="rounded mx-auto d-block"> 
                               <hr class="mt-1 mb-4 mr-5">
@@ -173,37 +171,16 @@ printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventa
             </div>
         </div>
   </div>
-
-      <div class='modal fade' name='modal-registrar' id='modal-registrar' data-backdrop='static' data-keyboard='false' tabindex='-1' role='dialog' aria-labelledby='staticBackdropLabe' aria-hidden='true'>
-        <div class='modal-dialog'>
-            <div class='modal-content'>
-                <div class='modal-header'>
-                    <h5 class='modal-title' id='staticBackdropLabel'>Registrar Producto</h5>
-                    <button type='button' id='close-update' class='close' data-dismiss='modal' aria-label='Close'>
-                    <span aria-hidden='true'>&times;</span>
-                    </button>
-                </div>
-                <div class='modal-body'>
-                    ¡Hey!. ¿Estas seguro de eliminar este articulo de tu ORDEN DE COMPRA?.
-                </div>
-                <div class='modal-footer mt-2'>
-                    <button id="btn-cancelar" type='button' class="btn btn-light border-secondary" data-dismiss='modal'>Cancelar</button>
-                    <button id='btn-registrar' class='btn btn-primary font-weight-bold' style="width:200px;">Si, de acuerdo</button>
-                </div> 
-            </div>
-        </div>
-    </div>
 </div>
 <script src="../components/scripts/jquery.min.js"></script> 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 <script src="../components/scripts/dashboard.js"></script> 
-<script src="../components/scripts/consulta.js"></script>    
-<script src="../../recursoshumanos/controllers/validation/validation.js"></script>    
+<script src="../components/scripts/consulta.js"></script>      
 <script>
   
-  function informacion(id,codigoBarra,nombre,descripcion,precioUnitario,fechaElaboracion,fechaCaducidad,idCategoria,img,precioPvp){
-    document.getElementById('idproductoInv').value = id;
+  function informacion(id,codigoBarra,nombre,descripcion,precioUnitario,fechaElaboracion,fechaCaducidad,idCategoria,img){
+    // document.getElementById('idproductoInv').value = id;
     document.getElementById('codigoBarra').value = codigoBarra;
     document.getElementById('nombreProducto').value = nombre;
     document.getElementById('descripcion').value = descripcion;
@@ -212,41 +189,9 @@ printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventa
     document.getElementById('fechaCaducidad').value = fechaCaducidad;
     document.getElementById('categoria').value = idCategoria;
     document.getElementById('imgProducto').src = img;
-    document.getElementById('precioPvp').value = precioPvp;
     inventarioProv(id);
     inventarioOrdenes(id);
-    frm = document.forms['formEditar'];
-    for(i=0; ele=frm.elements[i]; i++){
-        ele.disabled=true;
-    }
-    document.getElementById('off').style.display="block";    
-    document.getElementById('on').style.display="none";  
   }
-
-$(document).ready(function(){
- var edit = 0;
-      $('#btn-editar').click(function(){
-            edit++;
-            if(edit==1){
-                frm = document.forms['formEditar'];
-                for(i=0; ele=frm.elements[i]; i++){
-                    ele.disabled=false;
-                }
-                document.getElementById('on').style.display="block";    
-                document.getElementById('off').style.display="none";    
-            }
-            if(edit==2){
-                frm = document.forms['formEditar'];
-                for(i=0; ele=frm.elements[i]; i++){
-                    ele.disabled=true;
-                }
-                edit=0;
-                document.getElementById('off').style.display="block";    
-                document.getElementById('on').style.display="none";    
-            }
-        });  
-  });
-
 </script>
       </body>
 </html>

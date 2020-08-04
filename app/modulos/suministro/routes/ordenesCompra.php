@@ -49,14 +49,17 @@ printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventa
     <form id="formRegistrar" action="../controllers/registrarInventario.php" method="POST" class="ml-2 mr-2">
             <div class="">
             <?php
-                if($orden[0]->estado == "registrado"):
+                if($orden[0]->estado == "registrado" || $orden[0]->registrado == 1):
             ?>
                 <p style="font-size:15px;" class="text-break font-weight-bold badge-pill badge-success">
                 <i class="far fa-check-circle mr-5" style="font-size:28px;"></i>
                     ¡¡Esta Orden Ya fue Registrada en el Inventario!!
                 </p>
             <?php
-                elseif($orden[0]->estado == "espera"):
+                endif;
+            ?>
+            <?php
+                if($orden[0]->estado == "espera"):
             ?>
                 <p style="font-size:15px;" class="text-break font-weight-bold badge-pill badge-warning">
                 <i class="fas fa-exclamation-triangle mr-5" style="font-size:28px;"></i>
@@ -86,6 +89,16 @@ printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventa
             <?php
                 endif;
             ?>
+            </div>
+            <div>
+                <?php
+                    if(($orden[0]->estado == "aceptado" || $orden[0]->estado == "pagado") && $orden[0]->registrado == 0):
+                ?>
+                    <p style="font-size:15px;" class="text-break font-weight-bold badge-pill badge-warning">
+                    <i class="fas fa-exclamation-triangle mr-5" style="font-size:28px;"></i>
+                        ¡¡Esta Orden Ya fue Aceptada completa el proceso registrandola en el Inventario!!
+                    </p>
+                <?php endif;?>
             </div>
             <label class="font-weight-bold">INFORMACION SOLICITUD PARA ORDEN DE COMPRA</label>
             <hr class="mt-1 mb-4 mr-5">
@@ -216,7 +229,7 @@ printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventa
                 </tbody>
             </table>
             <?php
-                if($orden[0]->estado != "registrado" ):
+                if($orden[0]->estado != "registrado" && $orden[0]->registrado != 1):
             ?>
                 <div class='modal-footer mt-2'>
                     <a id="cancelar" href="historialOrdenCompra.php" type='button' class="btn btn-light border-secondary" data-dismiss='modal'>Cancelar</a>

@@ -32,10 +32,9 @@ foreach ( $orden as $Productos ) {
         }
                  
     }else{
-        $sql = "INSERT INTO inventario_productos (stock,precio_unitario_pvp,idproducto_inventario) VALUES (:stock,:precio_unitario_pvp,:idproducto_inventario)";                    
+        $sql = "INSERT INTO inventario_productos (stock,idproducto_inventario) VALUES (:stock,:idproducto_inventario)";                    
         $stmt = $conn->prepare($sql);                              
         $stmt->bindParam(':stock', $Productos->cantidad);
-        $stmt->bindParam(':precio_unitario_pvp', $Productos->precio_unitario_pr);
         $stmt->bindParam(':idproducto_inventario', $Productos->idproducto);
         $stmt->execute();
         
