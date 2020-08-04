@@ -1,4 +1,29 @@
 <!doctype html>
+<?php
+include_once 'config.inc.php';
+if (isset($_POST['subir'])) {
+    $nombre = $_FILES['archivo']['name'];
+    $tipo = $_FILES['archivo']['type'];
+    $tamanio = $_FILES['archivo']['size'];
+    $ruta = $_FILES['archivo']['tmp_name'];
+    $destino = "archivos/" . $nombre;
+    if ($nombre != "") {
+        if (copy($ruta, $destino)) {
+          $cedula= $_POST['cedula'];
+            $titulo= $_POST['titulo'];
+            $descri= $_POST['descripcion'];
+            $db=new Conect_MySql();
+            $sql = "INSERT INTO historial_importado(cedula,titulo,descripcion,tamanio,tipo,nombre_archivo) VALUES('$cedula','$titulo','$descri','$tamanio','$tipo','$nombre')";
+            $query = $db->execute($sql);
+            if($query){
+                echo "Se guardo correctamente";
+            }
+        } else {
+            echo "Error";
+        }
+    }
+}
+?>
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -133,22 +158,29 @@
       </div> 
       
       <H2>Subida de archivos</H2>
-      <form action="upload.php" method="POST" enctype="multipart/form-data">
-      <label for="ced">Cedula del paciente</label>
-       <input type="text" name="ced"><br>
-       
-        <label for="arc">Archivo </label>
-        <input type="file" name="arc" >
-        <br>
-
-      
-        
-        <input type="submit" name="Registrar" value="Subir">
-
-        <button type="button"  name="cancelar"><a href="https://clinicaxyz.herokuapp.com/">Cancelar</a></button>
-
-
-    </form>
+      <h4>Subir PDF</h4>
+            <form method="post" action="" enctype="multipart/form-data">
+                <table>
+                <tr>
+                        <td><label>Cedula</label></td>
+                        <td><input type="text" name="cedula"></td>
+                    </tr>
+                    <tr>
+                        <td><label>Nombre</label></td>
+                        <td><input type="text" name="titulo"></td>
+                    </tr>
+                    <tr>
+                        <td><label>Descripcion</label></td>
+                        <td><textarea name="descripcion"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><input type="file" name="archivo"></td>
+                    <tr>
+                        <td><input type="submit" value="subir" name="subir"></td>
+                        <td><a href="lista.php">lista</a></td>
+                    </tr>
+                </table>
+            </form>
       </div>
       </div>
     </main>

@@ -22,6 +22,7 @@ $conad = $_POST["carnet"];
 $discapa = $_POST["discapsel"];
 $grado = $_POST["por"];
 //
+$conectar = mysqli_connect("us-cdbr-east-05.cleardb.net","b7550b2dcd9c38","a16e5057","heroku_fe7e002859673b2");
 
 $registro="INSERT INTO pacientes(idpacientes, ape_paterno, ape_mat, nombres, ocupación, sexo, f_nacimiento, provincia, ciudad, zona, direccion, tlno_particular, tlno_personal, correo) VALUES ('$ced','$apep','$apem','$nombre','$ocup','$sexo','$fech','$pais','$prov','$ciudad','$direc','$telefono','$celular','$email')";
 $regiscon="INSERT INTO conadis(paciente, carnet, discapacidad, grado) VALUES ('$ced','$conad','$discapa','$grado')";
