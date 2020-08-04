@@ -1,10 +1,10 @@
 <?php 
 
 class Conect_MySql {   
-     var $obj = array ( "dbname"	=>	"test",
-                       "dbuser"		=>	"root"		,
-                       "dbpwd"		=>	""		,
-                       "dbhost"		=>	"localhost"	);
+     var $obj = array ( "dbname"	=>	"heroku_fe7e002859673b2",
+                       "dbuser"		=>	"b7550b2dcd9c38"		,
+                       "dbpwd"		=>	"a16e5057"		,
+                       "dbhost"		=>	"us-cdbr-east-05.cleardb.net"	);
 
 
      var $q_id	="";
