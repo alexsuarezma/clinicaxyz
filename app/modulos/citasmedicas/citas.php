@@ -11,13 +11,13 @@ include "conexion.php";
 
 $fecha_actual= date("Y-m-d");
 
-$hora_actual=date("H-i-s");
+$hora_actual=date("H:i:s");
 
 function tiempo_session()
 {
-	include "conexion.php";
-	
-	 if($hora_actual>$hora_cita) {
+  include "conexion.php";
+  
+   if($hora_actual>$hora_cita) {
 
         //Tiempo en segundos para dar vida a la sesión.
         $inactivo = 1200;//20min en este caso.
@@ -41,7 +41,7 @@ function tiempo_session()
     }
     $_SESSION['tiempo'] = time();
 
-	
+  
 }
 
 
@@ -49,7 +49,7 @@ $cedula_d=$_SESSION['cedula_d'];
 ?>
 <html>
 <head>
-	<title>Citas agendadas</title>
+  <title>Citas agendadas</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
@@ -62,7 +62,7 @@ $cedula_d=$_SESSION['cedula_d'];
   <!-- copia este!!! -->   <link href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" rel="stylesheet">
 
     <!-- Bootstrap core CSS -->
-<link href="../assets/dist/css/bootstrap.css" rel="stylesheet">
+
 <LINK REL=StyleSheet HREF="formulario.css" TYPE="text/css" MEDIA=screen>
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 </head>
@@ -212,7 +212,7 @@ else
 <br><br>
 <h2 class="" style="text-align:center;">Citas agendadas</h2>
 <center>
-	<table class="table table-striped" style="position: relative; top: 80px; width: 90%">
+  <table class="table table-striped" style="position: relative; top: 80px; width: 90%">
   <thead>
     <tr>
       <th scope="col">#</th>
@@ -226,7 +226,10 @@ else
       <th scope="col">Estado</th>
       <th scope="col">Editar</th>
       <th scope="col">Cancelar</th>
-       <!--<th scope="col">Eliminar</th>  -->
+      <th scope="col">Generar</th>
+      <th scope="col">Generar</th>
+
+         <!--<th scope="col">Eliminar</th>  -->
     </tr>
   </thead>
   <tbody>
@@ -240,10 +243,10 @@ else
 
 $result=mysqli_query($conexion, $sentencia);
      while ($row = mysqli_fetch_array($result)){   
-     	?>
-	  <th><?php echo $row['idcitas'] ?> </th>
+      ?>
+    <th><?php echo $row['idcitas'] ?> </th>
     <th><?php echo $row['nombres'] ?> </th>
-  	<th><?php echo utf8_decode($row['ape_paterno'])." ".utf8_decode($row['ape_mat']) ?> </th>
+    <th><?php echo utf8_decode($row['ape_paterno'])." ".utf8_decode($row['ape_mat']) ?> </th>
     <th><?php echo $row['idpacientes'] ?> </th>
     <th><?php echo $row['fecha'] ?> </th>
     <th><?php echo $row['id_hora'] ?> </th>
@@ -251,19 +254,21 @@ $result=mysqli_query($conexion, $sentencia);
     <th><?php echo utf8_decode($row['nombreD'])." ".utf8_decode($row['apellidos']); ?> </th> 
     <th><?php echo $row['estado'] ?> </th>
 
+
+
     <?php 
     $id_paciente=$row['id_paciente'] ?? '';
     $id_cita=$row['idcitas'];
 
     
-    if ($hora_actual>$row['hora']) {
-    	
-    	$sql_cambio="UPDATE citas
+    if ($hora_actual>$row['id_hora']) {
+      
+      $sql_cambio="UPDATE citas
 SET  estado='No realizado'
 WHERe idcitas=$id_cita and estado='Pendiente'";
 
 mysqli_query($conexion,$sql_cambio);
- }elseif ($hora_actual<$row['hora']) {
+ }elseif ($hora_actual<$row['id_hora']) {
    $sql_cambio="UPDATE citas
 SET  estado='Pendiente'
 WHERe idcitas=$id_cita and estado='No realizado'";
@@ -272,7 +277,7 @@ mysqli_query($conexion,$sql_cambio);
  }
     
     if ($row['estado']=='Pendiente') {
-    	# code...
+      # code...
     
     ?>
 
@@ -280,21 +285,32 @@ mysqli_query($conexion,$sql_cambio);
     <th> <a href="cambiar_estado.php?paciente=<?php echo $id_cita ?> " > <img src="verificardor.jpg" style="width: 30px; height: 20px; border-radius:50px;"></a> </th>
      <th><button type="button" name="" id="" class="btn btn-danger"  onClick="return preguntar(<?php echo $row['idcitas']; ?>)"> Cancelar</button></th>
 
-<?php }elseif ($row['estado']=='Realizado') {
-	# code...
-	?>
+      <th> <?php echo "<button type='button' class='btn btn-primary openBtn' data-toggle='modal' onclick='enviar_dato(".$row['idcitas'].")'  data-target='.bd-example-modal-lg'>Certificado</button>" ?> </th>
+      <th> <a href="reportes/imprimir_receta.php?id_cita=<?php echo $id_cita ?>" target='_Blank'> <button class="btn btn-primary">  Receta </button></a> </th>
 
-	<th> <a href="cambiar_estado.php?paciente=<?php echo $id_cita ?> " > <img src="anular.jpg" style="width: 30px; height: 20px; border-radius:50px;"></a> </th>
+<?php }elseif ($row['estado']=='Realizado') {
+  # code...
+  ?>
+
+  <th> <a href="cambiar_estado.php?paciente=<?php echo $id_cita ?> " > <img src="anular.jpg" style="width: 30px; height: 20px; border-radius:50px;"></a> </th>
     <th><button type="button" name="" id="" class="btn btn-danger"  onClick="return preguntar(<?php echo $row['idcitas']; ?>)"> Cancelar</button></th>
+     <th> <?php echo "<button type='button' class='btn btn-primary openBtn' data-toggle='modal' onclick='enviar_dato(".$row['idcitas'].")'  data-target='.bd-example-modal-lg' disabled='' >Certificado</button>" ?> </th>
+<th> <a href="reportes/imprimir_receta.php?id_cita=<?php echo $id_cita ?>"> <button class="btn btn-primary" disabled="">  Receta </button></a> </th>
+
+
 <?php }elseif ($row['estado']=='No realizado') { ?>
-	
-	<th> <a href onclick="alert('Cita no realizada');"> <img src="no_realizado.png" style="width: 30px; height: 20px; border-radius:50px;"></a> </th>
+  
+  <th> <a href onclick="alert('Cita no realizada');"> <img src="no_realizado.png" style="width: 30px; height: 20px; border-radius:50px;"></a> </th>
    <th><button type="button" name="" id="" class="btn btn-danger"  onClick="return preguntar(<?php echo $row['idcitas']; ?>)"> Cancelar</button></th>
-<?php	}elseif ($row['estado']=='Cancelado' ) { ?>
+    <th> <?php echo "<button type='button' class='btn btn-primary openBtn' data-toggle='modal' onclick='enviar_dato(".$row['idcitas'].")'  data-target='.bd-example-modal-lg' disabled='' >Certificado</button>" ?> </th>
+   <th> <a href="reportes/imprimir_receta.php?id_cita=<?php echo $id_cita ?>"> <button class="btn btn-primary" disabled="">  Receta </button></a> </th>
+<?php }elseif ($row['estado']=='Cancelado' ) { ?>
   
   <th> Cita cancelada</th>
-	<!--<th> <a href=""> <img src="eliminar.png" style="width: 30px; height: 20px; border-radius: 50px;"></a> </th> -->  
+  <!--<th> <a href=""> <img src="eliminar.png" style="width: 30px; height: 20px; border-radius: 50px;"></a> </th> -->  
   <th>Cancelada</th>
+    <th> <?php echo "<button type='button' class='btn btn-primary openBtn' data-toggle='modal' onclick='enviar_dato(".$row['idcitas'].")'  data-target='.bd-example-modal-lg' disabled='' >Certificado</button>" ?> </th>
+   <th> <a href="reportes/imprimir_receta.php?id_cita=<?php echo $id_cita ?>" > <button class="btn btn-primary" disabled="">  Receta </button></a> </th>
 <?php } ?>
   </tr>
 <?php }   ?>   
@@ -303,8 +319,31 @@ mysqli_query($conexion,$sql_cambio);
   </tbody>
 </table>
 </center>
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <center><h4>Detalles</h4></center>
+
+        <button tyle="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><br>
+        
+        </div>
+        <div class="modal-body">
+             <div id="panel_selector"></div>
+        </div>
+    </div>
+  </div>
+</div>
+
+<!--<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+-->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+
+<script type="text/javascript" src="js/funciones_ad.js">     </script>
+
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+
+
 </body>
 </html>

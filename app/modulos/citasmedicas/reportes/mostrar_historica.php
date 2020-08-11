@@ -180,9 +180,6 @@ join ciudades as ciu on  pa.ciudad=ciu.idciudades where pa.idpacientes='$id_paci
 
 
 	$pdf->Cell(0,0,utf8_decode('Diagnóstico'),0,0,'C');
-
-	$pdf->Ln(10);
-
 	if ($row['observaciones'] !=='') {
 		$pdf->SetFont('Arial','',12);
 		$pdf->write(5,utf8_decode($row['observaciones']));

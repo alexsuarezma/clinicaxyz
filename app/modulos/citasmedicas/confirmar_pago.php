@@ -230,7 +230,7 @@ if (isset($_POST['guardar'])) {
 		<input type="hidden" name="fecha" value="<?php echo $fecha; ?>" id="fecha" class="form-control" placeholder="ingrese tarjeta">
 		<input type="hidden" name="especialidad" value="<?php echo $especialidad; ?>" id="especialidad" class="form-control" placeholder="ingrese tarjeta">
 
-		<label>Numero de tarjeta:</label> 
+		<label>Número de tarjeta:</label> 
 		<input type="text"   name="numero_tarjeta" id="numero_tarjeta" maxlength="16" class="form-control" placeholder="ingrese tarjeta" required="" onkeyup="this.value=NumText(this.value)" >
 		<br>
 		<label>Tipo de tarjeta:</label>
@@ -240,7 +240,7 @@ if (isset($_POST['guardar'])) {
 			<option>Débito</option>
 		</select>
 		<br>
-		<label>Código de seguridad</label>
+		<label>Código de seguridad:</label>
 		<input type="password" name="contrasenia" placeholder="Ingrese..." class="form-control" required="" >	
 
 
@@ -259,8 +259,8 @@ if (isset($_POST['guardar'])) {
 	
 
 <div style="position: relative; left: 20px;">
-<input type="submit" value="confirmar" class="btn btn-success" name="guardar" id="guardar"  >
- <input type="button" class="btn btn-danger" onclick="window.location.href='index.php' "  name="volver atrás" value="volver atrás">
+<input type="submit" value="Confirmar" class="btn btn-success" name="guardar" id="guardar"  >
+<input type="button" class="btn btn-danger" onclick="window.location.href='index.php' "  name="volver atrás" value="Volver atrás">
 </div>
 
 </div>
