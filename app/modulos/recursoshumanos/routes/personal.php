@@ -58,12 +58,58 @@ verificarAcceso("../../../../", "modulo_rrhh");
     <input type="text" name="busqueda" id="busqueda" placeholder="Busca por cedula, nombres, apellidos, cargo, personal, area..." title="Type in a name">
     </div>
         <div class="container page-container">
+        <button type="button" class="btn btn-light mb-4" data-toggle="modal" data-target="#modal-reporte">Generar reporte de empleados</button>
             <div id="datos" class="row gutters">            
             </div>
         </div>
      </main>
    </div>
   </div>
+
+  <div class='modal fade' name='modal-reporte' id='modal-reporte' data-backdrop='static' data-keyboard='false' tabindex='-1' role='dialog' aria-labelledby='staticBackdropLabe' aria-hidden='true'>
+        <div class='modal-dialog'>
+            <div class='modal-content'>
+                <div class='modal-header'>
+                    <h5 class='modal-title' id='staticBackdropLabel'>REPORTE DE EMPLEADOS</h5>
+                    </button>
+                </div>
+                <div class='modal-body'>
+                    <form method="POST" action="http://localhost:8000/reportes.php" class="ml-2 mr-2">
+                        <label class="font-weight-bold">Seleccióna el tipo de reporte que deseas</label>
+                        <input type="hidden" name="id" value="<?php echo $_SESSION['user_id']?>" required>
+                        <hr class="mt-1 mb-4 mr-5">
+                        <div class="form-row">
+                            <div class="form-group col-md-12">
+                                <label for="estadoBusqueda">Reporte</label>
+                                <select class="custom-select" name="estadoBusqueda" id="estadoBusqueda" required>
+                                <option selected disabled value="">Seleccione...</option>
+                                    <option value="1">Reporte Todos los empleados</option>
+                                    <option value="2">Reporte de Empleados por Área</option>
+                                    <option value="3">Reporte de Empleados por Cargo</option>
+                                </select>
+                            </div>
+                            <!-- <div class="form-group col-md-6">
+                                <label for="rango">Escoge el rango</label>
+                                <select class="custom-select" name="rango" id="rango" required>
+                                <option selected disabled value="">Seleccione...</option>
+                                    <option value="hoy">Hoy</option>
+                                    <option value="ayer">Ayer</option>
+                                    <option value="semana">Esta Semana</option>
+                                    <option value="mes">Este Mes</option>
+                                    <option value="Mes Anterior">Mes Anterior</option>
+                                    <option value="anio">Este Año</option>
+                                </select>
+                            </div> -->
+                        </div>
+                        <div class='modal-footer mt-2'>
+                            <button id="cancelar" type='button' class="btn btn-light border-secondary" data-dismiss='modal'>Cancelar</button>
+                            <button id='enviar' name='enviar' type='submit' class='btn btn-primary font-weight-bold' style="width:200px;">Generar</button>
+                        </div> 
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>  
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>

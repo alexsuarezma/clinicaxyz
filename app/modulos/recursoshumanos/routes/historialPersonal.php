@@ -78,7 +78,7 @@
                         <span>
                         <a href="../components/viewEmpleado.php?id=<?php echo $empleados->id_empleados?>" ><i class="fas fa-external-link-alt" style="color:blue;" title="Ver Informacion"></i></a>
                         <?php if(verificarAccion($conn, "modulo_rrhh", "borrado_logico") == true):?>
-                          <a name="delete-fisic" id="delete-fisic" href="#" ><i class="fas fa-trash-alt" style="color:red;" title="Eliminar Registro Fisicamente"></i></a>
+                          <!-- <a name="delete-fisic" id="delete-fisic" href="#" ><i class="fas fa-trash-alt" style="color:red;" title="Eliminar Registro Fisicamente"></i></a> -->
                         <?php endif;?>
                         </span>
                         </li>
