@@ -76,13 +76,14 @@
             <a class="nav-link" href="ing-egre.php">
               <span data-feather="shopping-cart"></span>
               
-              ingreso y Egresos de la Clinica
+              Ingreso de la Clinica
             </a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="egre.php">
               <span data-feather="users"></span>
-              Customers
+              Egresos de la Clinica
+             
             </a>
           </li>
           <li class="nav-item">
@@ -94,7 +95,7 @@
           <li class="nav-item">
             <a class="nav-link" href="reporte.php" target="_blank">
               <span data-feather="layers"></span>
-              Reporte de Cuentas
+              Reporte de las Cuentas
             </a>
           </li>
         </ul>
