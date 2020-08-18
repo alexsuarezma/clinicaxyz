@@ -91,13 +91,13 @@ $conn=null;
             <a class="nav-link active" href="ing-egre.php" >
               <span data-feather="shopping-cart"></span>
               
-              ingreso y Egresos de la Clinica
+              Ingresos de la Clinica
             </a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#">
               <span data-feather="users"></span>
-              Customers
+              Egresos de la Clinica
             </a>
           </li>
           <li class="nav-item">
