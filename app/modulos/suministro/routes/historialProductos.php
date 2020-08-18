@@ -68,8 +68,9 @@ printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventa
                                     <a href="#">
                                         <?php echo $Productos->nombre_pr?> <span><?php echo $Productos->nombre_cate?></span>
                                     </a>
-                                    <p class="text-right"><button type="button" class="btn btn-light" data-toggle="modal" data-target="#modal-delete" onclick="eliminarProducto('<?php echo $Productos->idproducto?>')">PUBLICAR DE NUEVO</button></p>
-                                  
+                                    <?php if(verificarAccion($conn, "modulo_suministros", "insertar") == true):?>
+                                        <p class="text-right"><button type="button" class="btn btn-light" data-toggle="modal" data-target="#modal-delete" onclick="eliminarProducto('<?php echo $Productos->idproducto?>')">PUBLICAR DE NUEVO</button></p>
+                                    <?php endif;?>
                                 </h5>
                                 <span class="font-weight-bold">Precio Unitario:</span> 
                                 <p class="price-container">

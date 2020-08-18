@@ -1,19 +1,17 @@
 <?php
-   function printLayout ($route, $homePage, $credencial, $scopes, $usuarios, $cargos,
+   function printLayout ($route, $homePage, $credencial, $scopes, $usuarios, $cargos,$auditoria,
    $logout,$ajuste,$rrhh,$suministro,$contabilidad,$ctas_medicas,$paciente,$seguridad,$active){
 
-    $routes[4]= [];
+    $routes[5]= [];
   
 
-    for ($i = 0; $i < 5; $i++) {
+    for ($i = 0; $i < 6; $i++) {
       if($active==($i+1)){
         $routes[$i]="active";
       }else{
         $routes[$i]="";
       }
     }
-
-
       echo "<nav class='navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow'>";
       echo "<a class='navbar-brand col-md-3 col-lg-2 mr-0 px-3' href=$route>";
       echo "<span className='font-weight-bold'>Modulo </span>";
@@ -93,6 +91,12 @@
       echo "<a class='nav-link $routes[4]' href=$scopes>";
       echo "<span data-feather='users'></span>";
       echo "Gestión Scopes";
+      echo "</a>";
+      echo "</li>";
+      echo "<li class='nav-item'>";
+      echo "<a class='nav-link $routes[5]' href=$auditoria>";
+      echo "<span data-feather='layers'></span>";
+      echo "Auditoria";
       echo "</a>";
       echo "</li>";
       echo "</ul>";

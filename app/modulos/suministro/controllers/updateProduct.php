@@ -1,6 +1,11 @@
 <?php
 
 require '../../../../database.php';
+require '../../seguridad/controllers/functions/Auditoria.php';
+
+session_start();
+
+$producto = $conn->query("SELECT * FROM productos WHERE idproducto=".$_POST['idproducto'])->fetchAll(PDO::FETCH_OBJ);
 
 $sql = "UPDATE productos SET codigo_barra_pr=:codigo_barra_pr,nombre_pr=:nombre_pr,descripcion_pr=:descripcion_pr,precio_unitario_pr=:precio_unitario_pr,fecha_elaboracion_pr=:fecha_elaboracion_pr,fecha_caducidad_pr=:fecha_caducidad_pr,idcategoria_pr=:idcategoria_pr WHERE idproducto=:idproducto";
 
@@ -37,5 +42,7 @@ $stmt->bindParam(':img_pr', $archivo);
 }
 
         if($stmt->execute()){
+            $auditoria = new Auditoria(utf8_decode('Actualización'), 'Suministros',utf8_decode("Se actualizo un producto ".$producto[0]->nombre_pr),$_SESSION['user_id'],null);
+            $auditoria->Registro($conn);
             header("Location:../routes/productos.php");
         }

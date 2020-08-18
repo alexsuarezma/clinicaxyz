@@ -1,5 +1,7 @@
 <?php
     require '../../../../database.php';
+    require 'functions/Auditoria.php';
+    session_start();
 
         $sql = "INSERT INTO credencial_base (nombre_credencial,modulo_rrhh,modulo_contabilidad,modulo_suministros,modulo_ctas_medicas,modulo_pacientes,modulo_seguridad,paciente,id_scope_credencial) 
        VALUES (:nombre_credencial,:modulo_rrhh,:modulo_contabilidad,:modulo_suministros,:modulo_ctas_medicas,:modulo_pacientes,:modulo_seguridad,:paciente,:id_scope_credencial)";
@@ -51,6 +53,8 @@
 
        if($stmt->execute()){
          echo "<script language='javascript'>alert('Credencial Registrada');</script>";
+         $auditoria = new Auditoria(utf8_decode('Registro'), 'Seguridad',utf8_decode("Se registro una nueva credencial base".$_POST['nombreCredencial']),$_SESSION['user_id'],null);
+         $auditoria->Registro($conn);
          header("Location: ../routes/credencial.php");
        }
 

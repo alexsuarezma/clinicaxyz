@@ -51,13 +51,16 @@ printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventa
             <input type="hidden" name="idProducto" id="idProducto" value="<?php echo $_GET['id'];?>">
         </form>
     <div class="d-flex justify-content-end mt-5">
+    <?php if(verificarAccion($conn, "modulo_suministros", "insertar") == true):?>
         <span class="mt-2 mr-5 text-info font-weight-bold">
             Agrega un nuevo proveedor para este producto
         </span>
         <a class="text-secondary px-3 mr-5" id="agregar" name="agregar" data-toggle="modal" href="#agregarProveedor" title="Agrega un nuevo provedoor para que se reflejen en las nuevas Ordenes de Compra"><i class="fas fa-plus-circle" style="font-size:30px;"></i></a>
+    <?php endif;?>
     </div>
     
         <a class="ml-5" href="#" id="btn-editar" title="HABILITA LA EDICIÓN DE ESTE PRODUCTO"><i class="fas fa-toggle-on" id="on" style="font-size:30px;"></i><i class="fas fa-toggle-off" id="off" style="font-size:30px;"></i></a> 
+    
     
     <div class="container mt-5 mb-5">
         <hr class="mb-4">
@@ -123,7 +126,9 @@ printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventa
                 </div>
             </div>                            
             <div class='modal-footer mt-2'>
-            <button id='confirmacion' name='confirmacion' type='submit' class='btn btn-primary font-weight-bold' style="width:200px;">Guardar</button>
+            <?php if(verificarAccion($conn, "modulo_suministros", "actualizar") == true):?>
+                <button id='confirmacion' name='confirmacion' type='submit' class='btn btn-primary font-weight-bold' style="width:200px;">Guardar</button>
+            <?php endif;?>
             </div> 
         </form>
         <hr class="mt-3 mr-5">
@@ -153,7 +158,9 @@ printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventa
                                         <td><?php echo utf8_encode($ProveedorHasProducto->nombre)?></td>
                                         <td><?php echo $ProveedorHasProducto->direccion_pro?></td>
                                         <td>
+                                        <?php if(verificarAccion($conn, "modulo_suministros", "borrado_logico") == true):?>
                                            <a onclick="eliminarProveedor('<?php echo $ProveedorHasProducto->idproveedor?>')" data-toggle="modal" href="#modal-registrar" title="Eliminar a provedor asociado a este producto"><i class="far fa-trash-alt" style="font-size:20px;"></i></a>
+                                        <?php endif;?>
                                         </td>
                                     </tr>
                                 <?php                                       

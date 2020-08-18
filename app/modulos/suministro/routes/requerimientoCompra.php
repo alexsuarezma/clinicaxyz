@@ -220,7 +220,10 @@ printLayout ();
                 </tbody>
             </table>
             <input type="hidden" name="total" value="<?php echo $total?>">
-                <?php if($orden[0]->estado!="pagado"):?>
+                <?php 
+                if(verificarAccion($conn, "modulo_contabilidad", "insertar") == true && verificarAccion($conn, "modulo_contabilidad", "actualizar") == true):
+                        
+                    if($orden[0]->estado!="pagado"):?>
                     <?php
                         if($orden[0]->estado == "rechazado"):
                     ?>
@@ -236,7 +239,8 @@ printLayout ();
                             </div> 
                     <?php endif;?>
                     
-                <?php endif;?>
+                <?php endif;
+                endif;?>
 
         </form>
       </div>

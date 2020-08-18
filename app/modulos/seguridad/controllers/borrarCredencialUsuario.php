@@ -36,10 +36,10 @@
 
 <?php
 require '../../../../database.php';
-
-
+require 'functions/Auditoria.php';
+session_start();
     $usuarioSinAcceso = $conn->query("SELECT * FROM usuario_credencial WHERE id_usuario_uc =".$_GET['idUser']." AND id_credencialbase_uc = 19")->rowCount();
-    
+    $empleado = $conn->query("SELECT * FROM empleados WHERE id_usuario_emp=".$_GET['idUser'])->fetchAll(PDO::FETCH_OBJ);
 
     if($usuarioSinAcceso > 0){
 
@@ -52,7 +52,8 @@ require '../../../../database.php';
             $stmt->bindParam(':id_credencialbase_uc', $_GET['idCredencial']);
             $stmt->bindParam(':id_usuario_uc', $_GET['idUser']);
             $stmt->execute();
-    
+            $auditoria = new Auditoria(utf8_decode('Borrado'), 'Seguridad',utf8_decode("Se elimino una credencial al usuario con cedula: ".$empleado[0]->id_empleados."-".$empleado[0]->nombres." ".$empleado[0]->apellidos),$_SESSION['user_id'],null);
+            $auditoria->Registro($conn);
             header("Location:../routes/usuarios.php");
         }   
     }else{
@@ -66,7 +67,10 @@ require '../../../../database.php';
             $stmt->bindParam(':id_usuario_uc', $_GET['idUser']);
             $stmt->bindValue(':id_credencialbase_uc', 19, PDO::PARAM_INT);
             $stmt->execute();
+            $auditoria = new Auditoria(utf8_decode('Borrado'), 'Seguridad',utf8_decode("Se elimino una credencial al usuario con cedula: ".$empleado[0]->id_empleados."-".$empleado[0]->nombres." ".$empleado[0]->apellidos),$_SESSION['user_id'],null);
+            $auditoria->Registro($conn);
             header("Location:../routes/usuarios.php");
+            
         }else{
 
             $sql = "DELETE FROM usuario_credencial WHERE id_usuario_uc=:id_usuario_uc AND id_credencialbase_uc=:id_credencialbase_uc";
@@ -74,7 +78,8 @@ require '../../../../database.php';
             $stmt->bindParam(':id_credencialbase_uc', $_GET['idCredencial']);
             $stmt->bindParam(':id_usuario_uc', $_GET['idUser']);
             $stmt->execute();
-
+            $auditoria = new Auditoria(utf8_decode('Borrado'), 'Seguridad',utf8_decode("Se elimino una credencial al usuario con cedula: ".$empleado[0]->id_empleados."-".$empleado[0]->nombres." ".$empleado[0]->apellidos),$_SESSION['user_id'],null);
+            $auditoria->Registro($conn);
             header("Location:../routes/usuarios.php");
         }
     }   

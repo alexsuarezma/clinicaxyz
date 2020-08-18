@@ -5,7 +5,11 @@ require '../../recursoshumanos/components/modal.php';
 require '../../seguridad/controllers/functions/credenciales.php';
 
 verificarAcceso("../../../../", "modulo_suministros");
-
+if(verificarAccion($conn, "modulo_suministros", "insertar") == false){
+    header("Refresh: 2; URL=../index.php");
+    echo '<h2 style="margin-top:200px;text-align:center;">No tienes permisos suficientes para esta acción.</h2>';
+    die;
+}
 $categoria = $conn->query("SELECT * FROM categoria ORDER BY nombre_cate ASC")->fetchAll(PDO::FETCH_OBJ);
 $proveedor = $conn->query("SELECT * FROM proveedores WHERE deleted = 0 ORDER BY razon_social_empresa_pro ASC")->fetchAll(PDO::FETCH_OBJ);
 

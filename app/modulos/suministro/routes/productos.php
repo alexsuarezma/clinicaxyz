@@ -62,7 +62,9 @@ printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventa
                         <div class="product-image"> 
                             <img src="<?php echo $Productos->img_pr?>" alt="194x228" class="img-thumbnail"> 
                         </div>
-                        <span class="btn btn-light ml-3" style="font-size:14px;"><a  onclick="eliminarProducto('<?php echo $Productos->idproducto?>')" data-toggle="modal" href="#modal-delete">Dar de Baja</a></span>
+                        <?php if(verificarAccion($conn, "modulo_suministros", "borrado_logico") == true):?>
+                            <span class="btn btn-light ml-3" style="font-size:14px;"><a  onclick="eliminarProducto('<?php echo $Productos->idproducto?>')" data-toggle="modal" href="#modal-delete">Dar de Baja</a></span>
+                        <?php endif;?>
                     </div>
                     <div class="col-md-7 col-sm-12 col-xs-12">
                         <div class="product-deatil">
@@ -179,7 +181,9 @@ printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventa
                         </div>
                     </div>
                       <div class='modal-footer mt-2'>
-                        <button id='confirmacion-update' name='confirmacion-update' type='submit' class='btn btn-primary font-weight-bold' style="width:200px;">Guardar Cambios</button>
+                        <?php if(verificarAccion($conn, "modulo_suministros", "actualizar") == true):?>
+                            <button id='confirmacion-update' name='confirmacion-update' type='submit' class='btn btn-primary font-weight-bold' style="width:200px;">Guardar Cambios</button>
+                        <?php endif;?>
                       </div> 
                     </form>
                     <hr class="mt-3 mr-5">

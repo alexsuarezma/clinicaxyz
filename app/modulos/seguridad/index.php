@@ -25,7 +25,7 @@ verificarAcceso("../../../", "modulo_seguridad");
   </head>
   <body>
 <?php
-  printLayout('index.php', '../../../index.php', 'routes/credencial.php', 'routes/scopes.php', 'routes/usuarios.php', 'routes/cargos.php',
+  printLayout('index.php', '../../../index.php', 'routes/credencial.php', 'routes/scopes.php', 'routes/usuarios.php', 'routes/cargos.php', 'routes/auditoria.php',
   'controllers/logout.php','routes/perfil.php','../recursoshumanos/','../suministro/','../contabilidad/','../citasmedicas/','../pacientes/','index.php',1);
 ?>
 <div class="container-fluid">

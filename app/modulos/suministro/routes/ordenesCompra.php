@@ -229,6 +229,8 @@ printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventa
                 </tbody>
             </table>
             <?php
+            if(verificarAccion($conn, "modulo_suministros", "insertar") == true && verificarAccion($conn, "modulo_suministros", "actualizar") == true):
+                
                 if($orden[0]->estado != "registrado" && $orden[0]->registrado != 1):
             ?>
                 <div class='modal-footer mt-2'>
@@ -255,11 +257,12 @@ printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventa
                     </div>
                 <?php
                     endif;
-                ?>
+                    ?>
                 </div> 
         
             <?php
                 endif;
+            endif;
             ?>
         </form>
       </div>

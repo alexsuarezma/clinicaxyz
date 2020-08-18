@@ -43,7 +43,7 @@ verificarAcceso("../../../../", "modulo_seguridad");
   </head>
   <body>
 <?php
-  printLayout('../index.php', '../../../../index.php', 'credencial.php', 'scopes.php', 'usuarios.php', 'cargos.php','../controllers/logout.php',
+  printLayout('../index.php', '../../../../index.php', 'credencial.php', 'scopes.php', 'usuarios.php', 'cargos.php','auditoria.php','../controllers/logout.php',
   'perfil.php','../../recursoshumanos/','../../suministro/','../../contabilidad/','../../citasmedicas/','../../pacientes/','../../seguridad/',3);
 ?>
 <div class="container-fluid">

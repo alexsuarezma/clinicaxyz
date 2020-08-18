@@ -5,7 +5,7 @@ require '../../recursoshumanos/components/modal.php';
 require '../../seguridad/controllers/functions/credenciales.php';
 
 verificarAcceso("../../../../", "modulo_suministros");
-$orden = $conn->query("SELECT * FROM orden_compra WHERE estado<>'registrado'")->fetchAll(PDO::FETCH_OBJ);
+$orden = $conn->query("SELECT * FROM orden_compra WHERE estado<>'registrado' ORDER BY created_at DESC")->fetchAll(PDO::FETCH_OBJ);
 
 ?>
 

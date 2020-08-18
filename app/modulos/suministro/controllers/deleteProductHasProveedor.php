@@ -37,7 +37,12 @@
 
 <?php
 require '../../../../database.php';
+require '../../seguridad/controllers/functions/Auditoria.php';
 
+session_start();
+
+$producto = $conn->query("SELECT * FROM productos WHERE idproducto=".$_POST['idProducto'])->fetchAll(PDO::FETCH_OBJ);
+$proveedor = $conn->query("SELECT * FROM proveedores WHERE idproveedor=".$_POST['idProveedor'])->fetchAll(PDO::FETCH_OBJ);
 
 $sql = "UPDATE producto_has_proveedor SET deleted=:deleted WHERE idproducto_has=:idproducto_has AND idproveedor_has=:idproveedor_has";
 $stmt = $conn->prepare($sql);
@@ -46,5 +51,7 @@ $stmt->bindParam(':idproducto_has', $_POST['idProducto']);
 $stmt->bindParam(':idproveedor_has', $_POST['idProveedor']);
 
 if($stmt->execute()){
+    $auditoria = new Auditoria(utf8_decode('Borrado'), 'Suministros',utf8_decode("Se elimino el proveedor ".$proveedor[0]->razon_social_empresa_pro." del producto ".$producto[0]->nombre_pr),$_SESSION['user_id'],null);
+    $auditoria->Registro($conn);
     echo "<script language='javascript'>$('#deleteHas').modal('show');</script>"; 
 }

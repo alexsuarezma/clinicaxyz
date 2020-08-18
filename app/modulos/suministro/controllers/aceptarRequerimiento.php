@@ -1,6 +1,10 @@
 <?php
 
 require '../../../../database.php';
+require '../../seguridad/controllers/functions/Auditoria.php';
+
+session_start();
+
 date_default_timezone_set('America/Guayaquil');
 
 $created = date("Y-m-d H:i:s");
@@ -30,5 +34,7 @@ if(isset($_POST['comentario'])){
 
 
 if($stmt->execute()){
+    $auditoria = new Auditoria(utf8_decode('Actualizar'), 'Contabilidad',utf8_decode("Se actualizo el estado de una Orden de Compra a : ".$_POST['estadoPedido'].", Orden#".$_POST['idOrden']),$_SESSION['user_id'],null);
+    $auditoria->Registro($conn);
     header("Location:../routes/requerimientoCompra.php?id=".$_POST['idOrden']);
 }

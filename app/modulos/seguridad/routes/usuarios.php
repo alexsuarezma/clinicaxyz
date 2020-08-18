@@ -91,7 +91,7 @@ $_SESSION['borrado_fisico'] = verificarAccion($conn, "modulo_seguridad", "borrad
   </head>
   <body>
 <?php
-  printLayout('../index.php', '../../../../index.php', 'credencial.php', 'scopes.php', 'usuarios.php', 'cargos.php','../controllers/logout.php',
+  printLayout('../index.php', '../../../../index.php', 'credencial.php', 'scopes.php', 'usuarios.php', 'cargos.php','auditoria.php','../controllers/logout.php',
   'perfil.php','../../recursoshumanos/','../../suministro/','../../contabilidad/','../../citasmedicas/','../../pacientes/','../../seguridad/',2);
 ?>
 <div class="container-fluid">

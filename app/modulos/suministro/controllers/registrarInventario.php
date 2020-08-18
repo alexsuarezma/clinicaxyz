@@ -1,6 +1,9 @@
 <?php
 require '../../../../database.php';
 date_default_timezone_set('America/Guayaquil');
+require '../../seguridad/controllers/functions/Auditoria.php';
+
+session_start();
 
 $created = date("Y-m-d H:i:s");
 $orden = $conn->query("SELECT * FROM orden_compra as o, detalle_orden_compra AS de, producto_has_proveedor AS has, proveedores AS pr, productos AS pd WHERE (de.id_orden_compra_dt =o.id_orden_compra AND de.id_prod_has_prov=has.idproducto_has_proveedor AND has.idproveedor_has=pr.idproveedor AND has.idproducto_has=pd.idproducto) AND id_orden_compra=".$_POST['idOrden'])->fetchAll(PDO::FETCH_OBJ);
@@ -55,5 +58,8 @@ foreach ( $orden as $Productos ) {
     $stmt->bindValue(':estado', 'registrado', PDO::PARAM_STR);
     $stmt->bindValue(':registrado', 1, PDO::PARAM_INT);
     $stmt->execute();
+
+    $auditoria = new Auditoria(utf8_decode('Registro'), 'Suministros',utf8_decode("Se registro una Orden de Compra al inventario Orden#".$_POST['idOrden']),$_SESSION['user_id'],null);
+    $auditoria->Registro($conn);
 
     header("Location:../routes/ordenesCompra.php?id=".$_POST['idOrden']);
