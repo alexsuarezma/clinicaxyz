@@ -67,7 +67,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link " href="index.php">
+            <a class="nav-link active" href="index.php">
               <span data-feather="file"></span>
               Ingreso de Cuentas
             </a>
