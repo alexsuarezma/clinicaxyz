@@ -61,13 +61,13 @@
       <div class="sidebar-sticky pt-3">
         <ul class="nav flex-column">
           <li class="nav-item">
-            <a class="nav-link active" href="#">
+            <a class="nav-link " href="../../../index.php">
               <span data-feather="home"></span>
               Inicio <span class="sr-only">(current)</span>
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="index.php">
+            <a class="nav-link " href="index.php">
               <span data-feather="file"></span>
               Ingreso de Cuentas
             </a>
@@ -80,7 +80,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">
+            <a class="nav-link" href="egre.php">
               <span data-feather="users"></span>
               Customers
             </a>
@@ -186,19 +186,19 @@
             <label>Codigo</label>
             <input type="text" class="form-control input-sm" id="cod_cta" name="cod_cta" onkeypress="SoloNumeros()"> 
             <label>Nombre de la cuenta</label>
-            <input type="text" class="form-control input-sm"  id="nom_cta" name="nom_cta" required onKeyPress="return soloLetras(event);">
+            <input type="text" class="form-control input-sm"  id="nom_cta" name="nom_cta" required="" onKeyPress="return soloLetras(event);">
             <label>Tipo de Cuenta</label><br>
 
-             <select  id="tip_cta"  onchange="ddlselect();" required>
-                       <option value="" >Seeleccione una opcion</option>
-                      <option >Pasivo</option>
-                      <option >Activo</option>
+             <select  name="tip_cta"  id="tip_cta"  onchange="ddlselect();" >
+                       <option value="" >Seleccione una opcion</option>
+                      <option value="Pasivo">Pasivo</option>
+                      <option value="Activo">Activo</option>
                      </select>
             <input type="text"  class="form-control input-sm" disabled="" id="tipo_cta" name="tipo_cta" >
             <label>Ingresos</label>
-            <input type="number" class="form-control input-sm"  id="ing_cta" name="ing_cta" >
+            <input type="text" class="form-control input-sm"  id="ing_cta" name="ing_cta" onkeypress="SoloNumeros()" >
             <label>Egresos</label>
-            <input type="number" class="form-control input-sm" id="egre_cta" name="egre_cta" >
+            <input type="text" class="form-control input-sm" id="egre_cta" name="egre_cta" onkeypress="SoloNumeros()">
                     
           </form>
       
@@ -235,16 +235,17 @@
             <label>Nombre de la cuenta</label>
             <input type="text" class="form-control input-sm"  id="nom_ctaU" name="nom_ctaU">
             <label>Tipo de Cuenta</label><br>
-            <select  id="tip_ctaU"  onchange="ddlselectU();">
-                      <option >Pasivo</option>
-                      <option >Activo</option>
+            <select  name="tip_ctaU"  id="tip_ctaU"  onchange="ddlselectU();" >
+                       <option value="" >Seleccione una opcion</option>
+                      <option value="Pasivo">Pasivo</option>
+                      <option value="Activo">Activo</option>
                      </select>
-            <input type="text" class="form-control input-sm" id="tipo_ctaU" name="tipo_ctaU">
+            <input type="text" class="form-control input-sm" disabled="" id="tipo_ctaU" name="tipo_ctaU">
 
             <label>Ingresos</label>
-            <input type="number" class="form-control input-sm" id="ing_ctaU" name="ing_ctaU">
+            <input type="text" class="form-control input-sm" id="ing_ctaU" name="ing_ctaU" >
             <label>Egresos</label>
-            <input type="number" class="form-control input-sm" id="egre_ctaU" name="egre_ctaU">
+            <input type="text" class="form-control input-sm" id="egre_ctaU" name="egre_ctaU" >
 
             </form>
 
@@ -286,7 +287,7 @@
             $('#tablaDatatable').load('tabla.php');
             alertify.success("agregado con exito :D");
           }else{
-            alertify.error("Fallo al agregar :(");
+            alertify.error(r);
           }
         }
       });
@@ -328,7 +329,7 @@
         $('#idcta').val(datos['id_cta']);
         $('#cod_ctaU').val(datos['cod_cta']);
         $('#nom_ctaU').val(datos['nom_cta']);
-        $('#tipo_ctaU').val(datos['tipo_cta']);
+        $('#tip_ctaU').val(datos['tip_cta']);
         $('#ing_ctaU').val(datos['ing_cta']);
         $('#egre_ctaU').val(datos['egre_cta']);
         
@@ -393,9 +394,21 @@ function SoloNumeros() {
             
           function ddlselect()
           {
-
             var d=document.getElementById("tip_cta");
+            var ing=document.getElementById("ing_cta");
+            var egre=document.getElementById("egre_cta");
+
             var displaytext=d.options[d.selectedIndex].text;
+            if(displaytext=="Pasivo"){
+              ing.disabled = true;
+              ing.value ="";
+              egre.disabled = false;
+            }
+            else if(displaytext=="Activo"){
+              ing.disabled = false;
+              egre.value = "";
+              egre.disabled = true;
+            }
             document.getElementById("tipo_cta").value=displaytext;
           }
 
@@ -404,8 +417,21 @@ function SoloNumeros() {
           function ddlselectU()
           {
 
-            var d=document.getElementById("tip_ctaU");
-            var displaytext=d.options[d.selectedIndex].text;
+            var dU=document.getElementById("tip_ctaU");
+            var ingU=document.getElementById("ing_ctaU");
+            var egreU=document.getElementById("egre_ctaU");
+            
+            var displaytext=dU.options[dU.selectedIndex].text;
+            if(displaytext=="Pasivo"){
+              ingU.disabled = true;
+              ingU.value =0;
+              egreU.disabled = false;
+            }
+            else if(displaytext=="Activo"){
+              ingU.disabled = false;
+              egreU.value = 0;
+              egreU.disabled = true;
+            }
             document.getElementById("tipo_ctaU").value=displaytext;
           }
 
