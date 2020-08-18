@@ -92,9 +92,9 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">
+            <a class="nav-link" href="reporte.php" target="_blank">
               <span data-feather="layers"></span>
-              Integrations
+              Reporte de Cuentas
             </a>
           </li>
         </ul>

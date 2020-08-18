@@ -76,7 +76,7 @@ $conn=null;
       <div class="sidebar-sticky pt-3">
         <ul class="nav flex-column">
           <li class="nav-item">
-            <a class="nav-link active" href="#">
+            <a class="nav-link " href="#">
               <span data-feather="home"></span>
               Inicio <span class="sr-only">(current)</span>
             </a>
@@ -88,7 +88,7 @@ $conn=null;
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="ing-egre.php">
+            <a class="nav-link active" href="ing-egre.php" >
               <span data-feather="shopping-cart"></span>
               
               ingreso y Egresos de la Clinica
@@ -107,9 +107,9 @@ $conn=null;
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">
+            <a class="nav-link" href="reporte.php" target="_blank">
               <span data-feather="layers"></span>
-              Integrations
+              Reporte de Cuentas
             </a>
           </li>
         </ul>
@@ -119,33 +119,7 @@ $conn=null;
           <a class="d-flex align-items-center text-muted" href="#" aria-label="Add a new report">
             <span data-feather="plus-circle"></span>
           </a>
-        </h6>
-        <ul class="nav flex-column mb-2">
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="file-text"></span>
-              Current month
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="file-text"></span>
-              Last quarter
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="file-text"></span>
-              Social engagement
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="file-text"></span>
-              Year-end sale
-            </a>
-          </li>
-        </ul>
+        
       </div>
     </nav>
 
