@@ -1,5 +1,6 @@
 <?php
 require '../../../../database.php';
+require '../../seguridad/controllers/functions/Auditoria.php';
 session_start();
 date_default_timezone_set('America/Guayaquil');
 $created = date("Y-m-d H:i:s");
@@ -22,6 +23,7 @@ if($stmt->execute()){
     $stmt->bindParam(':created_at', $created);
     $stmt->bindParam(':id_empleados_cont', $_SESSION['cedula']);
     $stmt->execute();
-
+    $auditoria = new Auditoria(utf8_decode('Borrado'), 'rrhh',utf8_decode("Se elimino un contrato al empleado con cedula: ".$_SESSION['cedula']),$_SESSION['user_id'],null);
+    $auditoria->Registro($conn);
     header("Location:../routes/profile.php?id=".$_SESSION['cedula']);
 }

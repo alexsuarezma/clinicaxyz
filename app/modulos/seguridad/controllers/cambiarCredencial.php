@@ -37,8 +37,11 @@
 
 <?php
 require '../../../../database.php';
-
+require 'functions/Auditoria.php';
+session_start();
     $scopes = $conn->query("SELECT * FROM usuario_credencial WHERE id_usuario_uc = ".$_POST['idUser']." AND id_credencialbase_uc = ".$_POST['credencial'])->rowCount();
+    $empleado = $conn->query("SELECT * FROM empleados AS e, usuario AS u, usuario_credencial AS uc WHERE (e.id_usuario_emp=u.id_usuario AND u.id_usuario=uc.id_usuario_uc) AND id_usuario_credencial=".$_POST['idUserCredencial'])->fetchAll(PDO::FETCH_OBJ);
+
     if($scopes>0){
         //delete
         $sql = "DELETE FROM usuario_credencial WHERE id_usuario_credencial=:id_usuario_credencial";
@@ -53,6 +56,8 @@ require '../../../../database.php';
         $stmt->bindParam(':id_usuario_credencial', $_POST['idUserCredencial']);
         $stmt->bindParam(':id_credencialbase_uc', $_POST['credencial']);
         $stmt->execute();
+        $auditoria = new Auditoria(utf8_decode('Actualización'), 'Seguridad',utf8_decode("Se actualizo una credencial al usuario con cedula: ".$empleado[0]->id_empleados."-".$empleado[0]->nombres." ".$empleado[0]->apellidos),$_SESSION['user_id'],null);
+        $auditoria->Registro($conn);
         header("Location:../routes/usuarios.php");
     }
 

@@ -38,6 +38,10 @@
 <?php
 
 require '../../../../database.php';
+require '../../seguridad/controllers/functions/Auditoria.php';
+
+session_start();
+
 $productoDuplicado = $conn->query("SELECT * FROM productos WHERE codigo_barra_pr =".$_POST['codigoBarra'])->rowCount();
 
     if($productoDuplicado > 0){
@@ -80,6 +84,8 @@ $productoDuplicado = $conn->query("SELECT * FROM productos WHERE codigo_barra_pr
                 $stmt->bindParam(':idproveedor_has',$_POST['proveedor']);
                 $stmt->bindValue(':deleted', 0, PDO::PARAM_INT);                
                 if($stmt->execute()){
+                    $auditoria = new Auditoria(utf8_decode('Registro'), 'Suministros',utf8_decode("Se registro un nuevo producto: ".$_POST['nombreProducto']),$_SESSION['user_id'],null);
+                    $auditoria->Registro($conn);
                     header("Location:../routes/productos.php");
                 }
             }

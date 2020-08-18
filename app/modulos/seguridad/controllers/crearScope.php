@@ -1,5 +1,7 @@
 <?php
 require '../../../../database.php';
+require 'functions/Auditoria.php';
+session_start();
 
    $sql = "INSERT INTO scope (descripcion_rol,nivel_scope,lectura,insertar,actualizar,actualizar_informacion,borrado_logico,borrado_fisico,crear_usuarios) 
    VALUES (:descripcion_rol,:nivel_scope,:lectura,:insertar,:actualizar,:actualizar_informacion,:borrado_logico,:borrado_fisico,:crear_usuarios)";
@@ -25,5 +27,8 @@ require '../../../../database.php';
      }
      
      if($stmt->execute()){
+
+          $auditoria = new Auditoria(utf8_decode('Registro'), 'Seguridad',utf8_decode("Se registro un nuevo scope base".$_POST['descripcionRol']),$_SESSION['user_id'],null);
+          $auditoria->Registro($conn);
           header("Location: ../routes/scopes.php");
      } 

@@ -1,6 +1,9 @@
 <?php
 require '../../../../database.php';
 require '../components/modal.php';
+require '../../seguridad/controllers/functions/credenciales.php';
+require '../../seguridad/controllers/functions/Auditoria.php';
+  
 session_start();
 $id = $_SESSION['cedula'];    
 
@@ -48,8 +51,10 @@ if(isset($_POST['guardar'])){
     $stmt->bindValue(':load_documento', 1, PDO::PARAM_INT);
     $stmt->bindParam(':updated_at', $created);
         $stmt->execute();
+        $auditoria = new Auditoria(utf8_decode('Registro'), 'rrhh',utf8_decode("Se registro un nuevo documento, del perfil ".$results['nombres']." ".$results['apellidos'].". Cedula: ".$results['id_empleados']),$_SESSION['user_id'],null);
+        $auditoria->Registro($conn);
         header("Location:profile.php?id=$id");
-    }
+}
     ?>
 
 <!DOCTYPE html>
@@ -80,6 +85,7 @@ if(isset($_POST['guardar'])){
     <h4 style="text-align:center;" class="text-info">Documentos</h4>
         <?php
             if($results['load_documento'] == false):
+                if((verificarAccion($conn, "modulo_rrhh", "actualizar") == true) && (verificarAccion($conn, "modulo_rrhh", "insertar") == true)):
         ?>
             <i class="fas fa-exclamation-triangle text-warning" style="text-align:center; font-size:15px;"></i>
             <div class="">
@@ -110,6 +116,11 @@ if(isset($_POST['guardar'])){
                 </div> 
             </form>           
         <?php
+                else:   
+                    echo '<p style="font-size:15px;" class="text-break font-weight-bold badge-pill badge-warning">
+                            No cuentas con los permisos necesarios para Actualizar o Registrarle documnentos a este empleado.
+                            </p>';
+                endif;
             else:
         ?>
             <hr class="mt-1 mb-4">        
@@ -141,13 +152,15 @@ if(isset($_POST['guardar'])){
                         </a>
                     </div>
                 </div>
-                <div class="form-row mt-5">
-                    <div class="form-group col-md-12 d-flex justify-content-center">
-                        <a class="text-danger" data-toggle="modal" href="#finalizarContrato" >
-                            Dar de baja este contrato, y generar un nuevo contrato.
-                        </a>
+                <?php if(verificarAccion($conn, "modulo_rrhh", "borrado_logico") == true):?>
+                    <div class="form-row mt-5">
+                        <div class="form-group col-md-12 d-flex justify-content-center">
+                            <a class="text-danger" data-toggle="modal" href="#finalizarContrato" >
+                                Dar de baja este contrato, y generar un nuevo contrato.
+                            </a>
+                        </div>
                     </div>
-                </div>
+                <?php endif;?>
             </form>     
         <?php
             endif;

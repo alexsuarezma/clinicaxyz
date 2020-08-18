@@ -60,9 +60,11 @@
 
 <?php
 require '../../../../database.php';
-
+require 'functions/Auditoria.php';
+session_start();
     $usuario = $conn->query("SELECT * FROM usuario_credencial WHERE id_usuario_uc = ".$_POST['idUserCredencialUsuario']." AND id_credencialbase_uc = 19")->rowCount();
-    
+    $credencial = $conn->query("SELECT * FROM empleados WHERE id_usuario_emp=".$_POST['idUserCredencialUsuario'])->fetchAll(PDO::FETCH_OBJ);
+
     if($usuario > 0){
         //Update credencial sin acceso
         $sql = "UPDATE usuario_credencial SET id_credencialbase_uc=:id_credencialbase_uc WHERE id_usuario_uc=:id_usuario_uc AND id_credencialbase_uc = 19";
@@ -70,6 +72,8 @@ require '../../../../database.php';
         $stmt->bindParam(':id_usuario_uc', $_POST['idUserCredencialUsuario']);
         $stmt->bindParam(':id_credencialbase_uc', $_POST['credencialUsuario']);
         if($stmt->execute()){
+            $auditoria = new Auditoria(utf8_decode('Registro'), 'Seguridad',utf8_decode("Se creo una credencial al usuario ".$credencial[0]->id_empleados."-".$credencial[0]->nombres),$_SESSION['user_id'],null);
+            $auditoria->Registro($conn);
             header("Location: ../routes/usuarios.php");
         }
     }
@@ -97,6 +101,8 @@ require '../../../../database.php';
                 $stmt->bindParam(':id_usuario_uc', $_POST['idUserCredencialUsuario']);
                 $stmt->bindParam(':id_credencialbase_uc', $_POST['credencialUsuario']);    
                 if($stmt->execute()){
+                    $auditoria = new Auditoria(utf8_decode('Registro'), 'Seguridad',utf8_decode("Se creo una credencial al usuario ".$credencial[0]->id_empleados."-".$credencial[0]->nombres),$_SESSION['user_id'],null);
+                    $auditoria->Registro($conn);
                     header("Location: ../routes/usuarios.php");
                 } 
             }

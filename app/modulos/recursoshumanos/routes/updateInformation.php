@@ -1,5 +1,6 @@
 <?php
     require '../../../../database.php';
+    require '../../seguridad/controllers/functions/Auditoria.php';
     session_start();
     date_default_timezone_set('America/Guayaquil');
     $id = $_SESSION['cedula'];
@@ -30,6 +31,7 @@
             $contactos = $conn->query("SELECT * FROM contacto_emergencia WHERE id_empleados_contac = $id")->fetchAll(PDO::FETCH_OBJ);
             $hijos = $conn->query("SELECT * FROM hijos_empleados WHERE id_empleados_hijos = $id")->fetchAll(PDO::FETCH_OBJ);
 
+            
        }else{ 
          
             $records = $conn->prepare("SELECT * FROM empleados AS e, cargo_horario AS ch WHERE e.id_cargo_horario_emp = ch.id_cargo_horario AND id_empleados = :cedula");
@@ -120,7 +122,7 @@
               //UPDATE EMPLEADO
                 $sql = "UPDATE empleados SET nombres=:nombres,apellidos=:apellidos,direccion=:direccion,nacionalidad=:nacionalidad,fecha_nacimiento=:fecha_nacimiento,parroquia=:parroquia,
                 id_ciudad_emp=:id_ciudad_emp,telefono=:telefono,celular=:celular,email=:email,sexo=:sexo,estado_civil=:estado_civil,nombres_conyuge=:nombres_conyuge,apellidos_conyuge=:apellidos_conyuge,
-                id_cargo_horario_emp=:id_cargo_horario_emp,documentos_descripcion=:documentos_descripcion,update_at=:update_at WHERE id_empleados=:id_empleados";
+                id_cargo_horario_emp=:id_cargo_horario_emp,update_at=:update_at WHERE id_empleados=:id_empleados";
                 $stmt = $conn->prepare($sql);
 
                 $stmt->bindParam(':id_empleados', $_POST['cedula']);
@@ -139,7 +141,6 @@
                 $stmt->bindParam(':estado_civil',$_POST['estadoCivil']);
                 $stmt->bindParam(':nombres_conyuge',$_POST['nombresConyuge']);
                 $stmt->bindParam(':apellidos_conyuge',$_POST['apellidosConyuge']);
-                $stmt->bindParam(':documentos_descripcion',$_POST['documentosDescription']);
                 $stmt->bindValue(':update_at', $updated);
                 $stmt->bindParam(':id_cargo_horario_emp',$_POST['horario']);
                 
@@ -225,14 +226,14 @@
                         $stmt->bindParam(':id_expeemp', $_POST["idExpe$i"]);
                         $stmt->execute();
                       }
-
-
+                    $auditoria = new Auditoria(utf8_decode('Actualización'), 'rrhh',utf8_decode("Se actualizo información del perfil ".$results['nombres']." ".$results['apellidos'].", cedula: ".$_SESSION['cedula']),$_SESSION['user_id'],null);
+                    $auditoria->Registro($conn);
                     header("Location:profile.php?id=$id");                          
                 }
             } catch (PDOException $e) {
                 die('Problema: ' . $e->getMessage());
             }
-                
+          
        }
 
 ?>

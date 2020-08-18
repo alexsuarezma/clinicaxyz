@@ -1,5 +1,8 @@
 <?php
     require '../../../../database.php';
+    require 'functions/Auditoria.php';
+    session_start();
+    $scope = $conn->query("SELECT * FROM scope WHERE id_scope=".$_POST['idScope'])->fetchAll(PDO::FETCH_OBJ);
 
     $sql = "UPDATE scope SET descripcion_rol=:descripcion_rol,nivel_scope=:nivel_scope,lectura=:lectura,insertar=:insertar,actualizar=:actualizar,actualizar_informacion=:actualizar_informacion,borrado_logico=:borrado_logico,borrado_fisico=:borrado_fisico,crear_usuarios=:crear_usuarios WHERE id_scope = :id_scope";
     $stmt = $conn->prepare($sql);
@@ -25,5 +28,7 @@
       }
       
       if($stmt->execute()){
+          $auditoria = new Auditoria(utf8_decode('Actualización'), 'Seguridad' ,utf8_decode("Se actualizo el scope base ".$scope[0]->id_scope."-".$scope[0]->descripcion_rol),$_SESSION['user_id'],null);
+          $auditoria->Registro($conn);
            header("Location: ../routes/scopes.php");
       } 

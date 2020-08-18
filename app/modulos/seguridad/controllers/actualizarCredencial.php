@@ -1,5 +1,8 @@
 <?php
 require '../../../../database.php';
+require 'functions/Auditoria.php';
+session_start();
+$credencial = $conn->query("SELECT * FROM credencial_base WHERE id_credencial=".$_POST['idCredencial'])->fetchAll(PDO::FETCH_OBJ);
 
 $sql = "UPDATE credencial_base SET nombre_credencial=:nombre_credencial, modulo_rrhh=:modulo_rrhh,modulo_contabilidad=:modulo_contabilidad,modulo_suministros=:modulo_suministros,modulo_ctas_medicas=:modulo_ctas_medicas,modulo_pacientes=:modulo_pacientes,modulo_seguridad=:modulo_seguridad,paciente=:paciente,id_scope_credencial=:id_scope_credencial WHERE id_credencial = :id_credencial";
 $stmt = $conn->prepare($sql);
@@ -50,5 +53,7 @@ if($_POST['accessoModulo']=='Humanos'){
   $stmt->bindParam(':id_scope_credencial', $_POST['scope']);
 
 if($stmt->execute()){
+    $auditoria = new Auditoria(utf8_decode('Actualización'), 'Seguridad',utf8_decode("Se actualizo la credencial base ".$credencial[0]->id_credencial."-".$credencial[0]->nombre_credencial),$_SESSION['user_id'],null);
+    $auditoria->Registro($conn);
     header("Location: ../routes/credencial.php");
 }

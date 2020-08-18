@@ -7,6 +7,13 @@ date_default_timezone_set('America/Guayaquil');
 $creacion = date('d')."/".date('m')."/".date('Y');
 $created = date('d')."/".date('m')."/".date('Y')." ".date("H").":".date("i").":".date("s");
 verificarAcceso("../../../../", "modulo_suministros");
+ 
+if(verificarAccion($conn, "modulo_suministros", "insertar") == false){
+    header("Refresh: 2; URL=../index.php");
+    echo '<h2 style="margin-top:200px;text-align:center;">No tienes permisos suficientes para esta acción.</h2>';
+    die;
+}
+    
 
 $categoria = $conn->query("SELECT * FROM categoria ORDER BY nombre_cate ASC")->fetchAll(PDO::FETCH_OBJ);
 $producto = $conn->query("SELECT * FROM productos AS p, categoria AS c WHERE (p.idcategoria_pr = c.idcategoria) AND deleted = 0 ORDER BY nombre_pr ASC")->fetchAll(PDO::FETCH_OBJ);

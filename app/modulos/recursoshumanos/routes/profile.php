@@ -5,6 +5,9 @@
     require '../../seguridad/controllers/functions/credenciales.php';
 
     verificarAcceso("../../../../", "modulo_rrhh");
+    // $_SESSION['insertar'] = verificarAccion($conn, "modulo_rrhh", "insertar");
+    $_SESSION['actualizar'] = verificarAccion($conn, "modulo_rrhh", "actualizar");
+    $_SESSION['borrado_logico'] = verificarAccion($conn, "modulo_rrhh", "borrado_logico");
        $id=$_GET["id"];
        $horario = $conn->query("SELECT * FROM asistencia_empleado WHERE id_empleado_asis = $id")->rowCount();
        $_SESSION['cedula'] = $id;
@@ -126,20 +129,25 @@
                                     
                                 </div>
                             </a>
-                            <a class="list-group-item" name="update" id="update" href="#update">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div><i class="fe-icon-heart mr-1 text-muted"></i>
-                                        <div class="d-inline-block font-weight-medium text-uppercase">Actualizar Información</div>
-                                    </div><span class="badge badge-secondary">3</span>
-                                </div>
-                            </a>
-                            <a class="list-group-item" name="delete" id="delete" href="#">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div><i class="fe-icon-tag mr-1 text-muted"></i>
-                                        <div class="d-inline-block font-weight-medium text-uppercase">Finalizar Contrato</div>
-                                    </div><span class="badge badge-secondary">4</span>
-                                </div>
-                            </a>
+                            <?php if($_SESSION['actualizar'] == true):?>
+                                <a class="list-group-item" name="update" id="update" href="#update">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div><i class="fe-icon-heart mr-1 text-muted"></i>
+                                            <div class="d-inline-block font-weight-medium text-uppercase">Actualizar Información</div>
+                                        </div><span class="badge badge-secondary">3</span>
+                                    </div>
+                                </a>
+                            <?php endif;?>
+                            <!-- $_SESSION['actualizar'] = verificarAccion($conn, "modulo_rrhh", "actualizar"); -->
+                            <?php if($_SESSION['borrado_logico'] == true):?>
+                                <a class="list-group-item" name="delete" id="delete" href="#">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div><i class="fe-icon-tag mr-1 text-muted"></i>
+                                            <div class="d-inline-block font-weight-medium text-uppercase">Finalizar Contrato</div>
+                                        </div><span class="badge badge-secondary">4</span>
+                                    </div>
+                                </a>
+                            <?php endif;?>
                         </nav>
                     </div>
                 </div>

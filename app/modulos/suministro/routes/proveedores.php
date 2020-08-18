@@ -51,9 +51,11 @@ $proveedor = $conn->query("SELECT * FROM proveedores WHERE deleted = 0 ORDER BY 
 <div class="page-content container note-has-grid">
     <a href="historialProveedores.php">Ver el historial de PROVEEDORES eliminados</a>
     <ul class="nav nav-pills p-3 bg-white mb-3 rounded-pill align-items-center">
+    <?php if(verificarAccion($conn, "modulo_suministros", "insertar") == true):?>
         <li class="nav-item ml-auto">
             <a href="#" class="text-secondary d-flex align-items-center px-3" id="agregar" name="agregar" title="Agrega un nuevo provedoor para que se reflejen en las nuevas Ordenes de Compra"><i class="fas fa-plus-circle" style="font-size:30px;"></i></a>
         </li>
+    <?php endif;?>
     </ul>
     <div class="tab-content bg-transparent">
         <form id="formDelete" action="../controllers/deleteProveedor.php" method="post">
@@ -76,7 +78,9 @@ $proveedor = $conn->query("SELECT * FROM proveedores WHERE deleted = 0 ORDER BY 
                         </div>
                         <div class="d-flex align-items-center">
                             <span class="mr-1"><a onclick="editarProveedor('<?php echo $Proveedores->idproveedor?>','<?php echo $Proveedores->numero_identificacion_pro?>','<?php echo $Proveedores->razon_social_empresa_pro?>','<?php echo $Proveedores->nombre_representante_legal_pro?>','<?php echo $Proveedores->direccion_pro?>','<?php echo $Proveedores->ciudad_pro?>','<?php echo $Proveedores->telefono_1_pro?>','<?php echo $Proveedores->telefono_2_pro?>','<?php echo $Proveedores->email_1_pro?>','<?php echo $Proveedores->email_2_pro?>')" data-toggle="modal" href="#informationProveedor"><i class="fas fa-edit text-info" style="font-size:20px;" title="Ver información del PROVEEDOR"></i></a></span>
-                            <span class="ml-4 btn btn-light text-danger"><a  onclick="eliminarProveedor('<?php echo $Proveedores->idproveedor?>')" data-toggle="modal" style="text-decoration:none; color:red;" href="#modal-delete"> Dar de baja</a></span>
+                            <?php if(verificarAccion($conn, "modulo_suministros", "borrado_logico") == true):?>
+                                <span class="ml-4 btn btn-light text-danger"><a  onclick="eliminarProveedor('<?php echo $Proveedores->idproveedor?>')" data-toggle="modal" style="text-decoration:none; color:red;" href="#modal-delete"> Dar de baja</a></span>
+                            <?php endif;?>
                         </div>
                     </div>
                 </div>
@@ -271,51 +275,13 @@ $proveedor = $conn->query("SELECT * FROM proveedores WHERE deleted = 0 ORDER BY 
                             </div>
                         </div>  
                       <div class='modal-footer mt-2'>
-                        <button id="cancelar-update" type='button' class="btn btn-light border-secondary" data-dismiss='modal'>Cancelar</button>
-                        <button id='confirmacion-update' name='confirmacion-update' type='submit' class='btn btn-primary font-weight-bold' style="width:200px;">Continuar</button>
+                        <?php if(verificarAccion($conn, "modulo_suministros", "actualizar") == true):?>
+                            <button id="cancelar-update" type='button' class="btn btn-light border-secondary" data-dismiss='modal'>Cancelar</button>
+                            <button id='confirmacion-update' name='confirmacion-update' type='submit' class='btn btn-primary font-weight-bold' style="width:200px;">Continuar</button>
+                        <?php endif;?>
                       </div> 
                     </form>
                 </div>
-                <table class="table colored-header datatable project-list">
-            <thead>
-                <tr>
-                    <th>Orden de Compra</th>
-                    <th>Producto</th>
-                    <th>Cantidad</th>
-                    <th>Precio Unitario</th>
-                    <th>Total a pagar</th>
-                    <th>Estado</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-            <?php
-            foreach ($inventario as $Inventarios):
-            ?>
-                <tr>
-                    <th><?php echo $Inventarios->codigo_barra_pr?></th>
-                    <td><?php echo $Inventarios->nombre_pr?></td>
-                    <td><?php echo $Inventarios->stock?></td>
-                    <td><?php echo $Inventarios->precio_unitario_pvp?></td>
-                    <td><?php echo $Inventarios->precio_unitario_pr?></td>
-                    <td>
-                    
-                    </td>
-                </tr>
-                <tr>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th>Saldo Pendiente</th>
-                    <th>Estado</th>
-                    <th></th>
-                </tr>
-            <?php 
-                endforeach;
-            ?> 
-            </tbody>
-        </table>
             </div>
         </div>
   </div>

@@ -1,5 +1,11 @@
 <?php
 require '../../../../database.php';
+require 'functions/Auditoria.php';
+session_start();
+
+$credencial = $conn->query("SELECT * FROM credencial_base WHERE id_credencial=".$_POST['credencial'])->fetchAll(PDO::FETCH_OBJ);
+$cargo = $conn->query("SELECT * FROM cargo_empleados WHERE id_cargo=".$_POST['idCargoAsociado'])->fetchAll(PDO::FETCH_OBJ);
+
     $sql = "UPDATE cargo_empleados SET id_credencialbase_cargo=:id_credencialbase_cargo WHERE id_cargo=:id_cargo";
     $stmt = $conn->prepare($sql);
     $stmt->bindParam(':id_cargo', $_POST['idCargoAsociado']);
@@ -14,5 +20,6 @@ require '../../../../database.php';
         $stmt->bindParam(':id_credencialbase_uc', $_POST['credencial']);
         $stmt->execute();
     }
-        
+$auditoria = new Auditoria(utf8_decode('Actualización'), 'Seguridad',utf8_decode("Se actualizo una credencial".$credencial[0]->nombre_credencial.", al cargo: ".$cargo[0]->nombre_cargo),$_SESSION['user_id'],null);
+$auditoria->Registro($conn);
 header("Location:../routes/cargos.php");

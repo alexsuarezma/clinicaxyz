@@ -74,7 +74,9 @@ require '../../seguridad/controllers/functions/credenciales.php';
                         <span>
                         <a href="../components/viewDocuments.php?contrato=<?php echo $aspirante->fileDocument?>" ><i class="fas fa-file-contract" style="color:black;" title="Ver Curriculum" ></i></a>
                         <a href="../components/viewAspirante.php?id=<?php echo $aspirante->id_aspirante?>" ><i class="fas fa-external-link-alt" style="color:blue;" title="Ver Informacion"></i></a>
-                        <a id="delete" href="#"><i class="fas fa-trash-alt" style="color:red;" title="Eliminar Aspirante"></i></a>
+                        <?php if(verificarAccion($conn, "modulo_rrhh", "borrado_logico") == true):?>
+                          <a id="delete" href="#"><i class="fas fa-trash-alt" style="color:red;" title="Eliminar Aspirante"></i></a>
+                        <?php endif;?>
                         </span>
                         </li>
                       <?php 
@@ -83,7 +85,7 @@ require '../../seguridad/controllers/functions/credenciales.php';
                 </ul>
             </div>
             <?php          
-                      printModal('Eliminar Aspirante','btn-delete','modal-delete','¡Hey!. Estas apunto de ELIMINAR información sensible. ¿Realmente desea ELIMINAR los datos de este aspirante?');
+                printModal('Eliminar Aspirante','btn-delete','modal-delete','¡Hey!. Estas apunto de ELIMINAR información sensible. ¿Realmente desea ELIMINAR los datos de este aspirante?');
             ?>
      </main>
    </div>

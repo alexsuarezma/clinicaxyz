@@ -1,13 +1,17 @@
 <?php
-
-  
   require '../../../../database.php';
   date_default_timezone_set('America/Guayaquil');
   require '../components/layout.php';
   require '../../seguridad/controllers/functions/credenciales.php';
+  require '../../seguridad/controllers/functions/Auditoria.php';
 
   verificarAcceso("../../../../", "modulo_rrhh");
   
+  if(verificarAccion($conn, "modulo_rrhh", "insertar") == false){
+    header("Refresh: 3; URL=../index.php");
+    echo '<h2 style="margin-top:200px;text-align:center;">No tienes permisos suficientes para esta acción.</h2>';
+    die;
+  }
 
     $created = date("Y-m-d H:i:s");
   
@@ -229,7 +233,8 @@
                                                 $stmt->bindParam(':id_empleados_refe', $_POST['cedula']);
                                                 $stmt->execute();
                                             }
-
+                                            $auditoria = new Auditoria(utf8_decode('Registro'), 'rrhh',utf8_decode("Se registro un nuevo empleado, ".$_POST['nombres']." ".$_POST['apellidos'].". Cedula: ".$_POST['cedula']),$_SESSION['user_id'],null);
+                                            $auditoria->Registro($conn);
                                           header("Location:profile.php?id=$cedula");                          
                                       }
         

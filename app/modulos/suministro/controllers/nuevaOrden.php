@@ -1,5 +1,9 @@
 <?php
 require '../../../../database.php';
+require '../../seguridad/controllers/functions/Auditoria.php';
+
+session_start();
+
 date_default_timezone_set('America/Guayaquil');
 $count = 0;
 
@@ -28,6 +32,8 @@ if($stmt->execute()){
         $stmt->execute();
         $count++;
     }
+    $auditoria = new Auditoria(utf8_decode('Registro'), 'Suministros',utf8_decode("Se registro una nueva Orden de Compra #".$idLast),$_SESSION['user_id'],null);
+    $auditoria->Registro($conn);
     header("Location:../routes/ordenesCompra.php?id= $idLast");
 }
     

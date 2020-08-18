@@ -36,7 +36,13 @@
 </html>
 <?php
 require '../../../../database.php';
-    
+require '../../seguridad/controllers/functions/Auditoria.php';
+
+session_start();
+
+$producto = $conn->query("SELECT * FROM productos WHERE idproducto=".$_POST['idProductoinsert'])->fetchAll(PDO::FETCH_OBJ);
+$proveedor = $conn->query("SELECT * FROM proveedores WHERE idproveedor=".$_POST['proveedor'])->fetchAll(PDO::FETCH_OBJ);
+
     $productoHasYaAsignado = $conn->query("SELECT * FROM producto_has_proveedor WHERE idproducto_has=".$_POST['idProductoinsert']." AND idproveedor_has=".$_POST['proveedor'])->rowCount();
     
     //PRODUCTO YA TIENE ASIGNADO ESTE PROVEEDOR
@@ -51,6 +57,8 @@ require '../../../../database.php';
             $stmt->bindParam(':idproducto_has', $_POST['idProductoinsert']);
             $stmt->bindParam(':idproveedor_has', $_POST['proveedor']);
             if($stmt->execute()){
+                $auditoria = new Auditoria(utf8_decode('Registro'), 'Suministros',utf8_decode("Se registro un nuevo proveedor ".$proveedor[0]->razon_social_empresa_pro." del producto ".$producto[0]->nombre_pr),$_SESSION['user_id'],null);
+                $auditoria->Registro($conn);
                 header("Location:../routes/informacionProducto.php?id=".$_POST['idProductoinsert']);
             }
         }else{
@@ -64,6 +72,8 @@ require '../../../../database.php';
             $stmt->bindParam(':idproveedor_has',$_POST['proveedor']);
             $stmt->bindValue(':deleted', 0, PDO::PARAM_INT);
             if($stmt->execute()){
+                $auditoria = new Auditoria(utf8_decode('Registro'), 'Suministros',utf8_decode("Se registro un nuevo proveedor ".$proveedor[0]->razon_social_empresa_pro." del producto ".$producto[0]->nombre_pr),$_SESSION['user_id'],null);
+                $auditoria->Registro($conn);
                 header("Location:../routes/informacionProducto.php?id=".$_POST['idProductoinsert']);
             }
     }

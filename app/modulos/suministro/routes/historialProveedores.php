@@ -61,7 +61,9 @@ $proveedor = $conn->query("SELECT * FROM proveedores WHERE deleted = 1 ORDER BY 
                         <span class="side-stick"></span>
                         <h5 class="note-title mb-0"><?php echo $Proveedores->razon_social_empresa_pro?></h5>
                         <p class="note-date font-12 text-muted"><?php echo $Proveedores->numero_identificacion_pro?></br> <?php echo $Proveedores->nombre_representante_legal_pro?></p>
-                        <p class="text-right" style="font-size:14px;"><button type="button" style="width:80px; font-size:10px;" class="btn btn-light" data-toggle="modal" data-target="#modal-delete" onclick="eliminarProveedor('<?php echo $Proveedores->idproveedor?>')">PUBLICAR DE NUEVO</button></p>
+                        <?php if(verificarAccion($conn, "modulo_suministros", "insertar") == true):?>
+                            <p class="text-right" style="font-size:14px;"><button type="button" style="width:80px; font-size:10px;" class="btn btn-light" data-toggle="modal" data-target="#modal-delete" onclick="eliminarProveedor('<?php echo $Proveedores->idproveedor?>')">PUBLICAR DE NUEVO</button></p>
+                        <?php endif;?>
                         
                         <div class="note-content">
                             <p class="note-inner-content text-muted" data-notecontent="Blandit tempus porttitor aasfs. Integer posuere erat a ante venenatis.">
