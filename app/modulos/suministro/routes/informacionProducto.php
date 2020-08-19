@@ -22,11 +22,20 @@ $proveedor = $conn->query("SELECT * FROM proveedores WHERE deleted = 0 ORDER BY 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
     <link href="../assets/styles/dashboard.css" rel="stylesheet">
+    <script>
+    UPLOADCARE_LOCALE= "es";
+    UPLOADCARE_LIVE = false;
+    UPLOADCARE_PUBLIC_KEY = 'b13b5f41f1fe1f9f8b50';
+    UPLOADCARE_PREVIEW_STEP = true;
+    UPLOADCARE_TABS = "file url";
+  </script>
+
+  <script src="https://ucarecdn.com/libs/widget/3.x/uploadcare.full.min.js"></script>
   </head>
   <body>
 <?php
 printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventario.php','productos.php', 'nuevoProducto.php',
-'historialProductos.php','historialOrdenCompra.php','nuevaOrdenCompra.php','listaOrdenesCompra.php','proveedores.php','../../seguridad/controllers/logout.php','../../seguridad/routes/perfil.php',
+'historialProductos.php','historialOrdenCompra.php','nuevaOrdenCompra.php','listaOrdenesCompra.php','proveedores.php','historialDistribucion.php','../../seguridad/controllers/logout.php','../../seguridad/routes/perfil.php',
 '../../recursoshumanos/','../index.php','../../contabilidad/','../../citasmedicas/','../../pacientes/','../../seguridad/',4);
 ?>
 <div class="container-fluid">
@@ -68,14 +77,20 @@ printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventa
             <label class="font-weight-bold">Producto</label>
                 <img src="<?php echo $producto[0]->img_pr?>" id="imgProducto" alt="194x228" class="rounded mx-auto d-block"> 
             <hr class="mt-1 mb-4 mr-5">
-            <label class="font-weight-bold">Cambia la imagen del producto si deseas<span class="text-warning">campo no requerido</span></label>
+            <div class="form-group col-md-12 mt-2" style="margin-top:23px;" id="imageEdit">
+                    <label class="font-weight-bold">Selecciona una imagen del producto si deseas cambiarla <span class="text-warning">campo no requerido</span></label>
+                        <div class="custom-file" style="margin-top:13px;">
+                            <input type="hidden"  name="img_Product" id="img_Product" role="uploadcare-uploader" data-crop="" data-clearable="true" data-images-only >
+                        </div>
+                    </div>
+            <!-- <label class="font-weight-bold">Cambia la imagen del producto si deseas<span class="text-warning">campo no requerido</span></label>
             <div class="form-row">
                 <div class="form-group col-md-6 mt-2">
                     <div class="custom-file" style="margin-top:13px;">
                         <input name="img_Product" id="img_Product" type="file" class="form-control mt-2" onchange="return validarExtImg(this);" accept="image/jpg, image/jpeg, image/png" aria-describedby="inputGroupFileAddon01">
                     </div>
                 </div>
-            </div>
+            </div> -->
             <hr class="mt-1 mb-4 mr-5">
             <div class="form-row">
             <input type="hidden" name="type" value="1">

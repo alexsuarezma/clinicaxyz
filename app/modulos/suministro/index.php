@@ -26,7 +26,7 @@ verificarAcceso("../../../", "modulo_suministros");
   <body>
   <?php
     printLayout ('ico/farma.ico','index.php', '../../../index.php','routes/inventario.php','routes/productos.php', 'routes/nuevoProducto.php',
-    'routes/historialProductos.php','routes/historialOrdenCompra.php','routes/nuevaOrdenCompra.php','routes/listaOrdenesCompra.php','routes/proveedores.php','../seguridad/controllers/logout.php','../seguridad/routes/perfil.php',
+    'routes/historialProductos.php','routes/historialOrdenCompra.php','routes/nuevaOrdenCompra.php','routes/listaOrdenesCompra.php','routes/proveedores.php','routes/historialDistribucion.php','../seguridad/controllers/logout.php','../seguridad/routes/perfil.php',
     '../recursoshumanos/','index.php','../contabilidad/','../citasmedicas/','../pacientes/','../seguridad/',1);
 ?>
 <div class="container-fluid">

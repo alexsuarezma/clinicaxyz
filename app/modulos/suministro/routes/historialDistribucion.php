@@ -2,11 +2,12 @@
 require '../../../../database.php';
 require '../components/layout.php';
 require '../../recursoshumanos/components/modal.php';
-require '../controllers/functions/credenciales.php';
+require '../../seguridad/controllers/functions/credenciales.php';
 
-verificarAcceso("../../../../", "modulo_seguridad");
+verificarAcceso("../../../../", "modulo_suministros");
 
-$auditoria = $conn->query("SELECT * FROM auditoria ORDER BY created_at DESC")->fetchAll(PDO::FETCH_OBJ);
+$orden = $conn->query("SELECT * FROM orden_distribucion AS od, productos AS p WHERE (od.id_producto_od=p.idproducto) ORDER BY nombre_pr ASC")->fetchAll(PDO::FETCH_OBJ);
+
 
 ?>
 
@@ -16,22 +17,23 @@ $auditoria = $conn->query("SELECT * FROM auditoria ORDER BY created_at DESC")->f
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
-    <title> Seguridad | Auditoria</title>
+    <title> Suministro | Distribucion</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
     <link href="../assets/styles/dashboard.css" rel="stylesheet">
   </head>
   <body>
 <?php
-printLayout('../index.php', '../../../../index.php', 'credencial.php', 'scopes.php', 'usuarios.php', 'cargos.php', 'auditoria.php', '../controllers/logout.php',
-'perfil.php','../../recursoshumanos/','../../suministro/','../../contabilidad/','../../citasmedicas/','../../pacientes/','../../seguridad/',6);
+printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventario.php','productos.php', 'nuevoProducto.php',
+'historialProductos.php','historialOrdenCompra.php','nuevaOrdenCompra.php','listaOrdenesCompra.php','proveedores.php','historialDistribucion.php','../../seguridad/controllers/logout.php','../../seguridad/routes/perfil.php',
+'../../recursoshumanos/','../index.php','../../contabilidad/','../../citasmedicas/','../../pacientes/','../../seguridad/',10);
 ?>
 <div class="container-fluid">
   <div class="row">
 
     <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
       <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">AUDITORIA</h1>
+        <h1 class="h2">DISTRIBUCIÓN DE PRODUCTOS A DEPARTAMENTOS</h1>
         <div class="btn-toolbar mb-2 mb-md-0">
           <div class="btn-group mr-2">
             <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
@@ -49,25 +51,23 @@ printLayout('../index.php', '../../../../index.php', 'credencial.php', 'scopes.p
           <table class="table colored-header datatable project-list">
             <thead>
                 <tr>
-                    <th style="width:40px;">Acción</th>
-                    <th style="width:80px;">Modulo</th>
-                    <th style="width:160px;">Descripcion</th>
-                    <th style="width:40px;">Usuario</th>
-                    <th style="width:40px;">Credencial</th>
-                    <th style="width:80px;">Fecha</th>
+                    <th style="width:40px;">Id Orden</th>
+                    <th style="width:80px;">Producto</th>
+                    <th style="width:40px;">Cantidad</th>
+                    <th style="width:40px;">Departamento</th>
+                    <th style="width:160px;">Detalle</th>
+                    <th style="width:80px;">Fecha de emisión</th>
                   </tr>
             </thead>
             <tbody>
-            <?php foreach($auditoria as $Auditorias):
-                    $user = $conn->query("SELECT * FROM empleados WHERE id_usuario_emp=".$Auditorias->usuario)->fetchAll(PDO::FETCH_OBJ);
-              ?>
+            <?php foreach($orden as $Ordenes):?>
                 <tr>
-                    <td><?php echo utf8_encode($Auditorias->accion);?></td>
-                    <td><?php echo utf8_encode($Auditorias->modulo);?></td>
-                    <td><?php echo utf8_encode($Auditorias->descripcion);?></td>
-                    <td><?php echo utf8_encode($user[0]->nombres." ".$user[0]->apellidos);?></td>
-                    <td><?php echo utf8_encode($Auditorias->credencial);?></td>
-                    <td><?php echo utf8_encode($Auditorias->created_at);?></td>
+                    <td><?php echo $Ordenes->id_orden_distribucion;?></td>
+                    <td><?php echo utf8_decode(utf8_encode($Ordenes->nombre_pr));?></td>
+                    <td><?php echo $Ordenes->cantidad;?></td>
+                    <td><?php echo utf8_decode(utf8_encode($Ordenes->departamento));?></td>
+                    <td><?php echo utf8_decode(utf8_encode($Ordenes->detalle));?></td>
+                    <td><?php echo $Ordenes->created_at;?></td>
                 </tr>
             <?php endforeach;?>
             </tbody>
