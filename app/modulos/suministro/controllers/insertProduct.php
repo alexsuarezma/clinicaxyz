@@ -42,25 +42,13 @@ require '../../seguridad/controllers/functions/Auditoria.php';
 
 session_start();
 
+
 $productoDuplicado = $conn->query("SELECT * FROM productos WHERE codigo_barra_pr =".$_POST['codigoBarra'])->rowCount();
 
     if($productoDuplicado > 0){
         echo "<script language='javascript'>$('#productoDuplicado').modal('show');</script>"; 
     
     }else{
-    
-        $ruta = "../assets/static/imgproducts/";
-        $archivo = $ruta.$_FILES["img_Product"]["name"];
-        if(!file_exists($ruta)){
-            mkdir($ruta);
-        }
-        
-        if(!file_exists($archivo)){
-            $resultado = @move_uploaded_file($_FILES["img_Product"]["tmp_name"],$archivo);
-            if($resultado){//seguardo
-            }else{//nose guardo
-            }
-        }else{echo "ya existe";}
         
         $sql = "INSERT INTO productos (codigo_barra_pr,nombre_pr,descripcion_pr,precio_unitario_pr,fecha_elaboracion_pr,fecha_caducidad_pr,idcategoria_pr,deleted,img_pr) VALUES (:codigo_barra_pr,:nombre_pr,:descripcion_pr,:precio_unitario_pr,:fecha_elaboracion_pr,:fecha_caducidad_pr,:idcategoria_pr,:deleted,:img_pr)";                    
         $stmt = $conn->prepare($sql);                              
@@ -72,7 +60,7 @@ $productoDuplicado = $conn->query("SELECT * FROM productos WHERE codigo_barra_pr
         $stmt->bindParam(':fecha_caducidad_pr', $_POST['fechaCaducidad']);
         $stmt->bindParam(':idcategoria_pr', $_POST['categoria']);
         $stmt->bindValue(':deleted', 0, PDO::PARAM_INT);
-        $stmt->bindParam(':img_pr', $archivo);
+        $stmt->bindParam(':img_pr', $_POST['img_Product']);
         
         if($stmt->execute()){
             $id = $conn->lastInsertId();

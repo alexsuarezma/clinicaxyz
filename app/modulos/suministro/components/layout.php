@@ -1,11 +1,11 @@
 <?php
 function printLayout ($img,$route,$homePage,$inventario,$products,$nuevoProducts,$historialProducts,$ordeneCompra,$nuevaOrdenCompra,
-$historialOrdenCompra,$provee,$logout,$ajuste,$rrhh,$suministro,$contabilidad,$ctas_medicas,$paciente,$seguridad,$active){
+$historialOrdenCompra,$provee,$ordenesDistribucion,$logout,$ajuste,$rrhh,$suministro,$contabilidad,$ctas_medicas,$paciente,$seguridad,$active){
 
-    $routes[8]= [];
+    $routes[9]= [];
   
 
-    for ($i = 0; $i < 9; $i++) {
+    for ($i = 0; $i < 10; $i++) {
       if($active==($i+1)){
         $routes[$i]="active";
       }else{
@@ -163,12 +163,12 @@ $historialOrdenCompra,$provee,$logout,$ajuste,$rrhh,$suministro,$contabilidad,$c
 
         echo "</a>
         </li></div>";
-      // echo "<li class='nav-item'>";
-      // echo "<a class='nav-link $routes[5]' href=$historialPersonal>";
-      // echo "<span data-feather='file-text'></span>";
-      // echo "Historial de personal";
-      // echo "</a>";
-      // echo "</li>";
+      echo "<li class='nav-item'>";
+      echo "<a class='nav-link $routes[9]' href=$ordenesDistribucion>";
+      echo "<span data-feather='file-text'></span>";
+      echo "Ordenes de Distribución";
+      echo "</a>";
+      echo "</li>";
       // echo "<li class='nav-item'>";
       // echo "<a class='nav-link' href='#'>";
       // echo "<span data-feather='file-text'></span>";
