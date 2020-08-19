@@ -33,7 +33,7 @@ if($stmt->execute()){
         $idLast = $conn->lastInsertId();
         $auditoria = new Auditoria(utf8_decode('Registro'), 'Suministros',utf8_decode("Se registro una Orden de Distribución: #".$idLast),$_SESSION['user_id'],null);
         $auditoria->Registro($conn);
-        header('Location: http://localhost:8000/orden_distribucion.php?order='.$idLast);
+        header('Location: http://clinicavitaliacontratos.herokuapp.com/orden_distribucion.php?order='.$idLast);
     }
 }
 
