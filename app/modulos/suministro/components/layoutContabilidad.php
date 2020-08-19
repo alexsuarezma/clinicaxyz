@@ -7,8 +7,7 @@ function printLayout (){
       echo "<nav class='navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow'>";
       echo "<a class='navbar-brand col-md-3 col-lg-2 mr-0 px-3' href='../../contabilidad/'>";
       echo "<img src='../../../../clinicavitalia.ico' width='25px;' class='mr-3'>";
-      echo "<span className='font-weight-bold'>Modulo </span>";
-      echo "<span className='font-weight-ligth'>Contabilidad</span>";
+      
       echo "</a>";
       echo "<button class='navbar-toggler position-absolute d-md-none collapsed' type='button' data-toggle='collapse' data-target='#sidebarMenu' aria-controls='sidebarMenu' aria-expanded='false' aria-label='Toggle navigation'>";
       echo "    <span class='navbar-toggler-icon'></span>";
@@ -64,19 +63,19 @@ function printLayout (){
       echo "<li class='nav-item'>";
       echo "<a class='nav-link' href='../../contabilidad/index.php'>";
       echo "<span data-feather='home'></span>";
-      echo "Ingreso de Cuentas <span class='sr-only'>(current)</span>";
+      echo "Plan de Cuentas <span class='sr-only'>(current)</span>";
       echo "</a>";
       echo "</li>";
       echo "<li class='nav-item'>";
       echo "<a class='nav-link' href='../../contabilidad/ing-egre.php'>";
       echo "<span data-feather='users'></span>";
-      echo "Ingreso y Egresos de la Clinica";
+      echo "Ingresos de la Clinica";
       echo "</a>";
       echo "</li>";
       echo "<li class='nav-item'>";
-      echo "<a class='nav-link' href='#'>";
+      echo "<a class='nav-link' href='../../contabilidad/egre.php'>";
       echo "<span data-feather='layers'></span>";
-      echo "Customers";
+      echo "Egresos de la Clinica";
       echo "</a>";
       echo "</li>";
       echo "<li class='nav-item'>";
@@ -88,47 +87,16 @@ function printLayout (){
       endif;
       echo "</a>";
       echo "</li>";
-      echo "<li class='nav-item'>";
-      echo "<a class='nav-link' href='#'>";
+    echo "<li class='nav-item'>";
+      echo "<a class='nav-link' href='../../contabilidad/reporte.php'>";
       echo "<span data-feather='layers'></span>";
-      echo "Integrations";
+      echo "Reporte General de Cuentas";
       echo "</a>";
       echo "</li>";
-      echo "</ul>";
-      echo "<ul class='nav flex-column mb-2'>";
+      
+     
 
-      echo "<h6 class='sidebar-heading d-flex justify-content-start align-items-center px-3 mt-4 mb-2 text-muted'>";
-      echo "Saved Reports";
-      echo "<a class='d-flex align-items-center text-muted ml-5' href='#' aria-label='Add a new report'>";
-      echo "  <a data-toggle='collapse' href='#collapseExample' role='button' aria-expanded='false' aria-controls='collapseExample'>
-            <span data-feather='plus-circle'></span></a>";
-      echo "</a>";
-      echo "</h6>";
-
-      echo "<li class='nav-item'>";
-      echo "<a class='nav-link' href='#'>";
-      echo "<span data-feather='file-text'></span>";
-      echo "Current month";
-      echo "</a>";
-      echo "</li>";
-      echo "<li class='nav-item'>";
-      echo "<a class='nav-link' href='#'>";
-      echo "<span data-feather='file-text'></span>";
-      echo "Last quarter";
-      echo "</a>";
-      echo "</li>";
-      echo "<li class='nav-item'>";
-      echo "<a class='nav-link' href='#'>";
-      echo "<span data-feather='file-text'></span>";
-      echo "Social engagement";
-      echo "</a>";
-      echo "</li>";
-      echo "<li class='nav-item'>";
-      echo "<a class='nav-link' href='#'>";
-      echo "<span data-feather='file-text'></span>";
-      echo "Year-end sale";
-      echo "</a>";
-      echo "</li>";
+     
       echo "</ul>";
       echo "</div>";
       echo "</nav>";
