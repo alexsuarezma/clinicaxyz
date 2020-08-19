@@ -35,7 +35,7 @@
       }
     </style>
     <!-- Custom styles for this template -->
-     
+    
     <link href="dashboard/dashboard.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
     <?php require_once "scripts.php";  ?>
@@ -43,7 +43,7 @@
   </head>
   <body>
     <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-  <a class="navbar-brand col-md-3 col-lg-2 mr-0 px-3" href="#"><img src="img/clinicavitalia.ico" height= "100px"></a>
+  <a class="navbar-brand col-md-3 col-lg-2 mr-0 px-3" href="#"><img src="img/clinicavitalia.ico" height= "60px"></a>
   <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-toggle="collapse" data-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -69,21 +69,20 @@
           <li class="nav-item">
             <a class="nav-link active" href="index.php">
               <span data-feather="file"></span>
-              Ingreso de Cuentas
+              Plan de Cuentas
             </a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="ing-egre.php">
               <span data-feather="shopping-cart"></span>
               
-              Ingreso de la Clinica
+              Ingresos de la Clinica
             </a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="egre.php">
               <span data-feather="users"></span>
               Egresos de la Clinica
-             
             </a>
           </li>
           <li class="nav-item">
@@ -95,7 +94,7 @@
           <li class="nav-item">
             <a class="nav-link" href="reporte.php" target="_blank">
               <span data-feather="layers"></span>
-              Reporte de las Cuentas
+              Reporte General de Cuentas
             </a>
           </li>
         </ul>
@@ -108,29 +107,18 @@
         </h6>
         <ul class="nav flex-column mb-2">
           <li class="nav-item">
-            <a class="nav-link" href="#">
+            <a class="nav-link" href="reporte-ing.php" target="_blank">
               <span data-feather="file-text"></span>
-              Current month
+              Reporte Ingresos
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">
+            <a class="nav-link" href="reporte-egre.php" target="_blank">
               <span data-feather="file-text"></span>
-              Last quarter
+              Reporte Egresos
             </a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="file-text"></span>
-              Social engagement
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="file-text"></span>
-              Year-end sale
-            </a>
-          </li>
+          
         </ul>
       </div>
     </nav>
@@ -393,25 +381,7 @@ function SoloNumeros() {
 </script>
  <script type="text/javascript">
             
-          function ddlselect()
-          {
-            var d=document.getElementById("tip_cta");
-            var ing=document.getElementById("ing_cta");
-            var egre=document.getElementById("egre_cta");
-
-            var displaytext=d.options[d.selectedIndex].text;
-            if(displaytext=="Pasivo"){
-              ing.disabled = true;
-              ing.value ="";
-              egre.disabled = false;
-            }
-            else if(displaytext=="Activo"){
-              ing.disabled = false;
-              egre.value = "";
-              egre.disabled = true;
-            }
-            document.getElementById("tipo_cta").value=displaytext;
-          }
+          
 
           
             
@@ -424,7 +394,7 @@ function SoloNumeros() {
             
             var displaytext=dU.options[dU.selectedIndex].text;
             if(displaytext=="Pasivo"){
-              ingU.disabled = true;
+              i
               ingU.value =0;
               egreU.disabled = false;
             }
@@ -435,5 +405,31 @@ function SoloNumeros() {
             }
             document.getElementById("tipo_ctaU").value=displaytext;
           }
+
+
+
+          function ddlselect()
+          {
+            var ing=document.getElementById("ing_cta");
+            var egre=document.getElementById("egre_cta");
+            var d=document.getElementById("tip_cta");
+            var displaytext=d.options[d.selectedIndex].text;
+            if(displaytext=="Pasivo"){
+              
+              ing.
+              ing.value =0;
+              egre.readonly = false;
+            }
+            else if(displaytext=="Activo"){
+              ing.disabled = false;
+              egre.value = 0;
+              egre.disabled = true;
+            }
+            document.getElementById("tipo_cta").value=displaytext;
+          }
+
+          
+            
+          
 
           </script>

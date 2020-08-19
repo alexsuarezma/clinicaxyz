@@ -54,10 +54,10 @@ $conn=null;
     <!-- Custom styles for this template -->
     
     
-    
+   
     <link href="dashboard/dashboard.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
-    <?php require_once "scripts.php";  ?>
+     <?php require_once "scripts.php";  ?>
   </head>
   <body>
     <div>
@@ -94,16 +94,16 @@ $conn=null;
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link active" href="ing-egre.php" >
+            <a class="nav-link" href="ing-egre.php" >
               <span data-feather="shopping-cart"></span>
               
               Ingresos de la Clinica
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="egre.php">
+            <a class="nav-link active" href="#">
               <span data-feather="users"></span>
-              Egresos de la Clinica
+              Egresos de la Cinica
             </a>
           </li>
           <li class="nav-item">
@@ -166,24 +166,12 @@ $conn=null;
           </div>
           
           <div class="card-body">
-            <hr>
+                        <hr>
             <div id="tablaDatatable"></div>
             <div id="buton">
-            <a href="reporte.php" target="_blank"><button type="button"  id="btnReporte" class="btn btn-primary"  value="ir" >Generar Reporte</button></a>
+            <a href="reporte-egre.php" target="_blank"><button type="button"  id="btnReporte" class="btn btn-primary"  value="ir" >Generar Reporte</button></a>
           </div>
           </div>
-          
-          
-         
-       
-                   
-       
-          
-            
-           
-       
-
-        
           <div class="card-footer text-muted">
 
 </br>
@@ -280,14 +268,13 @@ $conn=null;
           <button type="button" class="btn btn-warning" id="btnActualizar">Actualizar</button>
         </div>
       </div>
-      
     </div>
-   
+
   </div>
-  
+      
 
 
-  
+
 
 
 
@@ -340,7 +327,7 @@ $conn=null;
 </script>
 <script type="text/javascript">
   $(document).ready(function(){
-    $('#tablaDatatable').load('tabla-egre.php');
+    $('#tablaDatatable').load('tabla-egree.php');
   });
 </script>
 
@@ -365,28 +352,7 @@ $conn=null;
 
   
 
-  function eliminarDatos(idcta){
-    alertify.confirm('Eliminar una cta', '¿Seguro de eliminar esta cta :(?', function(){ 
-
-      $.ajax({
-        type:"POST",
-        data:"idcta=" + idcta,
-        url:"procesos/eliminar.php",
-        success:function(r){
-          if(r==1){
-            $('#tablaDatatable').load('tabl-egre.php');
-            alertify.success("Eliminado con exito !");
-          }else{
-            alertify.error("No se pudo eliminar...");
-          }
-        }
-      });
-
-    }
-    , function(){
-
-    });
-  }
+  
 
 //Agregue esto--------------------------------------------------------
   function soloLetras(e) {

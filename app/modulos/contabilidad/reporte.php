@@ -7,17 +7,18 @@ class PDF extends FPDF
 function Header()
 {
   
+    $this->Image('img/clinicavitalia.jpg') ; 
     // Arial bold 15
-    $this->SetFont('Arial','B',15);
+    $this->SetFont('Arial','B',16);
     // Movernos a la derecha
     $this->Cell(80);
     // Título
-    $this->Cell(45,10,'Registro de Cuentas',0,0,'C');
+    $this->Cell(45,10,'Reporte de Cuentas',0,0,'C');
     // Salto de línea
     $this->Ln(20);
 
-    $this->Cell(25, 10, 'Codigo',1, 0, 'C', 0);
-    $this->Cell(75, 10, 'Nombre',1, 0, 'C', 0);
+    $this->Cell(20, 10, 'Codigo',1, 0, 'C', 0);
+    $this->Cell(80, 10, 'Nombre',1, 0, 'C', 0);
     $this->Cell(30, 10, 'Tipo',1, 0, 'C', 0);
     $this->Cell(30, 10, 'Ingresos',1, 0, 'C', 0);
     $this->Cell(30, 10, 'Egresos',1, 1, 'C', 0);
@@ -42,14 +43,21 @@ $resultado = $mysqli->query($consulta);
 $pdf = new PDF();
 $pdf->AliasNbPages();
 $pdf->AddPage();
-$pdf->SetFont('Arial','',12);
+$pdf->SetFont('Arial','',11);
+$totalIngreso = 0;
+$totalEgreso = 0;
 while($row = $resultado->fetch_assoc()){
-    $pdf->Cell(25, 10, $row['cod_cta'],1, 0, 'C', 0);
-    $pdf->Cell(75, 10, $row['nom_cta'],1, 0, 'C', 0);
+    $pdf->Cell(20, 10, $row['cod_cta'],1, 0, 'C', 0);
+    $pdf->Cell(80, 10,utf8_decode( $row['nom_cta']),1, 0, 'C', 0);
     $pdf->Cell(30, 10, $row['tipo_cta'],1, 0, 'C', 0);
     $pdf->Cell(30, 10, $row['ing_cta'],1, 0, 'C', 0);
     $pdf->Cell(30, 10, $row['egre_cta'],1, 1, 'C', 0);
+    $totalIngreso += $row['ing_cta'];
+    $totalEgreso += $row['egre_cta'];
 }
+$pdf->Cell(130,10,"Totales",1,0,'C',0);
+$pdf->Cell(30,10,$totalIngreso,1,0,'C',0);
+$pdf->Cell(30,10,$totalEgreso,1,0,'C',0);
 $pdf ->Output();
 ?>
 
