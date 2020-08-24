@@ -51,7 +51,7 @@ $conn = null;
   <div class="container mt-5 mb-5">
         <div class="shadow-none p-3 mb-5 bg-light rounded">
         <h2 class="mt-5 mb-5" style="text-align:center;">Registrate</h2>
-            <form id="form" method="POST" action="../controllers/crearPaciente.php" class="ml-4 mr-4 mb-5">
+            <form id="form" onsubmit="onSubmit(event)" method="POST" action="../controllers/crearPaciente.php" class="ml-4 mr-4 mb-5">
                 <label class="font-weight-bold">Información de la cuenta de usuario</label>
                 <hr class="mt-1 mb-4 mr-5">
                 <div class="form-row">
@@ -300,11 +300,11 @@ $conn = null;
                 <div class="form-row">
                     <div class="form-group col-md-4 mt-2 ml-2">
                       <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" id="discapacidad1" name="poseeDiscapacidad[]" class="custom-control-input" onchange="esDiscapacitado(this,'carnetConadis', 'discapacidad', 'grado')" value="si">
+                        <input type="radio" id="discapacidad1" name="poseeDiscapacidad" class="custom-control-input" onchange="esDiscapacitado(this,'carnetConadis', 'discapacidad', 'grado')" value="si">
                         <label class="custom-control-label" for="discapacidad1">Si</label>
                       </div>
                       <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" id="discapacidad2" name="poseeDiscapacidad[]" class="custom-control-input" onchange="esDiscapacitado(this,'carnetConadis', 'discapacidad', 'grado')" value="no" checked>
+                        <input type="radio" id="discapacidad2" name="poseeDiscapacidad" class="custom-control-input" onchange="esDiscapacitado(this,'carnetConadis', 'discapacidad', 'grado')" value="no" checked>
                         <label class="custom-control-label" for="discapacidad2">No</label>
                       </div>
                     </div>                  

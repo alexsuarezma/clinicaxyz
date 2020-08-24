@@ -178,6 +178,12 @@ function esAfiliado(input,print){
   }
   if(input.value == "no"){
     document.getElementById(print).style.display = "none";
+    document.getElementById('privada').checked = false;
+    document.getElementById('publica').checked = false;
+    document.getElementById('afiliacionPublica').value = "";
+    document.getElementById('afiliacionPublica').disabled = true;
+    document.getElementById('afiliacionPrivada').value = "";
+    document.getElementById('afiliacionPrivada').disabled = true;
   }
 }
 

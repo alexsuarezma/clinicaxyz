@@ -2,21 +2,16 @@
 require '../../../../database.php';
 date_default_timezone_set('America/Guayaquil');
 extract($_REQUEST);
-// echo '<br>';
 
-// var_dump($_POST);
-// die;
 $created = date("Y-m-d H:i:s");
-  
+
 //BUSCAR PRIMERO SI LA CEDULA YA ESTA REGISTRADA!!!!! Y LUEGO REGISTRAR AL USUARIO
 $paciente = $conn->query("SELECT * FROM pacientes WHERE idpacientes = ".$cedula)->rowCount();
     
 if($paciente>0){
   echo false;
 }else{
-  // var_dump($_POST['provincia']);
-  // var_dump($provincia);
-  // die;
+
     $sql = "INSERT INTO usuario (username, password) VALUES (:username,:password)";
     $stmt = $conn->prepare($sql);
     $stmt->bindParam(':username', $username);
@@ -32,9 +27,9 @@ if($paciente>0){
         $stmt->bindParam(':id_usuario_uc', $id);
         $stmt->bindValue(':id_credencialbase_uc', 18, PDO::PARAM_INT);
         $stmt->execute();
-    
+        
            //REGISTRAR PACIENTE
-           $sql = "INSERT INTO pacientes (idpacientes,ape_paterno,ape_mat,nombres,ocupacion_paciente,sexo,f_nacimiento,zona,correo,ciudad,afiliacion_publica,afiliacion_privada,id_usuario_pac,created_at,updated_at) VALUES (:idpacientes,:ape_paterno,:ape_mat,:nombres,:ocupacion_paciente,:sexo,:f_nacimiento,:zona,:ciudad,:correo,:afiliacion_publica,:afiliacion_privada,:id_usuario_pac,:created_at,:updated_at)";
+           $sql = "INSERT INTO pacientes (idpacientes,ape_paterno,ape_mat,nombres,ocupacion_paciente,sexo,f_nacimiento,zona,correo,ciudad,afiliacion_publica,afiliacion_privada,id_usuario_pac,created_at,updated_at) VALUES (:idpacientes,:ape_paterno,:ape_mat,:nombres,:ocupacion_paciente,:sexo,:f_nacimiento,:zona,:correo,:ciudad,:afiliacion_publica,:afiliacion_privada,:id_usuario_pac,:created_at,:updated_at)";
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(':idpacientes', $cedula);
             $stmt->bindParam(':ape_paterno', $apellidoPaterno);
@@ -45,7 +40,6 @@ if($paciente>0){
             $stmt->bindParam(':f_nacimiento', $fechaNacimiento);
             $stmt->bindParam(':zona', $zona);
             $stmt->bindParam(':correo', $email);                  
-            // $stmt->bindParam(':provincia', $provincia);
             $stmt->bindParam(':ciudad', $ciudad);
             $stmt->bindParam(':id_usuario_pac', $id);
             $stmt->bindParam(':afiliacion_publica', $afiliacionPublica);

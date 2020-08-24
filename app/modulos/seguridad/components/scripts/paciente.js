@@ -16,7 +16,7 @@ function registrarPaciente(){
             $("#icon-message").html( iconError );
             $("#message").html("<span class='text-danger'>Hubo un error en el registro</span>, probablemente ya te encuentres registrado. Intenta iniciando sesión");
             setTimeout(() => $('#modal-success').modal('hide'), 5000);
-            document.getElementById("form").reset();
+            // document.getElementById("form").reset();
         }
     })
 

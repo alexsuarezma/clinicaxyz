@@ -3,28 +3,56 @@ session_start();
 require '../../../../database.php';
 $message='';
 $pacient = false;
-
 $consulta = $conn->prepare("SELECT * FROM empleados WHERE id_usuario_emp = :id_usuario_emp");
 $consulta->bindParam(':id_usuario_emp', $_SESSION['user_id']);
 $consulta->execute();
 $resultado = $consulta->fetch(PDO::FETCH_ASSOC); 
 
 if(!$resultado){
-  $consulta = $conn->prepare("SELECT * FROM pacientes WHERE id_usuario_pac = :id_usuario_pac");
+  
+  $afiliacionPublica= '';
+  $afiliacionPrivada= '';
+  $carnetConadis = '';
+  $consulta = $conn->prepare("SELECT * FROM pacientes AS p, profesion_paciente AS pp, ciudades AS c WHERE (p.ocupacion_paciente=pp.idprofesion_paciente AND p.ciudad=c.idciudades) AND id_usuario_pac = :id_usuario_pac");
   $consulta->bindParam(':id_usuario_pac', $_SESSION['user_id']);
   $consulta->execute();
   $resultado = $consulta->fetch(PDO::FETCH_ASSOC); 
-  $pacient = true;
+
+  if($resultado['afiliacion_publica']!= null){
+    $afiliacionPublica = $conn->query("SELECT * FROM seguro_publico WHERE idseguro_public=".$resultado['afiliacion_publica'])->fetchAll(PDO::FETCH_OBJ);
+  }
   
+  if($resultado['afiliacion_privada']!= null){
+    $afiliacionPrivada =  $conn->query("SELECT * FROM seguro_privado WHERE idseguro_privado=".$resultado['afiliacion_privado'])->fetchAll(PDO::FETCH_OBJ);
+  }
+  
+  $carnetConadis =  $conn->query("SELECT * FROM conadis WHERE paciente=".$resultado['idpacientes'])->fetchAll(PDO::FETCH_OBJ);
+  
+  if(!$carnetConadis){
+    $carnetConadis = '';
+  }
+
+  $pacient = true;
+
+  $direccion = $conn->query("SELECT * FROM direccion_paciente WHERE id_pacientes_de=".$resultado['idpacientes']." ORDER BY tipo ASC")->fetchAll(PDO::FETCH_OBJ);
+
+  $profesion = $conn->query("SELECT * FROM profesion_paciente ORDER BY profesion ASC")->fetchAll(PDO::FETCH_OBJ);
+  $seguroPublico = $conn->query("SELECT * FROM seguro_publico ORDER BY descripcion ASC")->fetchAll(PDO::FETCH_OBJ);
+  $seguroPrivado = $conn->query("SELECT * FROM seguro_privado ORDER BY descripcion ASC")->fetchAll(PDO::FETCH_OBJ);
+  $discapacidad = $conn->query("SELECT * FROM discapacidades ORDER BY descripcion ASC")->fetchAll(PDO::FETCH_OBJ);
   $provincias = $conn->query("SELECT * FROM provincias ORDER BY nombre ASC")->fetchAll(PDO::FETCH_OBJ);
+  $ciudades = $conn->query("SELECT * FROM ciudades ORDER BY nombre ASC")->fetchAll(PDO::FETCH_OBJ);
 }
 
   if(isset($_POST['changedUserName'])){
-    $sql = "UPDATE usuario SET username=:username WHERE id_usuario = :id_usuario";
+    $sql = "UPDATE usuario SET username=:username WHERE id_usuario=:id_usuario";
     $stmt = $conn->prepare($sql);
     $stmt->bindParam(':username', $_POST['username']);
     $stmt->bindParam(':id_usuario',  $_SESSION['user_id']);
-    $stmt->execute();
+    
+    if($stmt->execute()){
+      $_SESSION['username']= $_POST['username'];
+    }
   }
 
   //CAMBIAR CONTRASEÑA
@@ -232,21 +260,21 @@ $conn=null;
                 <div class="form-row">
                   <div class="form-group col-md-6">
                     <label for="name">Nombres</label>
-                    <input type="text" class="form-control" onkeypress="return soloLetras(event)" name="name" id="name" value="<?php echo $resultado['nombres']?>" required>
+                    <input type="text" class="form-control" onkeypress="return soloLetras(event)" name="name" id="name" value="<?php echo $resultado['nombres']?>" readonly required>
                   </div>
                   <div class="form-group col-md-3">
                     <label for="apellidoPaterno">Apellido Paterno</label>
-                    <input type="text" class="form-control" onkeypress="return soloLetras(event)" name="apellidoPaterno" id="apellidoPaterno" value="<?php echo $resultado['ape_paterno']?>" required>
+                    <input type="text" class="form-control" onkeypress="return soloLetras(event)" name="apellidoPaterno" id="apellidoPaterno" value="<?php echo $resultado['ape_paterno']?>" readonly required>
                   </div>
                   <div class="form-group col-md-3">
                     <label for="apellidoMaterno">Apellido Materno</label>
-                    <input type="text" class="form-control" onkeypress="return soloLetras(event)" name="apellidoMaterno" id="apellidoMaterno" value="<?php echo $resultado['ape_mat']?>" required>
+                    <input type="text" class="form-control" onkeypress="return soloLetras(event)" name="apellidoMaterno" id="apellidoMaterno" value="<?php echo $resultado['ape_mat']?>" readonly required>
                   </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-6">
                         <label for="email">E-mail</label>
-                        <input type="email" class="form-control"  onchange="validarEmail(this);" name="email" id="email" placeholder="ejemplo@gmail.com" value="<?php echo $resultado['correo']?>" required>
+                        <input type="email" class="form-control"  onchange="validarEmail(this);" name="email" id="email" placeholder="ejemplo@gmail.com" value="<?php echo $resultado['correo']?>" readonly required>
                         <div class="invalid-feedback">
                             Correo electrónico inválido.
                         </div>
@@ -256,22 +284,23 @@ $conn=null;
                     </div>
                     <div class="form-group col-md-6">
                         <label for="ocupacion">Ocupación</label>
-                        <select id="ocupacion" name="ocupacion" class="form-control" value="<?php echo $resultado['ocupacion']?>" >
-                          <option selected disabled value="">Seleccione...</option>
-                          <!-- <?php
-                            foreach ($ocupacion as $Ocupaciones):
+                        <select id="ocupacion" name="ocupacion" class="form-control">
+                          <option selected value="<?php echo $resultado['idprofesion_paciente']?>"><?php echo utf8_encode($resultado['profesion'])?></option>
+                          <option disabled value=""> Seleccione...</option>
+                          <?php
+                            foreach ($profesion as $Ocupaciones):
                           ?>
-                            <option value="<?php echo $Ocupaciones->idprovincias;?>"><?php echo utf8_encode($Ocupaciones->nombre);?></option>
+                            <option value="<?php echo $Ocupaciones->idprofesion_paciente;?>"><?php echo utf8_encode($Ocupaciones->profesion);?></option>
                           <?php 
                             endforeach;
-                          ?>  -->
+                          ?> 
                         </select>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-6">
                         <label for="fechaNacimiento">Fecha de Nacimiento</label>
-                        <input type="date" class="form-control" name="fechaNacimiento" id="fechaNacimiento" value="<?php echo $resultado['f_nacimiento']?>" required>
+                        <input type="date" class="form-control" name="fechaNacimiento" id="fechaNacimiento" value="<?php echo $resultado['f_nacimiento']?>" readonly required>
                     </div>
                     <div class="form-group col-md-4">
                     <label class="font-weight-bold">Sexo</label>
@@ -292,119 +321,286 @@ $conn=null;
                 <div class="form-row mb-3">
                   <div class="form-group col-md-4">
                     <label for="provincia">Provincia</label>
-                    <select id="provincia" name="provincia" class="form-control" value="<?php echo $resultado['provincia']?>" required>
-                      <option selected disabled value="">Seleccione...</option>
+                    <select id="provincia" name="provincia" class="form-control" required>
                       <?php
                         foreach ($provincias as $provinciasPaciente):
-                      ?>
-                        <option value="<?php echo $provinciasPaciente->idprovincias;?>"><?php echo utf8_encode($provinciasPaciente->nombre);?></option>
+                          ?>
+                          <?php if($provinciasPaciente->idprovincias==$resultado['provincia']):?>
+                            <option selected value="<?php echo $provinciasPaciente->idprovincias;?>"><?php echo utf8_encode($provinciasPaciente->nombre);?></option>
+                          <?php else:?>
+                            <option value="<?php echo $provinciasPaciente->idprovincias;?>"><?php echo utf8_encode($provinciasPaciente->nombre);?></option>
+                          <?php endif;?>
                       <?php 
                         endforeach;
-                      ?> 
+                        ?> 
                     </select>
                   </div>
                   <div class="form-group col-md-4" id="print-ciudades">
+                    <label for='ciudad'>Ciudad</label>
+                    <select id='ciudad' name='ciudad' class='form-control' required>
+                    <option selected value="<?php echo $resultado['ciudad']?>"><?php echo $resultado['nombre']?></option>
+                    <option disabled value=""> Seleccione...</option>
+                      <?php foreach ($ciudades as $ciudadesPaciente):?>
+                        <option value='<?php echo $ciudadesPaciente->idciudades?>'><?php echo utf8_encode($ciudadesPaciente->nombre)?></option>
+                      <?php  endforeach;?>
+                    </select>
                   </div>
                   <div class="form-group col-md-4">
                     <label for="zona">Zona</label>
-                    <input type="text" class="form-control" onkeypress="return soloLetras(event)" id="zona" name="zona" value="<?php echo $resultado['idpacientes']?>" required>
-                    <!-- <select id="zona" name="zona" class="form-control" value="<?php echo $resultado['idpacientes']?>" required>
-                      <option selected disabled value="">Seleccione...</option>
-                      <option value=""></option>
-                    </select> -->
+                    <input type="text" class="form-control" onkeypress="return soloLetras(event)" id="zona" name="zona" value="<?php echo $resultado['zona']?>" required>
                   </div>
                 </div>
                 <label class="font-weight-bold">Información de ubicación</label>
                 <hr class="mt-1 mb-4 mr-5">
                 <div class="form-row">
-                    <div class="form-group col-md-12">
-                        <label for="direccion">Dirección del domicilio</label>
-                        <input type="text" class="form-control" id="direccion" name="direccion" value="<?php echo $resultado['direccion']?>" required>
+                    <div class="form-group col-md-6">
+                        <label for="direccionDomicilio">Dirección del domicilio</label>
+                        <input type="text" class="form-control" id="direccionDomicilio" name="direccionDomicilio" value="<?php echo $direccion[1]->direccion?>" required>
                     </div>
+                    <div class="form-group col-md-3">
+                      <label for="telefonoDomicilio">Telefono</label>
+                      <input type="text" class="form-control"  onchange="validarTelefono(this);" onkeypress="return soloNumeros(event)" maxlength="7" id="telefonoDomicilio" name="telefonoDomicilio" value="<?php echo $direccion[1]->tlno_particular?>" required>
+                      <div class="invalid-feedback">
+                        Número fijo inválido. </br>
+                        ¡Debe ser un número teléfonico, tiene que tener 7 dígitos!
+                      </div>
+                      <div class="valid-feedback">
+                        Número fijo válido.
+                      </div>
+                  </div>
+                  <div class="form-group col-md-3">
+                      <label for="celularDomicilio">Celular</label>
+                      <input type="text" class="form-control"  onchange="validarCelular(this);" onkeypress="return soloNumeros(event)" maxlength="10" id="celularDomicilio" name="celularDomicilio" value="<?php echo $direccion[1]->tlno_personal?>"  required>
+                      <div class="invalid-feedback">
+                          Número celular inválido.</br>
+                          ¡El celular debe comenzar en 0, y contener 10 dígitos!
+                      </div>
+                      <div class="valid-feedback">
+                        Número celular válido.
+                      </div>
+                  </div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group col-md-12">
+                    <div class="form-group col-md-9">
                         <label for="direccionTrabajo">Dirección del lugar de trabajo</label>
-                        <input type="text" class="form-control" id="direccionTrabajo" name="direccionTrabajo" value="<?php echo $resultado['idpacientes']?>" required>
+                        <input type="text" class="form-control" id="direccionTrabajo" name="direccionTrabajo" value="<?php echo $direccion[2]->direccion?>"  required>
                     </div>
+                    <div class="form-group col-md-3">
+                      <label for="telefonoTrabajo">Telefono</label>
+                      <input type="text" class="form-control"  onchange="validarTelefono(this);" onkeypress="return soloNumeros(event)" maxlength="7" id="telefonoTrabajo" name="telefonoTrabajo" value="<?php echo $direccion[2]->tlno_particular?>"  required>
+                      <div class="invalid-feedback">
+                        Número fijo inválido. </br>
+                        ¡Debe ser un número teléfonico, tiene que tener 7 dígitos!
+                      </div>
+                      <div class="valid-feedback">
+                        Número fijo válido.
+                      </div>
+                  </div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group col-md-12">
+                    <div class="form-group col-md-9">
                         <label for="direccionAtencion">Dirección de atención medica</label>
-                        <input type="text" class="form-control" id="direccionAtencion" name="direccionAtencion" value="<?php echo $resultado['idpacientes']?>" required>
+                        <input type="text" class="form-control" id="direccionAtencion" name="direccionAtencion" value="<?php echo $direccion[0]->direccion?>" required>
                     </div>
+                  <div class="form-group col-md-3">
+                      <label for="telefonoAtencion">Telefono</label>
+                      <input type="text" class="form-control"  onchange="validarTelefono(this);" onkeypress="return soloNumeros(event)" maxlength="7" id="telefonoAtencion" name="telefonoAtencion" value="<?php echo $direccion[0]->tlno_particular?>"  required>
+                      <div class="invalid-feedback">
+                        Número fijo inválido. </br>
+                        ¡Debe ser un número teléfonico, tiene que tener 7 dígitos!
+                      </div>
+                      <div class="valid-feedback">
+                        Número fijo válido.
+                      </div>
+                  </div>
                 </div>
-                <div class="form-row">
-                    <div class="form-group col-md-6">
-                        <label for="telefono">Telefono</label>
-                        <input type="text" class="form-control"  onchange="validarTelefono(this);" onkeypress="return soloNumeros(event)" maxlength="7" id="telefono" name="telefono" value="<?php echo $resultado['tlno_particular']?>" required>
-                        <div class="invalid-feedback">
-                          Número fijo inválido. </br>
-                          ¡Debe ser un número teléfonico, tiene que tener 7 dígitos!
-                        </div>
-                        <div class="valid-feedback">
-                          Número fijo válido.
-                        </div>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="celular">Celular</label>
-                        <input type="text" class="form-control"  onchange="validarCelular(this);" onkeypress="return soloNumeros(event)" maxlength="10" id="celular" name="celular" value="<?php echo $resultado['tlno_personal']?>" required>
-                        <div class="invalid-feedback">
-                            Número celular inválido.</br>
-                            ¡El celular debe comenzar en 0, y contener 10 dígitos!
-                        </div>
-                        <div class="valid-feedback">
-                          Número celular válido.
-                        </div>
-                    </div>
-                 </div>
                 <hr class="mt-1 mb-4 mr-5">
-                <label class="font-weight-bold">¿Posee Afiliación al IESS?</label>
-                <div class="form-row">
-                    <div class="form-group col-md-4 mt-4 ml-2">
-                      <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" id="afiliado1" name="afiliado" class="custom-control-input" onchange="esAfiliado(this,'tipoAfiliacion');" value="si">
-                        <label class="custom-control-label" for="afiliado1">Si</label>
-                      </div>
-                      <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" id="adiliado2" name="afiliado" class="custom-control-input" onchange="esAfiliado(this,'tipoAfiliacion');" value="no" checked>
-                        <label class="custom-control-label" for="adiliado2">No</label>
-                      </div>
-                    </div>                  
-                    <div class="form-group col-md-4">
-                        <label for="tipoAfiliacion">Tipo Afiliación</label>
-                        <input class="form-control" id="tipoAfiliacion" name="tipoAfiliacion" required disabled="true">
+                <label class="font-weight-bold">¿Posee Afiliación?</label>
+                <?php if($resultado['afiliacion_privada'] == null && $resultado['afiliacion_privada'] == null):?>
+                    <div class="form-row">
+                      <div class="form-group col-md-4 mt-4 ml-2">
+                        <div class="custom-control custom-radio custom-control-inline">
+                          <input type="radio" id="afiliado1" name="afiliado" class="custom-control-input" onchange="esAfiliado(this,'afiliaciones');" value="si">
+                          <label class="custom-control-label" for="afiliado1">Si</label>
+                        </div>
+                        <div class="custom-control custom-radio custom-control-inline">
+                          <input type="radio" id="adiliado2" name="afiliado" class="custom-control-input" onchange="esAfiliado(this,'afiliaciones');" value="no" checked>
+                          <label class="custom-control-label" for="adiliado2">No</label>
+                        </div>
+                      </div>                  
                     </div>
-                </div>      
+                    <div id="afiliaciones" style="display:none;">
+                      <div class="form-row">
+                        <div class="form-group col-md-6">
+                          <div class="form-check form-check-inline mr-5 mt-4">
+                            <input class="form-check-input" type="checkbox" id="publica" value="publica" onchange="afiliacion(this,'afiliacionPublica');">
+                            <label class="form-check-label" for="publica">Afiliación Pública</label>
+                          </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                          <label for="afiliacionPublica">Afiliación Pública</label>
+                          <select id="afiliacionPublica" name="afiliacionPublica" class="form-control" disabled required>
+                              <option selected disabled value="">Seleccione...</option>                         
+                              <?php
+                              foreach ($seguroPublico as $ListaPublico):
+                                ?>
+                              <option value="<?php echo $ListaPublico->idseguro_publico;?>"><?php echo utf8_encode($ListaPublico->descripcion);?></option>
+                            <?php 
+                              endforeach;
+                            ?> 
+                          </select>
+                        </div>
+                      </div>
+                      <div class="form-row">
+                        <div class="form-group col-md-6">
+                          <div class="form-check form-check-inline mt-4">
+                            <input class="form-check-input" type="checkbox" id="privada" value="privada" onchange="afiliacion(this,'afiliacionPrivada');">
+                            <label class="form-check-label" for="privada">Afiliación Privada</label>
+                          </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                          <label for="afiliacionPrivada">Afiliación Privada</label>
+                          <select id="afiliacionPrivada" name="afiliacionPrivada" class="form-control" disabled required>
+                          <option selected disabled value="">Seleccione...</option>                         
+                            <?php
+                              foreach ($seguroPrivado as $ListaPrivado):
+                                ?>
+                              <option value="<?php echo $ListaPrivado->idseguro_privado;?>"><?php echo utf8_encode($ListaPrivado->descripcion);?></option>
+                            <?php 
+                              endforeach;
+                              ?> 
+                          </select>
+                        </div>
+                      </div>      
+                    </div>   
+                <?php else:?> 
+                    <div class="form-row">
+                      <div class="form-group col-md-6">
+                        <div class="form-check form-check-inline mr-5 mt-4">
+                        <?php if($resultado['afiliacion_publica'] == null):?>
+                          <input class="form-check-input" type="checkbox" id="publica" value="publica" onchange="afiliacion(this,'afiliacionPublica');">
+                          <label class="form-check-label" for="publica">Afiliación Pública</label>
+                        <?php endif;?>
+                        </div>
+                      </div>
+                      <div class="form-group col-md-6">
+                        <label for="afiliacionPublica">Afiliación Pública</label>
+                        <?php if($resultado['afiliacion_publica'] == null):?>
+                          <select id="afiliacionPublica" name="afiliacionPublica" class="form-control" disabled required>
+                          <option selected disabled value="">Seleccione...</option>                 
+                        <?php else: ?> 
+                          <select id="afiliacionPublica" name="afiliacionPublica" class="form-control" required>
+                          <option selected value="<?php $afiliacionPublica[0]->idseguro_publico?>"><?php $afiliacionPublica[0]->descripcion?></option>                 
+                        <?php endif;?>
+                                    
+                            <?php
+                            foreach ($seguroPublico as $ListaPublico):
+                              ?>
+                            <option value="<?php echo $ListaPublico->idseguro_publico;?>"><?php echo utf8_encode($ListaPublico->descripcion);?></option>
+                          <?php 
+                            endforeach;
+                          ?> 
+                        </select>
+                      </div>
+                    </div>
+                    <div class="form-row">
+                      <div class="form-group col-md-6">
+                        <div class="form-check form-check-inline mt-4">
+                        <?php if($resultado['afiliacion_privada'] == null):?>
+                          <input class="form-check-input" type="checkbox" id="privada" value="privada" onchange="afiliacion(this,'afiliacionPrivada');">
+                        <?php endif;?>
+                          <label class="form-check-label" for="privada">Afiliación Privada</label>
+                        </div>
+                      </div>
+                      <div class="form-group col-md-6">
+                        <label for="afiliacionPrivada">Afiliación Privada</label>
+                        <?php if($resultado['afiliacion_privada'] == null):?>
+                        <select id="afiliacionPrivada" name="afiliacionPrivada" class="form-control" disabled required>
+                        <option selected disabled value="">Seleccione...</option>                         
+                        <?php else:?>
+                          <select id="afiliacionPrivada" name="afiliacionPrivada" class="form-control" required>
+                          <option selected value="<?php $afiliacionPrivada[0]->idseguro_privado?>"><?php $afiliacionPrivada[0]->descripcion?></option>                        
+                        <?php endif;?>
+                          <?php
+                            foreach ($seguroPrivado as $ListaPrivado):
+                              ?>
+                            <option value="<?php echo $ListaPrivado->idseguro_privado;?>"><?php echo utf8_encode($ListaPrivado->descripcion);?></option>
+                          <?php 
+                            endforeach;
+                            ?> 
+                        </select>
+                      </div>
+                    </div>      
+                <?php endif; ?>
+
+
                 <hr class="mt-1 mb-4 mr-5">
                 <label class="font-weight-bold">¿Posee alguna discapacidad?</label>
-                <div class="form-row">
-                    <div class="form-group col-md-4 mt-2 ml-2">
-                      <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" id="discapacidad1" name="discapacidad" class="custom-control-input" onchange="esDiscapacitado(this,'carnetConadis', 'discapacidad', 'grado')" value="si">
-                        <label class="custom-control-label" for="discapacidad1">Si</label>
+                <?php if(!$carnetConadis):?>
+                  <div class="form-row">
+                      <div class="form-group col-md-4 mt-2 ml-2">
+                        <div class="custom-control custom-radio custom-control-inline">
+                          <input type="radio" id="discapacidad1" name="discapacidad" class="custom-control-input" onchange="esDiscapacitado(this,'carnetConadis', 'discapacidad', 'grado')" value="si">
+                          <label class="custom-control-label" for="discapacidad1">Si</label>
+                        </div>
+                        <div class="custom-control custom-radio custom-control-inline">
+                          <input type="radio" id="discapacidad2" name="discapacidad" class="custom-control-input" onchange="esDiscapacitado(this,'carnetConadis', 'discapacidad', 'grado')" value="no" checked>
+                          <label class="custom-control-label" for="discapacidad2">No</label>
+                        </div>
+                      </div>                  
+                  </div>      
+                  <div class="form-row">
+                      <div class="form-group col-md-3">
+                          <label for="carnetConadis">Carnet Conadis</label>
+                          <input type="text" class="form-control" id="carnetConadis" name="carnetConadis" required disabled="true">
                       </div>
-                      <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" id="discapacidad2" name="discapacidad" class="custom-control-input" onchange="esDiscapacitado(this,'carnetConadis', 'discapacidad', 'grado')" value="no" checked>
-                        <label class="custom-control-label" for="discapacidad2">No</label>
+                      <div class="form-group col-md-6">
+                          <label for="discapacidad">Discapacidad</label>
+                          <select id="discapacidad" name="discapacidad" class="form-control" disabled required>
+                        <option selected disabled value="">Seleccione...</option>
+                        <?php
+                          foreach ($discapacidad as $Discapacidad):
+                            ?>
+                          <option value="<?php echo $Discapacidad->iddiscapacidad;?>"><?php echo utf8_encode($Discapacidad->descripcion);?></option>
+                        <?php 
+                          endforeach;
+                          ?> 
+                      </select>
                       </div>
-                    </div>                  
-                </div>      
-                <div class="form-row">
-                    <div class="form-group col-md-3">
-                        <label for="carnetConadis">Carnet Conadis</label>
-                        <input type="text" class="form-control" id="carnetConadis" name="carnetConadis" value="<?php echo $resultado['idpacientes']?>" required disabled="true">
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="discapacidad">Discapacidad</label>
-                        <input type="text" class="form-control" onkeypress="return soloLetras(event)" id="discapacidad" name="discapacidad" required disabled="true">
-                    </div>
-                    <div class="form-group col-md-3">
-                        <label for="grado">Grado %</label>
-                        <input type="text" class="form-control" id="grado" name="grado" required disabled="true">
-                    </div>
-                 </div>
+                      <div class="form-group col-md-3">
+                          <label for="grado">Grado %</label>
+                          <select id="grado" name="grado" class="form-control" required disabled="true">
+                            <option selected disabled value="">Seleccione...</option>
+                              <option value="10">10%</option>
+                              <option value="15">15%</option>
+                              <option value="20">20%</option>
+                              <option value="40">40%</option>
+                              <option value="50">50%</option>
+                              <option value="80">80%</option>
+                          </select>
+                      </div>
+                  </div>
+                <?php else:?>
+                  <div class="form-row">
+                      <div class="form-group col-md-3">
+                          <label for="carnetConadis">Carnet Conadis</label>
+                          <input type="text" class="form-control" id="carnetConadis" name="carnetConadis" value="<?php echo $carnetConadis[0]->carnet?>" required disabled="true">
+                      </div>
+                      <div class="form-group col-md-5">
+                          <label for="discapacidad">Discapacidad</label>
+                          <input type="text" class="form-control" onkeypress="return soloLetras(event)" id="discapacidad" name="discapacidad" value="<?php echo $carnetConadis[0]->discapacidad?>" required disabled="true">
+                      </div>
+                      <div class="form-group col-md-3">
+                          <label for="grado">Grado %</label>
+                          <input type="text" class="form-control" id="grado" name="grado" value="<?php echo $carnetConadis[0]->grado?>" required disabled="true">
+                      </div>
+                      <div class="form-group col-md-5">
+                        <a href="../controllers/borrarCarnetPaciente.php?id=<?php echo $resultado['idpacientes']?>"><i class="fas fa-minus-circle"></i></a>
+                      </div>
+                  </div>
+                <?php endif;?>
                  <div class="d-flex justify-content-end mt-5">
+                 <a href="../../../../" class="text-secondary mr-5 mt-2">Cancelar</a>
                     <input class="btn btn-primary font-weight-bold" name="perfil" style="width:300px;" value="Guardar cambios" type="submit">
                  </div>
               </form>                  
@@ -515,8 +711,11 @@ $conn=null;
         </div>
     </div>
 </main>
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>  <script>window.jQuery || document.write('<script src="../assets/js/vendor/jquery.slim.min.js"><\/script>')</script><script src="../assets/dist/js/bootstrap.bundle.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+<script src="../controllers/validations/validations.js"></script>
+<script src="../components/scripts/ciudad.js"></script>
 <script>
     $(document).ready(function(){
     var edit = 0;
