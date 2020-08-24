@@ -136,6 +136,9 @@ function validarCelular(input){
     document.getElementById('username').focus();
     document.getElementById('repeatPassword').className = "form-control"
     document.getElementById('password').className = "form-control"
+    document.getElementById('afiliaciones').style.display = "none";
+    document.getElementById('afiliacionPublica').disabled = true;
+    document.getElementById('afiliacionPrivada').disabled = true;
     $('#borrado').toast('show')
     
 }
@@ -144,7 +147,8 @@ onSubmit = (event) => {
   event.preventDefault()
 
   if(document.getElementById('repeatPassword').value == document.getElementById('password').value){
-      document.getElementById('form').submit();
+      registrarPaciente();
+
   }else{
       document.getElementById('repeatPassword').className = "form-control is-invalid"
       document.getElementById('password').className = "form-control is-invalid"
@@ -168,13 +172,19 @@ if(input.value == "no"){
 }
 }
 
-function esAfiliado(input,tipoAfiliacion){
-// var tempValue = input.value;
-if(input.value == "si"){     
-  document.getElementById(tipoAfiliacion).disabled = false;
-  document.getElementById(tipoAfiliacion).focus();
+function esAfiliado(input,print){
+  if(input.value == "si"){     
+    document.getElementById(print).style.display = "block";
+  }
+  if(input.value == "no"){
+    document.getElementById(print).style.display = "none";
+  }
 }
-if(input.value == "no"){
-  document.getElementById(tipoAfiliacion).disabled = true;
-}
+
+function afiliacion(input,box){
+  if(input.checked = true){     
+    document.getElementById(box).disabled = false;
+  }else{
+    document.getElementById(box).disabled = true;
+  }
 }

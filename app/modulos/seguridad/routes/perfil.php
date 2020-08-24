@@ -2,21 +2,42 @@
 session_start();
 require '../../../../database.php';
 $message='';
+$pacient = false;
+
 $consulta = $conn->prepare("SELECT * FROM empleados WHERE id_usuario_emp = :id_usuario_emp");
 $consulta->bindParam(':id_usuario_emp', $_SESSION['user_id']);
 $consulta->execute();
 $resultado = $consulta->fetch(PDO::FETCH_ASSOC); 
 
-  if(isset($_POST['username'])){
+if(!$resultado){
+  $consulta = $conn->prepare("SELECT * FROM pacientes WHERE id_usuario_pac = :id_usuario_pac");
+  $consulta->bindParam(':id_usuario_pac', $_SESSION['user_id']);
+  $consulta->execute();
+  $resultado = $consulta->fetch(PDO::FETCH_ASSOC); 
+  $pacient = true;
+  
+  $provincias = $conn->query("SELECT * FROM provincias ORDER BY nombre ASC")->fetchAll(PDO::FETCH_OBJ);
+}
 
+  if(isset($_POST['changedUserName'])){
+    $sql = "UPDATE usuario SET username=:username WHERE id_usuario = :id_usuario";
+    $stmt = $conn->prepare($sql);
+    $stmt->bindParam(':username', $_POST['username']);
+    $stmt->bindParam(':id_usuario',  $_SESSION['user_id']);
+    $stmt->execute();
+  }
+
+  //CAMBIAR CONTRASEÑA
+  if(isset($_POST['oldPassword'])){
+    
     $records = $conn->prepare("SELECT password FROM usuario WHERE id_usuario = :id_usuario");
     $records->bindParam(':id_usuario', $_SESSION['user_id']);
     $records->execute();
     $results = $records->fetch(PDO::FETCH_ASSOC); 
+    
     if(password_verify($_POST['oldPassword'],$results['password'])){
-        $sql = "UPDATE usuario SET username=:username,password=:password WHERE id_usuario = :id_usuario";
+        $sql = "UPDATE usuario SET password=:password WHERE id_usuario = :id_usuario";
         $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':username', $_POST['username']);
         $password = password_hash($_POST['newPassword'], PASSWORD_BCRYPT);
         $stmt->bindParam(':password', $password);
         $stmt->bindParam(':id_usuario',  $_SESSION['user_id']);
@@ -27,6 +48,9 @@ $resultado = $consulta->fetch(PDO::FETCH_ASSOC);
       $message='Hey, la contraseña antigua no es correcta. Porfavor escribela nuevamente';
     }
   }
+
+$stmt=null;
+$conn=null;
 
 ?>
 <!DOCTYPE html>
@@ -89,13 +113,13 @@ $resultado = $consulta->fetch(PDO::FETCH_ASSOC);
                 echo "<a class='dropdown-item' href='../../citasmedicas/index.php'><i class='fas fa-notes-medical mr-3'></i> Citas Medicas</a>";
               }
               if($_SESSION['modulo_pacientes'] == 1){
-                echo "<a class='dropdown-item' href='../../pacientes/index copy 2.html'><i class='fas fa-procedures mr-2'></i> Modulo Pacientes</a>";
+                echo "<a class='dropdown-item' href='../../pacientes/'><i class='fas fa-procedures mr-2'></i> Modulo Pacientes</a>";
               }
               if($_SESSION['modulo_seguridad'] == 1){
                 echo "<a class='dropdown-item' href='../'><i class='fas fa-user-shield mr-2'></i> Modulo Seguridad</a>";
               }
               if($_SESSION['paciente'] == 1){
-                echo "<a class='dropdown-item' href='../../pacientes/index copy 2.html'><i class='fas fa-procedures mr-2'></i> Paciente</a>";
+                echo "<a class='dropdown-item' href='../../pacientes/home.php'><i class='fas fa-procedures mr-2'></i> Paciente</a>";
               }
               
             ?>            
@@ -147,7 +171,11 @@ $resultado = $consulta->fetch(PDO::FETCH_ASSOC);
                 <div class="col d-flex flex-column flex-sm-row justify-content-between mb-3">
                   <div class="text-center text-sm-left mb-2 mb-sm-0">
                     <h4 class="pt-sm-2 pb-1 mb-0 text-nowrap"><?php echo $_SESSION['username']?></h4>
-                    <p class="mb-0"><?php echo $resultado['email']?></p>
+                    <?php if(!$pacient):?>     
+                      <p class="mb-0"><?php echo $resultado['email']?></p>
+                    <?php else:?>
+                      <p class="mb-0"><?php echo $resultado['correo']?></p>
+                    <?php endif;?>
                     <div class="text-muted"><small>Last seen 2 hours ago</small></div>
                     <!-- <div class="mt-2">
                       <button class="btn btn-primary" type="button">
@@ -167,6 +195,7 @@ $resultado = $consulta->fetch(PDO::FETCH_ASSOC);
               </ul>
               <div class="tab-content pt-3">
                 <div class="tab-pane active">
+                <?php if(!$pacient):?>
                 <form class="form">
                   <div class="row">
                     <div class="col">
@@ -187,6 +216,215 @@ $resultado = $consulta->fetch(PDO::FETCH_ASSOC);
                     </div>
                   </div>
                 </form>
+                <?php else:?>
+                  
+              <form method="POST" action="../controllers/actualizarPaciente.php" class="ml-4 mr-4 mb-5">
+        
+                <label class="font-weight-bold mt-4">Información personal del paciente</label>
+                <hr class="mt-1 mb-4 mr-5">
+                <div class="form-row">
+                  <div class="form-group col-md-6">
+                    <label for="cedula">Cedula/Pasaporte</label>
+                    <input type="hidden" name="id" value="<?php echo $resultado['idpacientes']?>">
+                    <input type="text" class="form-control" name="cedula" value="<?php echo $resultado['idpacientes']?>" readonly value="<?php echo $resultado['idpacientes']?>" required>
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group col-md-6">
+                    <label for="name">Nombres</label>
+                    <input type="text" class="form-control" onkeypress="return soloLetras(event)" name="name" id="name" value="<?php echo $resultado['nombres']?>" required>
+                  </div>
+                  <div class="form-group col-md-3">
+                    <label for="apellidoPaterno">Apellido Paterno</label>
+                    <input type="text" class="form-control" onkeypress="return soloLetras(event)" name="apellidoPaterno" id="apellidoPaterno" value="<?php echo $resultado['ape_paterno']?>" required>
+                  </div>
+                  <div class="form-group col-md-3">
+                    <label for="apellidoMaterno">Apellido Materno</label>
+                    <input type="text" class="form-control" onkeypress="return soloLetras(event)" name="apellidoMaterno" id="apellidoMaterno" value="<?php echo $resultado['ape_mat']?>" required>
+                  </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="email">E-mail</label>
+                        <input type="email" class="form-control"  onchange="validarEmail(this);" name="email" id="email" placeholder="ejemplo@gmail.com" value="<?php echo $resultado['correo']?>" required>
+                        <div class="invalid-feedback">
+                            Correo electrónico inválido.
+                        </div>
+                        <div class="valid-feedback">
+                            Correo electrónico válido.
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="ocupacion">Ocupación</label>
+                        <select id="ocupacion" name="ocupacion" class="form-control" value="<?php echo $resultado['ocupacion']?>" >
+                          <option selected disabled value="">Seleccione...</option>
+                          <!-- <?php
+                            foreach ($ocupacion as $Ocupaciones):
+                          ?>
+                            <option value="<?php echo $Ocupaciones->idprovincias;?>"><?php echo utf8_encode($Ocupaciones->nombre);?></option>
+                          <?php 
+                            endforeach;
+                          ?>  -->
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="fechaNacimiento">Fecha de Nacimiento</label>
+                        <input type="date" class="form-control" name="fechaNacimiento" id="fechaNacimiento" value="<?php echo $resultado['f_nacimiento']?>" required>
+                    </div>
+                    <div class="form-group col-md-4">
+                    <label class="font-weight-bold">Sexo</label>
+                        <div class="custom-control custom-radio">
+                            <input type="radio" id="sexo1" name="sexo" class="custom-control-input" checked>
+                            <label class="custom-control-label" for="sexo1">
+                              <?php if($resultado['sexo']=='V'):?>
+                                Varón
+                              <?php elseif($resultado['sexo']=='M'):?>
+                                Mujer
+                              <?php elseif($resultado['sexo']=='I'):?>
+                                Indefinido
+                              <?php endif;?>
+                            </label>
+                        </div>
+                    </div>              
+                </div>
+                <div class="form-row mb-3">
+                  <div class="form-group col-md-4">
+                    <label for="provincia">Provincia</label>
+                    <select id="provincia" name="provincia" class="form-control" value="<?php echo $resultado['provincia']?>" required>
+                      <option selected disabled value="">Seleccione...</option>
+                      <?php
+                        foreach ($provincias as $provinciasPaciente):
+                      ?>
+                        <option value="<?php echo $provinciasPaciente->idprovincias;?>"><?php echo utf8_encode($provinciasPaciente->nombre);?></option>
+                      <?php 
+                        endforeach;
+                      ?> 
+                    </select>
+                  </div>
+                  <div class="form-group col-md-4" id="print-ciudades">
+                  </div>
+                  <div class="form-group col-md-4">
+                    <label for="zona">Zona</label>
+                    <input type="text" class="form-control" onkeypress="return soloLetras(event)" id="zona" name="zona" value="<?php echo $resultado['idpacientes']?>" required>
+                    <!-- <select id="zona" name="zona" class="form-control" value="<?php echo $resultado['idpacientes']?>" required>
+                      <option selected disabled value="">Seleccione...</option>
+                      <option value=""></option>
+                    </select> -->
+                  </div>
+                </div>
+                <label class="font-weight-bold">Información de ubicación</label>
+                <hr class="mt-1 mb-4 mr-5">
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <label for="direccion">Dirección del domicilio</label>
+                        <input type="text" class="form-control" id="direccion" name="direccion" value="<?php echo $resultado['direccion']?>" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <label for="direccionTrabajo">Dirección del lugar de trabajo</label>
+                        <input type="text" class="form-control" id="direccionTrabajo" name="direccionTrabajo" value="<?php echo $resultado['idpacientes']?>" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <label for="direccionAtencion">Dirección de atención medica</label>
+                        <input type="text" class="form-control" id="direccionAtencion" name="direccionAtencion" value="<?php echo $resultado['idpacientes']?>" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="telefono">Telefono</label>
+                        <input type="text" class="form-control"  onchange="validarTelefono(this);" onkeypress="return soloNumeros(event)" maxlength="7" id="telefono" name="telefono" value="<?php echo $resultado['tlno_particular']?>" required>
+                        <div class="invalid-feedback">
+                          Número fijo inválido. </br>
+                          ¡Debe ser un número teléfonico, tiene que tener 7 dígitos!
+                        </div>
+                        <div class="valid-feedback">
+                          Número fijo válido.
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="celular">Celular</label>
+                        <input type="text" class="form-control"  onchange="validarCelular(this);" onkeypress="return soloNumeros(event)" maxlength="10" id="celular" name="celular" value="<?php echo $resultado['tlno_personal']?>" required>
+                        <div class="invalid-feedback">
+                            Número celular inválido.</br>
+                            ¡El celular debe comenzar en 0, y contener 10 dígitos!
+                        </div>
+                        <div class="valid-feedback">
+                          Número celular válido.
+                        </div>
+                    </div>
+                 </div>
+                <hr class="mt-1 mb-4 mr-5">
+                <label class="font-weight-bold">¿Posee Afiliación al IESS?</label>
+                <div class="form-row">
+                    <div class="form-group col-md-4 mt-4 ml-2">
+                      <div class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" id="afiliado1" name="afiliado" class="custom-control-input" onchange="esAfiliado(this,'tipoAfiliacion');" value="si">
+                        <label class="custom-control-label" for="afiliado1">Si</label>
+                      </div>
+                      <div class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" id="adiliado2" name="afiliado" class="custom-control-input" onchange="esAfiliado(this,'tipoAfiliacion');" value="no" checked>
+                        <label class="custom-control-label" for="adiliado2">No</label>
+                      </div>
+                    </div>                  
+                    <div class="form-group col-md-4">
+                        <label for="tipoAfiliacion">Tipo Afiliación</label>
+                        <input class="form-control" id="tipoAfiliacion" name="tipoAfiliacion" required disabled="true">
+                    </div>
+                </div>      
+                <hr class="mt-1 mb-4 mr-5">
+                <label class="font-weight-bold">¿Posee alguna discapacidad?</label>
+                <div class="form-row">
+                    <div class="form-group col-md-4 mt-2 ml-2">
+                      <div class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" id="discapacidad1" name="discapacidad" class="custom-control-input" onchange="esDiscapacitado(this,'carnetConadis', 'discapacidad', 'grado')" value="si">
+                        <label class="custom-control-label" for="discapacidad1">Si</label>
+                      </div>
+                      <div class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" id="discapacidad2" name="discapacidad" class="custom-control-input" onchange="esDiscapacitado(this,'carnetConadis', 'discapacidad', 'grado')" value="no" checked>
+                        <label class="custom-control-label" for="discapacidad2">No</label>
+                      </div>
+                    </div>                  
+                </div>      
+                <div class="form-row">
+                    <div class="form-group col-md-3">
+                        <label for="carnetConadis">Carnet Conadis</label>
+                        <input type="text" class="form-control" id="carnetConadis" name="carnetConadis" value="<?php echo $resultado['idpacientes']?>" required disabled="true">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="discapacidad">Discapacidad</label>
+                        <input type="text" class="form-control" onkeypress="return soloLetras(event)" id="discapacidad" name="discapacidad" required disabled="true">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="grado">Grado %</label>
+                        <input type="text" class="form-control" id="grado" name="grado" required disabled="true">
+                    </div>
+                 </div>
+                 <div class="d-flex justify-content-end mt-5">
+                    <input class="btn btn-primary font-weight-bold" name="perfil" style="width:300px;" value="Guardar cambios" type="submit">
+                 </div>
+              </form>                  
+            <?php endif;?>
+                <hr class="mt-1 mb-5 mr-5">
+                <div class="mb-2"><b>INFORMACIÓN DE LA CUENTA</b></div>
+                <hr class="mt-1 mb-2 mr-5">
+                <form method="POST" action="perfil.php" class="form">
+                  <div class="row">
+                      <div class="col md-6">
+                        <div class="form-group">
+                            <label>Nombre de Usuario</label>
+                            <input class="form-control" type="text" name="username" id="username" value="<?php echo $_SESSION['username']?>" required>
+                        </div>
+                      </div>
+                      <div class="col md-6">
+                        <input class="btn btn-primary" style="margin-top:31px;" type="submit" name="changedUserName" value="Guardar Nombre de Usuario">
+                      </div>      
+                  </div>
+                </form>
                   <form id="formEditar" onsubmit="onSubmit(event)" method="POST" action="perfil.php" class="form">
                   <span class="text-danger"><?php echo $message?></span>
                   <hr class="mt-1 mb-2 mr-5">
@@ -198,14 +436,6 @@ $resultado = $consulta->fetch(PDO::FETCH_ASSOC);
                     <div class="row">
                       <div class="col-12 col-sm-6 mb-3">
                         <div class="mb-2"><b>Cambiar Contraseña</b></div>
-                        <div class="row">
-                            <div class="col">
-                            <div class="form-group">
-                                <label>Nombre de Usuario</label>
-                                <input class="form-control" type="text" name="username" id="username" value="<?php echo $_SESSION['username']?>" required disabled>
-                            </div>
-                            </div>
-                        </div>
                         <div class="row">
                           <div class="col">
                             <div class="form-group">
@@ -299,7 +529,7 @@ $resultado = $consulta->fetch(PDO::FETCH_ASSOC);
                 }
                 document.getElementById('on').style.display="block";    
                 document.getElementById('off').style.display="none";   
-                $('#username') .focus();
+                $('#oldPassword') .focus();
             }
             if(edit==2){
                 frm = document.forms['formEditar'];

@@ -1,99 +1,103 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-    <title>Clinica Vitalia | Registro</title>
-</head>
-<body>
-    <div class='modal fade' name='pacienteDuplicado' id='pacienteDuplicado' data-backdrop='static' data-keyboard='false' tabindex='-1' role='dialog' aria-labelledby='staticBackdropLabe' aria-hidden='true'>
-        <div class='modal-dialog'>
-            <div class='modal-content'>
-                <div class='modal-header bg-danger text-white'>
-                    <h5 class='modal-title' id='staticBackdropLabel'>Registro Fallido</h5>
-                    </button>
-                </div>
-                <div class='modal-body'>
-                        ¡Hey!. Ya te encuentras registrado en la plataforma, porfavor logeate.
-                </div>
-                <div class='modal-footer'>
-                        <button id='continuar' name='confirmacion-update' type='submit' class='btn btn-light border border-danger text-danger font-weight-bold' style="width:200px;">OK</button>
-                </div>
-            </div>
-    </div>
-<script src="../components/scripts/jquery.min.js"></script> 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
-<script>
-    $('#continuar').click(function(){
-        location.href=`../routes/login.php`;
-    });  
-</script>
-</body>
-</html>
-
-
-
-
 <?php
 require '../../../../database.php';
+date_default_timezone_set('America/Guayaquil');
+extract($_REQUEST);
+// echo '<br>';
 
+// var_dump($_POST);
+// die;
+$created = date("Y-m-d H:i:s");
+  
 //BUSCAR PRIMERO SI LA CEDULA YA ESTA REGISTRADA!!!!! Y LUEGO REGISTRAR AL USUARIO
-$paciente = $conn->query("SELECT * FROM pacientes WHERE idpacientes = ".$_POST['cedula'])->rowCount();
+$paciente = $conn->query("SELECT * FROM pacientes WHERE idpacientes = ".$cedula)->rowCount();
     
-    if($paciente>0){
-      echo "<script language='javascript'>$('#pacienteDuplicado').modal('show');</script>";
-    }else{
-          $sql = "INSERT INTO usuario (username, password) VALUES (:username,:password)";
-          $stmt = $conn->prepare($sql);
-          $stmt->bindParam(':username', $_POST['username']);
-          $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
-          $stmt->bindParam(':password', $password);
-          
-          if($stmt->execute()){
-              //recupera el id insertado generado*
-                $id = $conn->lastInsertId();
-              //INSERTAR USUARIO_CREDENCIAL
-              $sql = "INSERT INTO usuario_credencial (id_usuario_uc,id_credencialbase_uc) VALUES 
-              (:id_usuario_uc,:id_credencialbase_uc)";
+if($paciente>0){
+  echo false;
+}else{
+  // var_dump($_POST['provincia']);
+  // var_dump($provincia);
+  // die;
+    $sql = "INSERT INTO usuario (username, password) VALUES (:username,:password)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bindParam(':username', $username);
+    $passwordBcrypt = password_hash($password, PASSWORD_BCRYPT);
+    $stmt->bindParam(':password', $passwordBcrypt);
+    $stmt->execute();
+        //recupera el id insertado generado*
+        $id = $conn->lastInsertId();
+        //INSERTAR USUARIO_CREDENCIAL
+        $sql = "INSERT INTO usuario_credencial (id_usuario_uc,id_credencialbase_uc) VALUES 
+        (:id_usuario_uc,:id_credencialbase_uc)";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':id_usuario_uc', $id);
+        $stmt->bindValue(':id_credencialbase_uc', 18, PDO::PARAM_INT);
+        $stmt->execute();
+    
+           //REGISTRAR PACIENTE
+           $sql = "INSERT INTO pacientes (idpacientes,ape_paterno,ape_mat,nombres,ocupacion_paciente,sexo,f_nacimiento,zona,correo,ciudad,afiliacion_publica,afiliacion_privada,id_usuario_pac,created_at,updated_at) VALUES (:idpacientes,:ape_paterno,:ape_mat,:nombres,:ocupacion_paciente,:sexo,:f_nacimiento,:zona,:ciudad,:correo,:afiliacion_publica,:afiliacion_privada,:id_usuario_pac,:created_at,:updated_at)";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(':idpacientes', $cedula);
+            $stmt->bindParam(':ape_paterno', $apellidoPaterno);
+            $stmt->bindParam(':ape_mat', $apellidoMaterno);
+            $stmt->bindParam(':nombres', $name);
+            $stmt->bindParam(':ocupacion_paciente', $ocupacion);
+            $stmt->bindParam(':sexo', $sexo);
+            $stmt->bindParam(':f_nacimiento', $fechaNacimiento);
+            $stmt->bindParam(':zona', $zona);
+            $stmt->bindParam(':correo', $email);                  
+            // $stmt->bindParam(':provincia', $provincia);
+            $stmt->bindParam(':ciudad', $ciudad);
+            $stmt->bindParam(':id_usuario_pac', $id);
+            $stmt->bindParam(':afiliacion_publica', $afiliacionPublica);
+            $stmt->bindParam(':afiliacion_privada', $afiliacionPrivada);
+            $stmt->bindParam(':created_at', $created);
+            $stmt->bindValue(':updated_at', null, PDO::PARAM_INT);
+            $stmt->execute();
+    
+            $sql = "INSERT INTO direccion_paciente (direccion,tlno_particular,tlno_personal,created_at,id_pacientes_de,tipo) VALUES 
+            (:direccion,:tlno_particular,:tlno_personal,:created_at,:id_pacientes_de,:tipo)";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(':id_pacientes_de', $cedula);
+            $stmt->bindValue(':tipo', 'Domicilio', PDO::PARAM_STR);
+            $stmt->bindParam(':direccion', $direccionDomicilio);
+            $stmt->bindParam(':tlno_particular', $telefonoDomicilio);
+            $stmt->bindParam(':tlno_personal', $celularDomicilio);
+            $stmt->bindParam(':created_at', $created);
+            $stmt->execute();
+
+            $sql = "INSERT INTO direccion_paciente (direccion,tlno_particular,tlno_personal,created_at,id_pacientes_de,tipo) VALUES 
+            (:direccion,:tlno_particular,:tlno_personal,:created_at,:id_pacientes_de,:tipo)";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(':id_pacientes_de', $cedula);
+            $stmt->bindValue(':tipo', 'Trabajo', PDO::PARAM_STR);
+            $stmt->bindParam(':direccion', $direccionTrabajo);
+            $stmt->bindParam(':tlno_particular', $telefonoTrabajo);
+            $stmt->bindValue(':tlno_personal', null, PDO::PARAM_INT);
+            $stmt->bindParam(':created_at', $created);
+            $stmt->execute();
+
+            $sql = "INSERT INTO direccion_paciente (direccion,tlno_particular,tlno_personal,created_at,id_pacientes_de,tipo) VALUES 
+            (:direccion,:tlno_particular,:tlno_personal,:created_at,:id_pacientes_de,:tipo)";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(':id_pacientes_de', $cedula);
+            $stmt->bindValue(':tipo', 'Atención', PDO::PARAM_STR);
+            $stmt->bindParam(':direccion', $direccionAtencion);
+            $stmt->bindParam(':tlno_particular', $telefonoAtencion);
+            $stmt->bindValue(':tlno_personal', null, PDO::PARAM_INT);
+            $stmt->bindParam(':created_at', $created);
+            $stmt->execute();
+    
+            if($poseeDiscapacidad == 'si'){
+              $sql = "INSERT INTO conadis (paciente,carnet,discapacidad,grado) VALUES 
+              (:paciente,:carnet,:discapacidad,:grado)";
               $stmt = $conn->prepare($sql);
-              $stmt->bindParam(':id_usuario_uc', $id);
-              $stmt->bindValue(':id_credencialbase_uc', 18, PDO::PARAM_INT);
-                if($stmt->execute()){
-                      //REGISTRAR PACIENTE
-                      $sql = "INSERT INTO pacientes (idpacientes,ape_paterno,ape_mat,
-                  nombres,ocupacion,sexo,f_nacimiento,provincia,ciudad,zona,direccion,tlno_particular,tlno_personal,correo,afiliado,id_usuario_pac) VALUES 
-                  (:idpacientes,:ape_paterno,:ape_mat,:nombres,:ocupacion,:sexo,:f_nacimiento,:provincia,:ciudad,:zona,:direccion,:tlno_particular,:tlno_personal,:correo,:afiliado,:id_usuario_pac)";
-                      $stmt = $conn->prepare($sql);
-                      $stmt->bindParam(':idpacientes', $_POST['cedula']);
-                      $stmt->bindParam(':ape_paterno', $_POST['apellidoPaterno']);
-                      $stmt->bindParam(':ape_mat', $_POST['apellidoMaterno']);
-                      $stmt->bindParam(':nombres', $_POST['name']);
-                      $stmt->bindParam(':ocupacion', $_POST['ocupacion']);
-                      $stmt->bindParam(':sexo', $_POST['sexo']);
-                      $stmt->bindParam(':f_nacimiento', $_POST['fechaNacimiento']);
-                      $stmt->bindParam(':provincia', $_POST['provincia']);
-                      $stmt->bindParam(':ciudad', $_POST['ciudad']);
-                      $stmt->bindParam(':zona', $_POST['zona']);
-                      $stmt->bindParam(':direccion', $_POST['direccion']);
-                      $stmt->bindParam(':tlno_particular', $_POST['telefono']);
-                      $stmt->bindParam(':tlno_personal', $_POST['celular']);
-                      $stmt->bindParam(':correo', $_POST['email']);                  
-                      $stmt->bindParam(':afiliado', $_POST['afiliado']);
-                      $stmt->bindParam(':id_usuario_pac', $id);
-
-                      if($stmt->execute()){
-                        $message = 'Usuario creado exitosamente';
-                        header("Location: ../../../../");
-                      }else{
-                        $message = 'Error al crear nuevo usuario';
-                      }
-                }else{
-                  $message = 'Error al crear nuevo usuario';
-                }
-
-          }else{
-            $message = 'Error al crear nuevo usuario';
-          }
-  }
+              $stmt->bindParam(':paciente', $cedula);
+              $stmt->bindParam(':carnet', $carnetConadis);
+              $stmt->bindParam(':discapacidad', $discapacidad);
+              $stmt->bindParam(':grado', $grado);
+              $stmt->execute();
+            }
+  $stmt=null;
+  $conn=null;
+  echo true;
+}

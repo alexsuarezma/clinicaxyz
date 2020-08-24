@@ -1,11 +1,12 @@
 <?php
 require '../../../../database.php';
 
-$message = '';
-
-$ciudades = $conn->query("SELECT * FROM ciudades ORDER BY nombre ASC")->fetchAll(PDO::FETCH_OBJ);
 $provincias = $conn->query("SELECT * FROM provincias ORDER BY nombre ASC")->fetchAll(PDO::FETCH_OBJ);
-
+$profesion = $conn->query("SELECT * FROM profesion_paciente ORDER BY profesion ASC")->fetchAll(PDO::FETCH_OBJ);
+$seguroPublico = $conn->query("SELECT * FROM seguro_publico ORDER BY descripcion ASC")->fetchAll(PDO::FETCH_OBJ);
+$seguroPrivado = $conn->query("SELECT * FROM seguro_privado ORDER BY descripcion ASC")->fetchAll(PDO::FETCH_OBJ);
+$discapacidad = $conn->query("SELECT * FROM discapacidades ORDER BY descripcion ASC")->fetchAll(PDO::FETCH_OBJ);
+$conn = null;
 ?>
 
 <!DOCTYPE html>
@@ -50,7 +51,7 @@ $provincias = $conn->query("SELECT * FROM provincias ORDER BY nombre ASC")->fetc
   <div class="container mt-5 mb-5">
         <div class="shadow-none p-3 mb-5 bg-light rounded">
         <h2 class="mt-5 mb-5" style="text-align:center;">Registrate</h2>
-            <form id="form" onsubmit="onSubmit(event)" method="POST" action="../controllers/crearPaciente.php" class="ml-4 mr-4 mb-5">
+            <form id="form" method="POST" action="../controllers/crearPaciente.php" class="ml-4 mr-4 mb-5">
                 <label class="font-weight-bold">Información de la cuenta de usuario</label>
                 <hr class="mt-1 mb-4 mr-5">
                 <div class="form-row">
@@ -73,7 +74,7 @@ $provincias = $conn->query("SELECT * FROM provincias ORDER BY nombre ASC")->fetc
                 <hr class="mt-1 mb-4 mr-5">
                 <div class="form-row">
                   <div class="form-group col-md-6">
-                    <label for="cedula">Cedula/Pasaporte</label>
+                    <label for="cedula">Número de Cedula</label>
                     <input type="text" class="form-control" name="cedula" onkeypress="return soloNumeros(event)" onchange="verificarCedula(this);" maxlength="10" id="cedula" required>
                     <div class="invalid-feedback">
                         Número de cédula inválida.
@@ -110,7 +111,16 @@ $provincias = $conn->query("SELECT * FROM provincias ORDER BY nombre ASC")->fetc
                     </div>
                     <div class="form-group col-md-6">
                         <label for="ocupacion">Ocupación</label>
-                        <input type="text" class="form-control" onkeypress="return soloLetras(event)" name="ocupacion" id="ocupacion" required>
+                        <select id="ocupacion" name="ocupacion" class="form-control" required>
+                          <option selected disabled value="">Seleccione...</option>
+                          <?php
+                            foreach ($profesion as $Ocupaciones):
+                          ?>
+                            <option value="<?php echo $Ocupaciones->idprofesion_paciente;?>"><?php echo utf8_encode($Ocupaciones->profesion);?></option>
+                          <?php 
+                            endforeach;
+                          ?> 
+                        </select>
                     </div>
                 </div>
                 <div class="form-row">
@@ -148,18 +158,7 @@ $provincias = $conn->query("SELECT * FROM provincias ORDER BY nombre ASC")->fetc
                       ?> 
                     </select>
                   </div>
-                  <div class="form-group col-md-4">
-                    <label for="ciudad">Ciudad</label>
-                    <select id="ciudad" name="ciudad" class="form-control" required>
-                      <option selected disabled value="">Seleccione...</option>
-                      <?php
-                        foreach ($ciudades as $ciudadesPaciente):
-                      ?>
-                        <option value="<?php echo $ciudadesPaciente->idciudades;?>"><?php echo utf8_encode($ciudadesPaciente->nombre);?></option>
-                      <?php 
-                        endforeach;
-                      ?> 
-                    </select>
+                  <div class="form-group col-md-4" id="print-ciudades">
                   </div>
                   <div class="form-group col-md-4">
                     <label for="zona">Zona</label>
@@ -170,63 +169,142 @@ $provincias = $conn->query("SELECT * FROM provincias ORDER BY nombre ASC")->fetc
                     </select> -->
                   </div>
                 </div>
+                <label class="font-weight-bold">Información de ubicación</label>
+                <hr class="mt-1 mb-4 mr-5">
                 <div class="form-row">
                     <div class="form-group col-md-6">
-                        <label for="direccion">Dirección</label>
-                        <input type="text" class="form-control" id="direccion" name="direccion" required>
+                        <label for="direccionDomicilio">Dirección del domicilio</label>
+                        <input type="text" class="form-control" id="direccionDomicilio" name="direccionDomicilio" required>
                     </div>
                     <div class="form-group col-md-3">
-                        <label for="telefono">Telefono</label>
-                        <input type="text" class="form-control"  onchange="validarTelefono(this);" onkeypress="return soloNumeros(event)" maxlength="7" id="telefono" name="telefono" required>
-                        <div class="invalid-feedback">
-                          Número fijo inválido. </br>
-                          ¡Debe ser un número teléfonico, tiene que tener 7 dígitos!
-                        </div>
-                        <div class="valid-feedback">
-                          Número fijo válido.
-                        </div>
+                      <label for="telefonoDomicilio">Telefono</label>
+                      <input type="text" class="form-control"  onchange="validarTelefono(this);" onkeypress="return soloNumeros(event)" maxlength="7" id="telefonoDomicilio" name="telefonoDomicilio" required>
+                      <div class="invalid-feedback">
+                        Número fijo inválido. </br>
+                        ¡Debe ser un número teléfonico, tiene que tener 7 dígitos!
+                      </div>
+                      <div class="valid-feedback">
+                        Número fijo válido.
+                      </div>
+                  </div>
+                  <div class="form-group col-md-3">
+                      <label for="celularDomicilio">Celular</label>
+                      <input type="text" class="form-control"  onchange="validarCelular(this);" onkeypress="return soloNumeros(event)" maxlength="10" id="celularDomicilio" name="celularDomicilio" required>
+                      <div class="invalid-feedback">
+                          Número celular inválido.</br>
+                          ¡El celular debe comenzar en 0, y contener 10 dígitos!
+                      </div>
+                      <div class="valid-feedback">
+                        Número celular válido.
+                      </div>
+                  </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-9">
+                        <label for="direccionTrabajo">Dirección del lugar de trabajo</label>
+                        <input type="text" class="form-control" id="direccionTrabajo" name="direccionTrabajo" required>
                     </div>
                     <div class="form-group col-md-3">
-                        <label for="celular">Celular</label>
-                        <input type="text" class="form-control"  onchange="validarCelular(this);" onkeypress="return soloNumeros(event)" maxlength="10" id="celular" name="celular" required>
-                        <div class="invalid-feedback">
-                            Número celular inválido.</br>
-                            ¡El celular debe comenzar en 0, y contener 10 dígitos!
-                        </div>
-                        <div class="valid-feedback">
-                          Número celular válido.
-                        </div>
+                      <label for="telefonoTrabajo">Telefono</label>
+                      <input type="text" class="form-control"  onchange="validarTelefono(this);" onkeypress="return soloNumeros(event)" maxlength="7" id="telefonoTrabajo" name="telefonoTrabajo" required>
+                      <div class="invalid-feedback">
+                        Número fijo inválido. </br>
+                        ¡Debe ser un número teléfonico, tiene que tener 7 dígitos!
+                      </div>
+                      <div class="valid-feedback">
+                        Número fijo válido.
+                      </div>
+                  </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-9">
+                        <label for="direccionAtencion">Dirección de atención medica</label>
+                        <input type="text" class="form-control" id="direccionAtencion" name="direccionAtencion" required>
                     </div>
-                 </div>
-          
+                  <div class="form-group col-md-3">
+                      <label for="telefonoAtencion">Telefono</label>
+                      <input type="text" class="form-control"  onchange="validarTelefono(this);" onkeypress="return soloNumeros(event)" maxlength="7" id="telefonoAtencion" name="telefonoAtencion" required>
+                      <div class="invalid-feedback">
+                        Número fijo inválido. </br>
+                        ¡Debe ser un número teléfonico, tiene que tener 7 dígitos!
+                      </div>
+                      <div class="valid-feedback">
+                        Número fijo válido.
+                      </div>
+                  </div>
+                </div>
                 <hr class="mt-1 mb-4 mr-5">
-                <label class="font-weight-bold">¿Está Afiliado?</label>
+                <label class="font-weight-bold">¿Posee Afiliación?</label>
                 <div class="form-row">
                     <div class="form-group col-md-4 mt-4 ml-2">
                       <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" id="afiliado1" name="afiliado" class="custom-control-input" onchange="esAfiliado(this,'tipoAfiliacion');" value="si">
+                        <input type="radio" id="afiliado1" name="afiliado" class="custom-control-input" onchange="esAfiliado(this,'afiliaciones');" value="si">
                         <label class="custom-control-label" for="afiliado1">Si</label>
                       </div>
                       <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" id="adiliado2" name="afiliado" class="custom-control-input" onchange="esAfiliado(this,'tipoAfiliacion');" value="no" checked>
+                        <input type="radio" id="adiliado2" name="afiliado" class="custom-control-input" onchange="esAfiliado(this,'afiliaciones');" value="no" checked>
                         <label class="custom-control-label" for="adiliado2">No</label>
                       </div>
                     </div>                  
-                    <div class="form-group col-md-4">
+                    <!-- <div class="form-group col-md-4">
                         <label for="tipoAfiliacion">Tipo Afiliación</label>
                         <input class="form-control" id="tipoAfiliacion" name="tipoAfiliacion" required disabled="true">
+                    </div> -->
+                </div>
+                <div id="afiliaciones" style="display:none;">
+                  <div class="form-row">
+                    <div class="form-group col-md-6">
+                      <div class="form-check form-check-inline mr-5 mt-4">
+                        <input class="form-check-input" type="checkbox" id="publica" value="publica" onchange="afiliacion(this,'afiliacionPublica');">
+                        <label class="form-check-label" for="publica">Afiliación Pública</label>
+                      </div>
                     </div>
-                </div>      
+                    <div class="form-group col-md-6">
+                      <label for="afiliacionPublica">Afiliación Pública</label>
+                      <select id="afiliacionPublica" name="afiliacionPublica" class="form-control" disabled required>
+                        <option selected disabled value="">Seleccione...</option>
+                        <?php
+                          foreach ($seguroPublico as $ListaPublico):
+                            ?>
+                          <option value="<?php echo $ListaPublico->idseguro_publico;?>"><?php echo utf8_encode($ListaPublico->descripcion);?></option>
+                        <?php 
+                          endforeach;
+                        ?> 
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group col-md-6">
+                      <div class="form-check form-check-inline mt-4">
+                        <input class="form-check-input" type="checkbox" id="privada" value="privada" onchange="afiliacion(this,'afiliacionPrivada');">
+                        <label class="form-check-label" for="privada">Afiliación Privada</label>
+                      </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label for="afiliacionPrivada">Afiliación Privada</label>
+                      <select id="afiliacionPrivada" name="afiliacionPrivada" class="form-control" disabled required>
+                        <option selected disabled value="">Seleccione...</option>
+                        <?php
+                          foreach ($seguroPrivado as $ListaPrivado):
+                            ?>
+                          <option value="<?php echo $ListaPrivado->idseguro_privado;?>"><?php echo utf8_encode($ListaPrivado->descripcion);?></option>
+                        <?php 
+                          endforeach;
+                          ?> 
+                      </select>
+                    </div>
+                  </div>      
+                </div>
                 <hr class="mt-1 mb-4 mr-5">
                 <label class="font-weight-bold">¿Posee alguna discapacidad?</label>
                 <div class="form-row">
                     <div class="form-group col-md-4 mt-2 ml-2">
                       <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" id="discapacidad1" name="discapacidad" class="custom-control-input" onchange="esDiscapacitado(this,'carnetConadis', 'discapacidad', 'grado')" value="si">
+                        <input type="radio" id="discapacidad1" name="poseeDiscapacidad[]" class="custom-control-input" onchange="esDiscapacitado(this,'carnetConadis', 'discapacidad', 'grado')" value="si">
                         <label class="custom-control-label" for="discapacidad1">Si</label>
                       </div>
                       <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" id="discapacidad2" name="discapacidad" class="custom-control-input" onchange="esDiscapacitado(this,'carnetConadis', 'discapacidad', 'grado')" value="no" checked>
+                        <input type="radio" id="discapacidad2" name="poseeDiscapacidad[]" class="custom-control-input" onchange="esDiscapacitado(this,'carnetConadis', 'discapacidad', 'grado')" value="no" checked>
                         <label class="custom-control-label" for="discapacidad2">No</label>
                       </div>
                     </div>                  
@@ -238,11 +316,29 @@ $provincias = $conn->query("SELECT * FROM provincias ORDER BY nombre ASC")->fetc
                     </div>
                     <div class="form-group col-md-6">
                         <label for="discapacidad">Discapacidad</label>
-                        <input type="text" class="form-control" onkeypress="return soloLetras(event)" id="discapacidad" name="discapacidad" required disabled="true">
+                        <!-- <input type="text" class="form-control" onkeypress="return soloLetras(event)" id="discapacidad" name="discapacidad" required disabled="true"> -->
+                        <select id="discapacidad" name="discapacidad" class="form-control" disabled required>
+                        <option selected disabled value="">Seleccione...</option>
+                        <?php
+                          foreach ($discapacidad as $Discapacidad):
+                            ?>
+                          <option value="<?php echo $Discapacidad->iddiscapacidad;?>"><?php echo utf8_encode($Discapacidad->descripcion);?></option>
+                        <?php 
+                          endforeach;
+                          ?> 
+                      </select>
                     </div>
                     <div class="form-group col-md-3">
                         <label for="grado">Grado %</label>
-                        <input type="text" class="form-control" id="grado" name="grado" required disabled="true">
+                        <select id="grado" name="grado" class="form-control" required disabled="true">
+                        <option selected disabled value="">Seleccione...</option>
+                          <option value="10">10%</option>
+                          <option value="15">15%</option>
+                          <option value="20">20%</option>
+                          <option value="40">40%</option>
+                          <option value="50">50%</option>
+                          <option value="80">80%</option>
+                      </select>
                     </div>
                  </div>
                  <div class="d-flex justify-content-end mt-5">
@@ -283,8 +379,38 @@ $provincias = $conn->query("SELECT * FROM provincias ORDER BY nombre ASC")->fetc
         </div>
     </div>
 
+    <div class='modal fade' name='modal-success' id='modal-success' data-backdrop='static' data-keyboard='false' tabindex='-1' role='dialog' aria-labelledby='staticBackdropLabe' aria-hidden='true'>
+        <div class='modal-dialog'>
+            <div class='modal-content'>
+                <div class='modal-header'>
+                    <h5 class='modal-title' id='staticBackdropLabel'>REGISTRO SATISFACTORIO</h5>
+                  
+                </div>
+                <div class='modal-body mb-5'>
+                    <div class="container d-flex flex-column" style="width:100%;">
+                        <div id="icon-message" class="container d-flex justify-content-center align-items-center mb-5 mt-4" style="width:100%;">
+                            <!-- ICONO -->
+                        </div>
+                        <div class="container d-flex justify-content-center align-items-center" style="width:100%;">                            
+                            <div id="message">
+                                <!-- MESSAGE -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script> 
 <script src="../controllers/validations/validations.js"></script>
+<script src="../components/scripts/paciente.js"></script>
+<script src="../components/scripts/ciudad.js"></script>
+<script>
+  
+</script>
 </body>
 </html>

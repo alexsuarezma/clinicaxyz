@@ -83,14 +83,6 @@ printLayout ('../ico/farma.ico','../index.php', '../../../../index.php','inventa
                             <input type="hidden"  name="img_Product" id="img_Product" role="uploadcare-uploader" data-crop="" data-clearable="true" data-images-only >
                         </div>
                     </div>
-            <!-- <label class="font-weight-bold">Cambia la imagen del producto si deseas<span class="text-warning">campo no requerido</span></label>
-            <div class="form-row">
-                <div class="form-group col-md-6 mt-2">
-                    <div class="custom-file" style="margin-top:13px;">
-                        <input name="img_Product" id="img_Product" type="file" class="form-control mt-2" onchange="return validarExtImg(this);" accept="image/jpg, image/jpeg, image/png" aria-describedby="inputGroupFileAddon01">
-                    </div>
-                </div>
-            </div> -->
             <hr class="mt-1 mb-4 mr-5">
             <div class="form-row">
             <input type="hidden" name="type" value="1">
