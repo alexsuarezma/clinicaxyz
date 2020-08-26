@@ -187,10 +187,20 @@ function esAfiliado(input,print){
   }
 }
 
+function yesNo(input,box){
+  if(input.value == "si"){     
+    document.getElementById(box).disabled = false;
+  }
+  if(input.value == "no"){
+    document.getElementById(box).disabled = true;
+  }
+}
+
 function afiliacion(input,box){
-  if(input.checked = true){     
+  if(input.checked == true){     
     document.getElementById(box).disabled = false;
   }else{
     document.getElementById(box).disabled = true;
+    document.getElementById(box).value = "";
   }
 }

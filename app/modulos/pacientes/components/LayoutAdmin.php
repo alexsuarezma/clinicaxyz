@@ -1,5 +1,5 @@
 <?php
-   function printLayout ($route, $homePage, $createPage, $citas, $laboratorios, $pagos,$archivos,
+   function printLayout ($route, $homePage, $createPage, $citas, $visualizarPacientes, $pagos,$archivos,
    $logout,$ajuste,$rrhh,$suministro,$contabilidad,$ctas_medicas,$paciente,$seguridad,$active){
     
     $routes[5]= [];
@@ -83,9 +83,9 @@
       echo "</a>";
       echo "</li>";
       echo "<li class='nav-item'>";
-      echo "<a class='nav-link $routes[3]' href=$laboratorios>";
+      echo "<a class='nav-link $routes[3]' href=$visualizarPacientes>";
       echo "<span data-feather='bar-chart-2'></span>";
-      echo "Laboratorios";
+      echo "Visualizar Pacientes";
       echo "</a>";
       echo "</li>";
       echo "<li class='nav-item'>";

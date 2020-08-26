@@ -2,7 +2,7 @@
 error_reporting(E_ALL ^ E_NOTICE);
 require '../../../database.php';
 require '../seguridad/controllers/functions/credenciales.php';
-
+require '../pacientes/components/LayoutPublic.php';
 
 verificarAcceso("../../../", "paciente");
 
@@ -59,209 +59,75 @@ verificarAcceso("../../../", "paciente");
               
                //   mysqli_query($conexion,$guardar_cita);
       
-    echo ("<script LANGUAGE='JavaScript'>
-   
-    window.location.href='confirmar_pago.php? id_paciente=".$id_paciente." & cedula=".$cedula." & especialidad=".$especialidad." & especialista=".$especialista." & fecha=".$fecha." & hora=".$hora." ';
-    </script>");
+               echo ("<script LANGUAGE='JavaScript'>
+               
+               window.location.href='confirmar_pago.php? id_paciente=".$id_paciente." & cedula=".$cedula." & especialidad=".$especialidad." & especialista=".$especialista." & fecha=".$fecha." & hora=".$hora." ';
+               </script>");
 
-                        
-        
-          }
-
-?>
-<html >
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="content-type" content="text/html; charset=utf-8" /> 
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
-    <meta name="generator" content="Jekyll v4.0.1">
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-
-    
-  <!-- copia este!!! -->   <link href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" rel="stylesheet">
-    <title>Consultar cita</title>
-    <link rel="icon" type="image/png" href="logo1.png" />
-    <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/checkout/">
-
-    <!-- Bootstrap core CSS -->
-
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-
-<LINK REL=StyleSheet HREF="formulario.css" TYPE="text/css" MEDIA=screen>
-
-    <style>
-      .bd-placeholder-img {
-        font-size: 1.125rem;
-        text-anchor: middle;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-      }
-
-      @media (min-width: 768px) {
-        .bd-placeholder-img-lg {
-          font-size: 3.5rem;
-        }
-      }
-    </style>
-    <!-- Custom styles for this template -->
-    <link href="form-validation.css" rel="stylesheet">
-</head>
-  <body class="bg-light">
-    <script type="text/javascript"> function controltag(e) {
-        tecla = (document.all) ? e.keyCode : e.which;
-        if (tecla==8) return true;
-        else if (tecla==0||tecla==9)  return true;
-       // patron =/[0-9\s]/;// -> solo letras
-        patron =/[0-9\s]/;// -> solo numeros
-        te = String.fromCharCode(tecla);
-        return patron.test(te);
-    }
-
-function validar(e) { // 1
-tecla = (document.all) ? e.keyCode : e.which; // 2
-if (tecla==8) return true; // 3
-patron =/[A-Za-z\s]/; // 4
-te = String.fromCharCode(tecla); // 5
-return patron.test(te); // 6
-}
-
-
-
-  </script>
-
-   <header>
-  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-    <a class="navbar-brand" href="../../../index.php">
-      <span style="font-weight:normal;">Clinica</span>
-      <span style="font-weight:bold;">Vitalia</span>
-    </a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarCollapse">
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item">
-        
-        </li>
-      </ul>
-
-      <?php 
-        session_start();
-        
-          if(!empty($_SESSION['user_id'])): 
-            require '../../../database.php';
-                $credenciales = $conn->query("SELECT * FROM usuario_credencial WHERE id_usuario_uc =".$_SESSION['user_id'])->fetchAll(PDO::FETCH_OBJ);
-                $_SESSION['modulo_rrhh'] = 0;
-                $_SESSION['modulo_suministros'] = 0;
-                $_SESSION['modulo_contabilidad'] = 0;
-                $_SESSION['modulo_ctas_medicas'] = 0;
-                $_SESSION['modulo_pacientes'] = 0;
-                $_SESSION['modulo_seguridad'] = 0;
-                $_SESSION['paciente'] = 0;
-                $_SESSION['nombre_credencial'] = "";
-                
-                foreach ($credenciales as $idCredencial){ 
-
-                    $records = $conn->prepare("SELECT * FROM usuario_credencial AS uc, credencial_base AS c, usuario AS u WHERE (uc.id_credencialbase_uc = c.id_credencial AND uc.id_usuario_uc = u.id_usuario) AND id_usuario_credencial = :id_usuario_credencial");
-                    $records->bindParam(':id_usuario_credencial', $idCredencial->id_usuario_credencial);
-                    $records->execute();
-                    $results = $records->fetch(PDO::FETCH_ASSOC); 
-                    if($results['modulo_rrhh'] == 1){
-                      $_SESSION['modulo_rrhh'] = 1;
-                    }
-                    if($results['modulo_suministros'] == 1){
-                      $_SESSION['modulo_suministros'] = 1;
-                    }
-                    if($results['modulo_contabilidad'] == 1){
-                      $_SESSION['modulo_contabilidad'] = 1;
-                    }
-                    if($results['modulo_ctas_medicas'] == 1){
-                      $_SESSION['modulo_ctas_medicas'] = 1;
-                    }
-                    if($results['modulo_pacientes'] == 1){
-                      $_SESSION['modulo_pacientes'] = 1;
-                    }
-                    if($results['paciente'] == 1){
-                      $_SESSION['paciente'] = 1;
-                    }
-                    if($results['modulo_seguridad'] == 1) {
-                      $_SESSION['modulo_seguridad'] = 1;
-                    }
-                    if($_SESSION['nombre_credencial'] == ""){
-                      $_SESSION['nombre_credencial'] = strtoupper($results['nombre_credencial']);
-                    }else{
-                      $_SESSION['nombre_credencial'] = $_SESSION['nombre_credencial'].", ".strtoupper($results['nombre_credencial']);
-                    }
-                }
-                
-                $_SESSION['username'] = ucwords($results['username']);
-                
-
-      ?>
-          
-          <span class="navbar-text mr-4"><?php echo $_SESSION['username']?></span>
-          <a class='nav-link dropdown-toggle' style='color: white;' href='#' id='navbarDropdownMenuLink' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
-            <i class="fas fa-th-large" ></i>
-          </a>  
-          <div class='dropdown-menu dropdown-menu-right mr-1 mb-2' style="width:400px;" aria-labelledby='navbarDropdownMenuLink'>
-            <span class="dropdown-item font-weight-bold border-bottom border-info mb-2" style="text-align:center;"><?php echo $_SESSION['nombre_credencial']?></span>
-            <?php
-              if($_SESSION['modulo_rrhh'] == 1){
-                echo "<a class='dropdown-item mt-2' href='../recursoshumanos/'><i class='fas fa-people-carry mr-2'></i> Recursos Humanos</a>";
-              }
-              if($_SESSION['modulo_suministros'] == 1){
-                echo "<a class='dropdown-item' href='../suministro/index.php'><i class='fas fa-dolly-flatbed mr-2'></i> Suministros</a>";
-              }
-              if($_SESSION['modulo_contabilidad'] == 1){
-                echo "<a class='dropdown-item' href='../contabilidad/index.php'><i class='fas fa-balance-scale mr-2'></i> Contabilidad</a>";
-              }
-              if($_SESSION['modulo_ctas_medicas'] == 1){
-                echo "<a class='dropdown-item' href='../citasmedicas/index.php'><i class='fas fa-notes-medical mr-3'></i> Citas Medicas</a>";
-                echo "<a class='dropdown-item' href='../citasmedicas/historial_clinico.php'><i class='fas fa-notes-medical mr-3'></i>Historial clinico</a>";
-              }
-              if($_SESSION['modulo_pacientes'] == 1){
-                echo "<a class='dropdown-item' href='../pacientes/index copy 2.html'><i class='fas fa-procedures mr-2'></i> Modulo Pacientes</a>";
-              }
-              if($_SESSION['modulo_seguridad'] == 1){
-                echo "<a class='dropdown-item' href='../seguridad/'><i class='fas fa-user-shield mr-2'></i> Modulo Seguridad</a>";
-              }
-              if($_SESSION['paciente'] == 1){
-                echo "<a class='dropdown-item' href='../pacientes/index copy 2.html'><i class='fas fa-procedures mr-2'></i> Paciente</a>";
-
-                echo "<a class='dropdown-item' href='index.php'><i class='fas fa-notes-medical mr-3'></i> Citas Medicas</a>";
-
-                echo "<a class='dropdown-item' href='historial_clinico.php'><i class='fas fa-notes-medical mr-3'></i>Historial clínico</a>";
+               
+               
               }
               
-            ?>            
-            <!-- <a class='dropdown-item' href='#'><i class='fas fa-file-medical-alt mr-3'></i> Historial Clinico</a> -->
-            <hr class="ml-4 mr-4 mt-2">
-            <a class='dropdown-item mt-2' style="float:right;" href='../seguridad/routes/perfil.php'><span class="float-right">Ajustes de Usuario</span></a>
-            <a class='dropdown-item' style="float:right;" href='#'><span class="float-right">Another</span></a>
-            <a class='dropdown-item' style="float:right;" href='../seguridad/controllers/logout.php'><span class="float-right">Cerrar Sesión</span></a>
+              ?>
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Pacientes | Cita Medica</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="../recursoshumanos/assets/styles/component/dashboard.css" rel="stylesheet">
+    <link href="form-validation.css" rel="stylesheet">
+    <LINK REL=StyleSheet HREF="formulario.css" TYPE="text/css" MEDIA=screen>
+    <link rel="icon" type="image/png" href="logo1.png" />
+  <script type="text/javascript"> 
+  function controltag(e) {
+      tecla = (document.all) ? e.keyCode : e.which;
+      if (tecla==8) return true;
+      else if (tecla==0||tecla==9)  return true;
+     // patron =/[0-9\s]/;// -> solo letras
+      patron =/[0-9\s]/;// -> solo numeros
+      te = String.fromCharCode(tecla);
+      return patron.test(te);
+    }
+
+    function validar(e) { // 1
+    tecla = (document.all) ? e.keyCode : e.which; // 2
+    if (tecla==8) return true; // 3
+    patron =/[A-Za-z\s]/; // 4
+    te = String.fromCharCode(tecla); // 5
+    return patron.test(te); // 6
+    }
+  </script>
+  </head>
+  <body>
+<?php
+printLayout ('../pacientes/home.php', '../../../index.php', '#', '#', '#','../seguridad/controllers/logout.php','../seguridad/routes/perfil.php','../pacientes/home.php',2);
+?>
+<div class="container-fluid">
+  <div class="row">
+
+    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Dashboard</h1>
+        <div class="btn-toolbar mb-2 mb-md-0">
+          <div class="btn-group mr-2">
+            <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
           </div>
-       
-      <?php else: ?>
-        <span class="navbar-text">
-          <a class='' href='app/modulos/seguridad/routes/login.php'>Iniciar sesión</a>
-        </span>   
-      <?php endif; ?>
-      
-      <!-- <li class='justify-content-end'>
-        
-      </li> -->
-    </div>
-  </nav>
-</header>
-<br><br>
+          <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
+            <span data-feather="calendar"></span>
+            This week
+          </button>
+        </div>
+      </div>
 
     <h2 class="mt-5" style="text-align:center;">Citas Médicas</h2>
     <div class="container">
- 
+
 <!-- comienzo del formulario-->
   <div class="row">
     <div class="col-md-8 order-md-1 mt-5">
@@ -531,7 +397,8 @@ while($tiempoInicio <= $tiempoFin){
 <!--hasta aqui -->
 
 </body>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
+<script src="../recursoshumanos/components/scripts/dashboard.js"></script>
 <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
     <!-- Iniciamos el segmento de codigo javascript -->
 <!--    <script type="text/javascript">
@@ -574,6 +441,7 @@ while($tiempoInicio <= $tiempoFin){
     </script> -->  
 
      <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+     
     <!-- Iniciamos el segmento de codigo javascript -->
     <script type="text/javascript">
       $(document).ready(function(){

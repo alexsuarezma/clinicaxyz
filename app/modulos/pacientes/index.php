@@ -20,7 +20,7 @@ verificarAcceso("../../../", "modulo_pacientes");
   </head>
   <body>
 <?php
-printLayout ('index.php', '../../../index.php', 'routes/registrar.php', '#', '#', '#','routes/subirArchivo.php',
+printLayout ('index.php', '../../../index.php', 'routes/registrar.php', '#', 'routes/visualizarPaciente.php', '#','routes/subirArchivo.php',
 '../seguridad/controllers/logout.php','../seguridad/routes/perfil.php',
   '../recursoshumanos/','../suministro/','../contabilidad/','../citasmedicas/','homeAdmin.php','../seguridad/',1);
 ?>

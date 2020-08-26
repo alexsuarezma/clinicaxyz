@@ -29,14 +29,18 @@ require '../../../../database.php';
             $resultado = $consulta->fetch(PDO::FETCH_ASSOC); 
           }
       
+          
           if($paciente == 0 && $empleado == 0){
             $message = 'Lo sentimos, las credenciales que ingreso no son correctas';
-          }else{
+          }
+          
+          if($paciente == 1 || $empleado == 1 || ($empleado == 1 && $paciente == 1)){
+
               // if ($_POST['password'] == $resultado['password'])   
-              if(password_verify($_POST['password'],$resultado['password'])){
+              if(password_verify(utf8_decode($_POST['password']),$resultado['password'])){
 
                   $_SESSION['user_id'] = $resultado['id_usuario'];
-
+                  
                   $records  = $conn->prepare('SELECT * FROM usuario_credencial AS u, credencial_base AS c WHERE (u.id_credencialbase_uc = c.id_credencial) AND (id_usuario_uc=:id_usuario)');
                   $records->bindParam(':id_usuario', $_SESSION['user_id']);
                   $records->execute();
@@ -50,8 +54,8 @@ require '../../../../database.php';
                 $message = 'Lo sentimos, las credenciales que ingreso no son correctas';
               }
           }
-
       }
+
 ?>
 <!Doctype html>
 <html lang="en">

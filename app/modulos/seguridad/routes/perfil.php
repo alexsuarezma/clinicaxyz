@@ -1,12 +1,17 @@
 <?php
 session_start();
 require '../../../../database.php';
+if(!$_SESSION['user_id']){
+  header('Location: ../../../../index.php');
+}
+
 $message='';
 $pacient = false;
 $consulta = $conn->prepare("SELECT * FROM empleados WHERE id_usuario_emp = :id_usuario_emp");
 $consulta->bindParam(':id_usuario_emp', $_SESSION['user_id']);
 $consulta->execute();
 $resultado = $consulta->fetch(PDO::FETCH_ASSOC); 
+
 
 if(!$resultado){
   
@@ -19,14 +24,14 @@ if(!$resultado){
   $resultado = $consulta->fetch(PDO::FETCH_ASSOC); 
 
   if($resultado['afiliacion_publica']!= null){
-    $afiliacionPublica = $conn->query("SELECT * FROM seguro_publico WHERE idseguro_public=".$resultado['afiliacion_publica'])->fetchAll(PDO::FETCH_OBJ);
+    $afiliacionPublica = $conn->query("SELECT * FROM seguro_publico WHERE idseguro_publico=".$resultado['afiliacion_publica'])->fetchAll(PDO::FETCH_OBJ);
   }
   
   if($resultado['afiliacion_privada']!= null){
-    $afiliacionPrivada =  $conn->query("SELECT * FROM seguro_privado WHERE idseguro_privado=".$resultado['afiliacion_privado'])->fetchAll(PDO::FETCH_OBJ);
+    $afiliacionPrivada = $conn->query("SELECT * FROM seguro_privado WHERE idseguro_privado=".$resultado['afiliacion_privada'])->fetchAll(PDO::FETCH_OBJ);
   }
   
-  $carnetConadis =  $conn->query("SELECT * FROM conadis WHERE paciente=".$resultado['idpacientes'])->fetchAll(PDO::FETCH_OBJ);
+  $carnetConadis =  $conn->query("SELECT * FROM conadis AS c, discapacidades AS d WHERE (c.discapacidad=d.iddiscapacidad) AND paciente='".$resultado['idpacientes']."'")->fetchAll(PDO::FETCH_OBJ);
   
   if(!$carnetConadis){
     $carnetConadis = '';
@@ -96,6 +101,7 @@ $conn=null;
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <title>Clinica Vitalia</title>
+    <link href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" rel="stylesheet">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <link href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" rel="stylesheet">
 
@@ -253,8 +259,9 @@ $conn=null;
                 <div class="form-row">
                   <div class="form-group col-md-6">
                     <label for="cedula">Cedula/Pasaporte</label>
-                    <input type="hidden" name="id" value="<?php echo $resultado['idpacientes']?>">
-                    <input type="text" class="form-control" name="cedula" value="<?php echo $resultado['idpacientes']?>" readonly value="<?php echo $resultado['idpacientes']?>" required>
+                    <input type="hidden" name="type" value="1">
+                    <input type="hidden" name="cedula" value="<?php echo $resultado['idpacientes']?>">
+                    <input type="text" class="form-control" readonly value="<?php echo $resultado['idpacientes']?>" required>
                   </div>
                 </div>
                 <div class="form-row">
@@ -416,7 +423,7 @@ $conn=null;
                 </div>
                 <hr class="mt-1 mb-4 mr-5">
                 <label class="font-weight-bold">¿Posee Afiliación?</label>
-                <?php if($resultado['afiliacion_privada'] == null && $resultado['afiliacion_privada'] == null):?>
+                <?php if($resultado['afiliacion_privada'] == null && $resultado['afiliacion_publica'] == null):?>
                     <div class="form-row">
                       <div class="form-group col-md-4 mt-4 ml-2">
                         <div class="custom-control custom-radio custom-control-inline">
@@ -475,22 +482,23 @@ $conn=null;
                     </div>   
                 <?php else:?> 
                     <div class="form-row">
-                      <div class="form-group col-md-6">
+                      <div class="form-group col-md-5">
                         <div class="form-check form-check-inline mr-5 mt-4">
                         <?php if($resultado['afiliacion_publica'] == null):?>
                           <input class="form-check-input" type="checkbox" id="publica" value="publica" onchange="afiliacion(this,'afiliacionPublica');">
-                          <label class="form-check-label" for="publica">Afiliación Pública</label>
                         <?php endif;?>
+                          <label class="form-check-label" for="publica">Afiliación Pública</label>
                         </div>
                       </div>
-                      <div class="form-group col-md-6">
+                      <div class="form-group col-md-5">
                         <label for="afiliacionPublica">Afiliación Pública</label>
                         <?php if($resultado['afiliacion_publica'] == null):?>
                           <select id="afiliacionPublica" name="afiliacionPublica" class="form-control" disabled required>
                           <option selected disabled value="">Seleccione...</option>                 
                         <?php else: ?> 
                           <select id="afiliacionPublica" name="afiliacionPublica" class="form-control" required>
-                          <option selected value="<?php $afiliacionPublica[0]->idseguro_publico?>"><?php $afiliacionPublica[0]->descripcion?></option>                 
+                          <option selected value="<?php echo $afiliacionPublica[0]->idseguro_publico?>"><?php echo utf8_encode($afiliacionPublica[0]->descripcion)?></option>                 
+                          <option disabled value="">Seleccione...</option>                 
                         <?php endif;?>
                                     
                             <?php
@@ -502,9 +510,14 @@ $conn=null;
                           ?> 
                         </select>
                       </div>
+                      <?php if($resultado['afiliacion_publica'] != null):?>
+                        <div class="form-group col-md-2">
+                          <a href="../controllers/borrarSeguro.php?type=publico&cedula=<?php echo $resultado['idpacientes']?>&tipo=1"><i class="fas fa-minus-circle" title="Elimina la credencial" style="color:black; font-size:18px; margin-left:40px; margin-top:40px;"></i></a>
+                        </div>
+                      <?php endif;?>
                     </div>
                     <div class="form-row">
-                      <div class="form-group col-md-6">
+                      <div class="form-group col-md-5">
                         <div class="form-check form-check-inline mt-4">
                         <?php if($resultado['afiliacion_privada'] == null):?>
                           <input class="form-check-input" type="checkbox" id="privada" value="privada" onchange="afiliacion(this,'afiliacionPrivada');">
@@ -512,14 +525,15 @@ $conn=null;
                           <label class="form-check-label" for="privada">Afiliación Privada</label>
                         </div>
                       </div>
-                      <div class="form-group col-md-6">
+                      <div class="form-group col-md-5">
                         <label for="afiliacionPrivada">Afiliación Privada</label>
                         <?php if($resultado['afiliacion_privada'] == null):?>
                         <select id="afiliacionPrivada" name="afiliacionPrivada" class="form-control" disabled required>
                         <option selected disabled value="">Seleccione...</option>                         
                         <?php else:?>
                           <select id="afiliacionPrivada" name="afiliacionPrivada" class="form-control" required>
-                          <option selected value="<?php $afiliacionPrivada[0]->idseguro_privado?>"><?php $afiliacionPrivada[0]->descripcion?></option>                        
+                          <option selected value="<?php echo $afiliacionPrivada[0]->idseguro_privado?>"><?php echo utf8_encode($afiliacionPrivada[0]->descripcion)?></option>                        
+                          <option disabled value="">Seleccione...</option>                 
                         <?php endif;?>
                           <?php
                             foreach ($seguroPrivado as $ListaPrivado):
@@ -530,9 +544,13 @@ $conn=null;
                             ?> 
                         </select>
                       </div>
+                      <?php if($resultado['afiliacion_privada'] != null):?>
+                          <div class="form-group col-md-2">
+                            <a href="../controllers/borrarSeguro.php?type=privado&cedula=<?php echo $resultado['idpacientes']?>&tipo=1"><i class="fas fa-minus-circle" title="Eliminar seguro" style="color:black; font-size:18px; margin-left:40px; margin-top:40px;"></i></a>
+                          </div>
+                      <?php endif; ?>
                     </div>      
                 <?php endif; ?>
-
 
                 <hr class="mt-1 mb-4 mr-5">
                 <label class="font-weight-bold">¿Posee alguna discapacidad?</label>
@@ -540,11 +558,11 @@ $conn=null;
                   <div class="form-row">
                       <div class="form-group col-md-4 mt-2 ml-2">
                         <div class="custom-control custom-radio custom-control-inline">
-                          <input type="radio" id="discapacidad1" name="discapacidad" class="custom-control-input" onchange="esDiscapacitado(this,'carnetConadis', 'discapacidad', 'grado')" value="si">
+                          <input type="radio" id="discapacidad1" name="poseeDiscapacidad" class="custom-control-input" onchange="esDiscapacitado(this,'carnetConadis', 'discapacidad', 'grado')" value="si">
                           <label class="custom-control-label" for="discapacidad1">Si</label>
                         </div>
                         <div class="custom-control custom-radio custom-control-inline">
-                          <input type="radio" id="discapacidad2" name="discapacidad" class="custom-control-input" onchange="esDiscapacitado(this,'carnetConadis', 'discapacidad', 'grado')" value="no" checked>
+                          <input type="radio" id="discapacidad2" name="poseeDiscapacidad" class="custom-control-input" onchange="esDiscapacitado(this,'carnetConadis', 'discapacidad', 'grado')" value="no" checked>
                           <label class="custom-control-label" for="discapacidad2">No</label>
                         </div>
                       </div>                  
@@ -588,14 +606,14 @@ $conn=null;
                       </div>
                       <div class="form-group col-md-5">
                           <label for="discapacidad">Discapacidad</label>
-                          <input type="text" class="form-control" onkeypress="return soloLetras(event)" id="discapacidad" name="discapacidad" value="<?php echo $carnetConadis[0]->discapacidad?>" required disabled="true">
+                          <input type="text" class="form-control" onkeypress="return soloLetras(event)" id="discapacidad" name="discapacidad" value="<?php echo $carnetConadis[0]->descripcion?>" required disabled="true">
                       </div>
-                      <div class="form-group col-md-3">
+                      <div class="form-group col-md-2">
                           <label for="grado">Grado %</label>
                           <input type="text" class="form-control" id="grado" name="grado" value="<?php echo $carnetConadis[0]->grado?>" required disabled="true">
                       </div>
-                      <div class="form-group col-md-5">
-                        <a href="../controllers/borrarCarnetPaciente.php?id=<?php echo $resultado['idpacientes']?>"><i class="fas fa-minus-circle"></i></a>
+                      <div class="form-group col-md-2">
+                        <a href="../controllers/borrarCarnet.php?cedula=<?php echo $resultado['idpacientes']?>&tipo=1"><i class="fas fa-minus-circle" title="Eliminar el carnet" style="color:black; font-size:18px; margin-left:40px; margin-top:40px;"></i></a>
                       </div>
                   </div>
                 <?php endif;?>
@@ -693,7 +711,6 @@ $conn=null;
         </div>
       </div>
     </div>
-
   </div>
 </div>
 </div>
@@ -716,6 +733,7 @@ $conn=null;
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 <script src="../controllers/validations/validations.js"></script>
 <script src="../components/scripts/ciudad.js"></script>
+
 <script>
     $(document).ready(function(){
     var edit = 0;
@@ -756,5 +774,6 @@ $conn=null;
       } 
     }
 </script>
+
 </body>
 </html>

@@ -30,31 +30,22 @@ $paciente = $conn->query("SELECT * FROM pacientes ORDER BY idpacientes ASC")->fe
   </head>
   <body>
 <?php
-printLayout ('../index.php', '../../../../index.php', 'registrar.php', '#', '#', '#','subirArchivo.php',
+printLayout ('../index.php', '../../../../index.php', 'registrar.php', '#', 'visualizarPaciente.php', '#','subirArchivo.php',
 '../../seguridad/controllers/logout.php','../../seguridad/routes/perfil.php',
-  '../../recursoshumanos/','../../suministro/','../../contabilidad/','../../citasmedicas/','../homeAdmin.php','../../seguridad/',7);
+  '../../recursoshumanos/','../../suministro/','../../contabilidad/','../../citasmedicas/','../homeAdmin.php','../../seguridad/',6);
 ?>
 <div class="container-fluid">
   <div class="row">
 
     <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
       <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">Dashboard</h1>
+        <h1 class="h2">Subida de Archivos</h1>
         <div class="btn-toolbar mb-2 mb-md-0">
-          <div class="btn-group mr-2">
-            <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
-            <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
-          </div>
-          <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
-            <span data-feather="calendar"></span>
-            This week
-          </button>
         </div>
       </div>
       <div class="container mt-5">
         <div class="shadow-sm p-3 mb-5 bg-white rounded">
             <form id="upload-archivo" action="../controllers/insertArchivoPaciente.php" onsubmit="onSubmit(event)" method="post" autocomplete="off">
-                <h3>Subida de Archivos</h3>
                 <div class="form-group col-md-12 mt-5" style="margin-top:23px;" id="imageEdit">
                     <label class="font-weight-bold">Selecciona el archivo que deseas subir <span class="text-danger">*campo requerido</span></label>
                     <div class="custom-file" style="margin-top:13px;">

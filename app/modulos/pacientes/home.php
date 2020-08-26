@@ -5,7 +5,6 @@ require '../seguridad/controllers/functions/credenciales.php';
 session_start();
 // verificarAcceso("../../../", "paciente");
 
-
 ?>
 <!doctype html>
 <html lang="es">
@@ -20,7 +19,7 @@ session_start();
   </head>
   <body>
 <?php
-printLayout ('home.php', '../../../index.php', '#', '#', '#','../seguridad/controllers/logout.php','../seguridad/routes/perfil.php','home.php',1);
+printLayout ('home.php', '../../../index.php', '../citasmedicas/', '#', '#','../seguridad/controllers/logout.php','../seguridad/routes/perfil.php','home.php',1);
 ?>
 <div class="container-fluid">
   <div class="row">
@@ -40,14 +39,14 @@ printLayout ('home.php', '../../../index.php', '#', '#', '#','../seguridad/contr
         </div>
       </div>
       <div class="container mt-5">
-          
+         
       </div>
     </main>
   </div>
 </div>
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>     
+<script type="text/javascript" src="https://code.jquery.com/jquery.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
-<script src="../recursoshumanos/components/scripts/dashboard.js"></script>          
+<script src="../recursoshumanos/components/scripts/dashboard.js"></script>        
 </body>
 </html>
