@@ -1,9 +1,10 @@
 <?php 
 error_reporting(E_ALL ^ E_NOTICE);
 require '../../../database.php';
+require '../pacientes/components/LayoutPublic.php';  
 require '../seguridad/controllers/functions/credenciales.php';
 
-
+session_start();
 
 if ($_SESSION['nombre_credencial']=='paciente') {
  verificarAcceso("../../../", "paciente");
@@ -23,11 +24,15 @@ $fila_b="";
 $var="";
 
 $cedula=$_GET['id_cedula'];
-  $sentencia_buscar="SELECT *,ciu.nombre as ci_nom,pro.nombre as pro_nom from citas as ci join pacientes as pa on ci.paciente=pa.idpacientes
 
-join provincias as pro on pa.provincia=pro.idprovincias
-join ciudades as ciu on  pa.ciudad=ciu.idciudades where pa.idpacientes='$cedula' order by idcitas ;
- ";
+$sentencia_buscar = "SELECT *,ciu.nombre as ci_nom,pro.nombre as pro_nom FROM citas AS ci, pacientes AS pa, ciudades AS ciu, provincias AS pro, profesion_paciente AS pp, direccion_paciente AS dp WHERE (ci.paciente=pa.idpacientes AND pa.ciudad=ciu.idciudades AND ciu.provincia=pro.idprovincias AND pa.ocupacion_paciente=pp.idprofesion_paciente AND pa.idpacientes=dp.id_pacientes_de) AND pa.idpacientes='$cedula' order by idcitas";
+
+
+//   $sentencia_buscar="SELECT *,ciu.nombre as ci_nom,pro.nombre as pro_nom from citas as ci join pacientes as pa on ci.paciente=pa.idpacientes
+
+// join provincias as pro on pa.provincia=pro.idprovincias
+// join ciudades as ciu on  pa.ciudad=ciu.idciudades where pa.idpacientes='$cedula' order by idcitas ;
+//  ";
   $resultado_b=mysqli_query($conexion,$sentencia_buscar);
   $conteo=mysqli_num_rows($resultado_b);
 
@@ -36,11 +41,15 @@ join ciudades as ciu on  pa.ciudad=ciu.idciudades where pa.idpacientes='$cedula'
 if (isset($_POST['buscar'])) {
 	
 	$cedula=$_POST['cedula'];
-	$sentencia_buscar="SELECT *,ciu.nombre as ci_nom,pro.nombre as pro_nom from citas as ci join pacientes as pa on ci.paciente=pa.idpacientes
+// 	$sentencia_buscar="SELECT *,ciu.nombre as ci_nom,pro.nombre as pro_nom from citas as ci join pacientes as pa on ci.paciente=pa.idpacientes
 
-join provincias as pro on pa.provincia=pro.idprovincias
-join ciudades as ciu on  pa.ciudad=ciu.idciudades where pa.idpacientes='$cedula' order by idcitas  ;
- ";
+// join provincias as pro on pa.provincia=pro.idprovincias
+// join ciudades as ciu on  pa.ciudad=ciu.idciudades where pa.idpacientes='$cedula' order by idcitas  ;
+//  ";
+
+$sentencia_buscar = "SELECT *,ciu.nombre as ci_nom,pro.nombre as pro_nom FROM citas AS ci, pacientes AS pa, ciudades AS ciu, provincias AS pro, profesion_paciente AS pp, direccion_paciente AS dp WHERE (ci.paciente=pa.idpacientes AND pa.ciudad=ciu.idciudades AND ciu.provincia=pro.idprovincias AND pa.ocupacion_paciente=pp.idprofesion_paciente AND pa.idpacientes=dp.id_pacientes_de) AND pa.idpacientes='$cedula' order by idcitas";
+
+
 	$resultado_b=mysqli_query($conexion,$sentencia_buscar);
 	$conteo=mysqli_num_rows($resultado_b);
 	
@@ -58,30 +67,30 @@ join ciudades as ciu on  pa.ciudad=ciu.idciudades where pa.idpacientes='$cedula'
 
 ?>
 
-<!DOCTYPE html>
-<html>
-<head>
-	  <title>Historial clínico</title>
+<!doctype html>
+<html lang="es">
+  <head>
     <meta charset="utf-8">
-     <meta http-equiv="content-type" content="text/html; charset=utf-8" /> 
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
-    <meta name="generator" content="Jekyll v4.0.1">
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Pacientes | Home</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="../recursoshumanos/assets/styles/component/dashboard.css" rel="stylesheet">
+  </head>
+  <body>
+<?php
+printLayout ('../pacientes/home.php', '../../../index.php', 'index.php', 'historial_clinico.php', '#','../seguridad/controllers/logout.php','../seguridad/routes/perfil.php','../pacientes/home.php',3);
+?>
+<div class="container-fluid">
+  <div class="row">
 
-    <title>Consultar Cita</title>
-    <link rel="icon" type="image/png" href="logo1.png" />
-    <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/checkout/">
-
-    <!-- Bootstrap core CSS -->
-
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-
-<LINK REL=StyleSheet HREF="formulario.css" TYPE="text/css" MEDIA=screen>
-</head>
-<body>
-<br><br>
+    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Dashboard</h1>
+        <div class="btn-toolbar mb-2 mb-md-0">
+        </div>
+      </div>
 <center>	<h2>Historial clínico</h2></center>
 <br><br>
 
@@ -130,5 +139,9 @@ join ciudades as ciu on  pa.ciudad=ciu.idciudades where pa.idpacientes='$cedula'
   </tbody>
 </table>
 </center>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>  <script>window.jQuery || document.write('<script src="../assets/js/vendor/jquery.slim.min.js"><\/script>')</script><script src="../assets/dist/js/bootstrap.bundle.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+<script src="../recursoshumanos/components/scripts/dashboard.js"></script>  
 </body>
 </html>

@@ -32,7 +32,7 @@
       echo "<hr class='ml-4 mr-4 mt-2'>";
       echo "<span class='dropdown-item font-weight-bold border-bottom border-info mb-2' style='text-align:center;'>".$_SESSION['nombre_credencial']."</span>";
         if($_SESSION['paciente'] == 1){
-          echo "<a class='dropdown-item' href='app/modulos/pacientes/index copy 2.html'><i class='fas fa-procedures mr-2'></i> Paciente</a>";
+          echo "<a class='dropdown-item' href=$paciente><i class='fas fa-procedures mr-2'></i> Paciente</a>";
         }
       
       // <a class='dropdown-item' href='#'><i class='fas fa-file-medical-alt mr-3'></i> Historial Clinico</a>

@@ -20,20 +20,22 @@
 	$id_paciente=$_GET['id_paciente'];
 	$id_citas=$_GET['id_citas'];
 	
-	$query = "SELECT *,ciu.nombre as ci_nom,pro.nombre as pro_nom from citas as ci join pacientes as pa on ci.paciente=pa.idpacientes
+$query = "SELECT *,ciu.nombre as ci_nom,pro.nombre as pro_nom FROM citas AS ci, pacientes AS pa, ciudades AS ciu, provincias AS pro, profesion_paciente AS pp, direccion_paciente AS dp WHERE (ci.paciente=pa.idpacientes AND pa.ciudad=ciu.idciudades AND ciu.provincia=pro.idprovincias AND pa.ocupacion_paciente=pp.idprofesion_paciente AND pa.idpacientes=dp.id_pacientes_de) AND pa.idpacientes='$id_paciente' and ci.idcitas='$id_citas'";
 
-join provincias as pro on pa.provincia=pro.idprovincias
-join ciudades as ciu on  pa.ciudad=ciu.idciudades where pa.idpacientes='$id_paciente' and ci.idcitas='$id_citas' ";
+
+// 	$query = "SELECT *,ciu.nombre as ci_nom,pro.nombre as pro_nom from citas as ci join pacientes as pa on ci.paciente=pa.idpacientes
+
+// join ciudades as ciu on  pa.ciudad=ciu.idciudades 
+// join provincias as pro on ciu.provincia=pro.idprovincias where pa.idpacientes='$id_paciente' and ci.idcitas='$id_citas' ";
+
 	$resultado = $conexion->query($query);
+	
 	
 	$pdf = new PDF();
 	$pdf->AliasNbPages();
 	$pdf->AddPage();
 	$row = $resultado->fetch_assoc();
 	$pdf->SetFillColor(232,232,232);
-	
-
-
 	
 
 
@@ -88,13 +90,19 @@ join ciudades as ciu on  pa.ciudad=ciu.idciudades where pa.idpacientes='$id_paci
 	$pdf->Cell(92,6,utf8_decode("Ocupacion: "),0,0,'R');
 
 	$pdf->SetFont('Arial','U',12);
-	$pdf->Cell(20,6,utf8_decode($row['ocupacion']),0,0,'L'); 
+	$pdf->Cell(20,6,utf8_decode($row['profesion']),0,0,'L'); 
 	$pdf->Ln(10);
 
 	$pdf->SetFont('Arial','B',12);
 	$pdf->cell(100,6,utf8_decode("Sexo: "),0,0,'R');
 	$pdf->SetFont('Arial','U',12);
-	$pdf->Cell(10,6,utf8_decode($row['sexo']),0,0,'L');
+	if($row['sexo']== 'V'){
+		$pdf->Cell(10,6,utf8_decode('Varón'),0,0,'L');
+	}elseif($row['sexo']== 'M'){
+		$pdf->Cell(10,6,utf8_decode('Mujer'),0,0,'L');
+	}elseif($row['sexo']== 'I'){
+		$pdf->Cell(10,6,utf8_decode('Indefinido'),0,0,'L');
+	}
 
 	$pdf->SetFont('Arial','B',12);
 	$pdf->Ln(10);
@@ -110,7 +118,10 @@ join ciudades as ciu on  pa.ciudad=ciu.idciudades where pa.idpacientes='$id_paci
 
 	$pdf->SetFont('Arial','U',12);
 
-	$pdf->Cell(30,6,$row['direccion'],0,0,'');
+	if($row['tipo'] == 'Domicilio'){
+		$pdf->Cell(30,6,$row['direccion'],0,0,'');	
+	}
+	
 
 	$pdf->Ln(10);
 
@@ -125,7 +136,9 @@ join ciudades as ciu on  pa.ciudad=ciu.idciudades where pa.idpacientes='$id_paci
 	$pdf->SetFont('Arial','B',12);
 	$pdf->cell(95,6,utf8_decode("Telefono: "),0,0,'R');
 	$pdf->SetFont('Arial','U',12);
-	$pdf->Cell(10,6,utf8_decode($row['tlno_particular']),0,0,'L');
+	if($row['tipo'] == 'Domicilio'){	
+		$pdf->Cell(10,6,utf8_decode($row['tlno_particular']),0,0,'L');
+	}
 
 
 	
@@ -135,7 +148,10 @@ join ciudades as ciu on  pa.ciudad=ciu.idciudades where pa.idpacientes='$id_paci
 
 	
 	$pdf->SetFont('Arial','U',12);
-	$pdf->Cell(20,6,utf8_decode($row['tlno_personal']),0,0,'L');
+	if($row['tipo'] == 'Domicilio'){	
+		$pdf->Cell(20,6,utf8_decode($row['tlno_personal']),0,0,'L');
+	}
+	
 	$pdf->Ln(10);
 
 	$pdf->SetFont('Arial','B',12);
@@ -152,7 +168,19 @@ join ciudades as ciu on  pa.ciudad=ciu.idciudades where pa.idpacientes='$id_paci
 	$pdf->Cell(95,6,utf8_decode("Afiliado: "),0,0,'R');
 
 	$pdf->SetFont('Arial','U',12);
-	$pdf->Cell(20,6,utf8_decode($row['afiliado']),0,0,'L'); 
+
+
+	if( $row['afiliacion_privada'] != null && $row['afiliacion_publica'] != null){
+		$pdf->Cell(20,6,utf8_decode($row['afiliacion_publica']).", ".utf8_decode($row['afiliacion_privada']),0,0,'L'); 
+	}elseif($row['afiliacion_publica'] != null){
+		$pdf->Cell(20,6,utf8_decode($row['afiliacion_publica']),0,0,'L'); 
+	}elseif( $row['afiliacion_privada'] != null){
+		$pdf->Cell(20,6,utf8_decode($row['afiliacion_privada']),0,0,'L'); 
+	}elseif( $row['afiliacion_privada'] == null && $row['afiliacion_publica'] == null){
+		$pdf->Cell(20,6,utf8_decode("No Afiliado."),0,0,'L'); 
+	}
+
+	
 	$pdf->Ln(10);
 
 	$pdf->SetFont('Arial','B',12);

@@ -105,7 +105,7 @@ verificarAcceso("../../../", "paciente");
   </head>
   <body>
 <?php
-printLayout ('../pacientes/home.php', '../../../index.php', '#', '#', '#','../seguridad/controllers/logout.php','../seguridad/routes/perfil.php','../pacientes/home.php',2);
+printLayout ('../pacientes/home.php', '../../../index.php', 'index.php', 'historial_clinico.php', '#','../seguridad/controllers/logout.php','../seguridad/routes/perfil.php','../pacientes/home.php',2);
 ?>
 <div class="container-fluid">
   <div class="row">
