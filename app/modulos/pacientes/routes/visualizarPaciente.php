@@ -20,6 +20,18 @@ $paciente = $conn->query("SELECT * FROM pacientes ORDER BY idpacientes ASC")->fe
     <link href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" rel="stylesheet">
     <!-- Custom styles for this template -->
     <link href="../../recursoshumanos/assets/styles/component/dashboard.css" rel="stylesheet">
+    <style>
+        #busqueda {
+                background-image: url('/css/searchicon.png');
+                background-position: 10px 12px;
+                background-repeat: no-repeat;
+                width: 100%;
+                font-size: 16px;
+                padding: 12px 20px 12px 40px;
+                border: 1px solid #ddd;
+                margin-bottom: 12px;
+            }
+    </style>
   </head>
   <body>
 <?php
@@ -35,6 +47,9 @@ printLayout ('../index.php', '../../../../index.php', 'registrar.php', '#', 'vis
         <h1 class="h2">PACIENTES</h1>
         <div class="btn-toolbar mb-2 mb-md-0">
         </div>
+      </div>
+      <div class="container">
+        <input type="text" name="busqueda" id="busqueda" placeholder="Buscar pacientes por cedula, nombres, apellidos..." title="Type in a name">
       </div>
       <div class="container mt-5">
         <table class="table">

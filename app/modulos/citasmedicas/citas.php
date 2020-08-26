@@ -3,7 +3,8 @@ error_reporting(E_ALL ^ E_NOTICE);
 require '../../../database.php';
 require '../seguridad/controllers/functions/credenciales.php';
 
-
+var_dump($_SESSION['cedula_d']);
+die;
 verificarAcceso("../../../", "modulo_ctas_medicas");
 
  date_default_timezone_set('AMERICA/GUAYAQUIL');
@@ -242,6 +243,8 @@ else
 
 
 $result=mysqli_query($conexion, $sentencia);
+
+
      while ($row = mysqli_fetch_array($result)){   
       ?>
     <th><?php echo $row['idcitas'] ?> </th>

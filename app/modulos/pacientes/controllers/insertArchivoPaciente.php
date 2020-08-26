@@ -1,5 +1,5 @@
 <?php
-// var_dump($_POST);
+
 require_once('../../../../database.php');
 date_default_timezone_set('America/Guayaquil');
 extract($_REQUEST);

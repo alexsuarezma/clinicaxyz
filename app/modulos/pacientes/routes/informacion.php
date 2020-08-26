@@ -1,6 +1,7 @@
 <?php
 require '../components/LayoutAdmin.php';
 require '../../../../database.php';
+require '../../recursoshumanos/components/modal.php';
 require '../../seguridad/controllers/functions/credenciales.php';
 
 verificarAcceso("../../../../", "modulo_pacientes");
@@ -8,11 +9,14 @@ verificarAcceso("../../../../", "modulo_pacientes");
     $afiliacionPublica= '';
     $afiliacionPrivada= '';
     $carnetConadis = '';
-    $consulta = $conn->prepare("SELECT * FROM pacientes AS p, profesion_paciente AS pp, ciudades AS c WHERE (p.ocupacion_paciente=pp.idprofesion_paciente AND p.ciudad=c.idciudades) AND idpacientes = :idpacientes");
+    $consulta = $conn->prepare("SELECT * FROM pacientes AS p, profesion_paciente AS pp, ciudades AS c WHERE (p.ocupacion_paciente=pp.idprofesion_paciente AND p.ciudad=c.idciudades) AND idpacientes = :idpacientes AND (deleted = 0 OR deleted IS NULL)");
     $consulta->bindParam(':idpacientes', $_GET['cedula']);
     $consulta->execute();
     $resultado = $consulta->fetch(PDO::FETCH_ASSOC); 
     
+    if(!$resultado){
+        header('Location: visualizarPaciente.php');
+    }
 
     if($resultado['afiliacion_publica']!= null){
       $afiliacionPublica = $conn->query("SELECT * FROM seguro_publico WHERE idseguro_publico=".$resultado['afiliacion_publica'])->fetchAll(PDO::FETCH_OBJ);
@@ -50,6 +54,7 @@ verificarAcceso("../../../../", "modulo_pacientes");
     <link href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" rel="stylesheet">
     <!-- Custom styles for this template -->
     <link href="../../recursoshumanos/assets/styles/component/dashboard.css" rel="stylesheet">
+    
   </head>
   <body>
 <?php
@@ -67,6 +72,9 @@ printLayout ('../index.php', '../../../../index.php', 'registrar.php', '#', 'vis
         </div>
       </div>
       <div class="container mt-5 mb-5">
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-outline-danger" style="width:200px;" data-toggle="modal" data-target="#modal-delete">Dar de baja al Paciente</button>
+      </div>
         <form method="POST" action="../../seguridad/controllers/actualizarPaciente.php" class="ml-4 mr-4 mb-5">
                 
                 <label class="font-weight-bold mt-4">Información personal del paciente</label>
@@ -75,7 +83,7 @@ printLayout ('../index.php', '../../../../index.php', 'registrar.php', '#', 'vis
                     <div class="form-group col-md-6">
                         <label for="cedula">Cedula/Pasaporte</label>
                         <input type="hidden" name="type" value="2">
-                        <input type="hidden" name="cedula" value="<?php echo $resultado['idpacientes']?>">
+                        <input type="hidden" name="cedula" id="cedula" value="<?php echo $resultado['idpacientes']?>">
                         <input type="text" class="form-control" readonly value="<?php echo $resultado['idpacientes']?>" required>
                     </div>
                     <div class="form-group col-md-2 mt-4 ml-2">
@@ -482,13 +490,23 @@ printLayout ('../index.php', '../../../../index.php', 'registrar.php', '#', 'vis
     </main>
   </div>
 </div>
+<?php
+    printModal('Borrar Paciente','btn-delete','modal-delete','¡Hey!. Estas apunto de DAR DE BAJA al PACIENTE. ¿Realmente deseas continuar con esta acción?');
+?>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>     
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 <script src="../../recursoshumanos/components/scripts/dashboard.js"></script> 
 <script src="../../seguridad/controllers/validations/validations.js"></script>
-<script src="../../seguridad/components/scripts/ciudad.js"></script>         
+<script src="../../seguridad/components/scripts/ciudad.js"></script>      
+<script>
+    $(document).ready(function(){
+        $('#btn-delete').click(function(){
+            location.href=`../controllers/eliminarPaciente.php?id=${$('#cedula').val()}`;
+        });  
+    });
+</script>   
 </body>
 </html>
 

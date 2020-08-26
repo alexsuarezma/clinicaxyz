@@ -16,7 +16,7 @@
       $baseDeDatos ="heroku_fe7e002859673b2";
  
       // Nombre de la tabla a trabajar
-      $tabla = "paciente";
+      $tabla = "pacientes";
  
    
          global $host, $puerto, $usuario, $contrasena, $baseDeDatos, $tabla;
