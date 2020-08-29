@@ -1,5 +1,3 @@
-
-
 <?php
 require '../components/LayoutAdmin.php';
 require '../../../../database.php';
@@ -7,7 +5,7 @@ require '../../seguridad/controllers/functions/credenciales.php';
 
 verificarAcceso("../../../../", "modulo_pacientes");
 
-$paciente = $conn->query("SELECT * FROM pacientes ORDER BY idpacientes ASC")->fetchAll(PDO::FETCH_OBJ);
+$paciente = $conn->query("SELECT * FROM pacientes WHERE deleted = 0 OR deleted IS NULL ORDER BY idpacientes ASC")->fetchAll(PDO::FETCH_OBJ);
 
 ?>
 <!doctype html>
@@ -35,9 +33,9 @@ $paciente = $conn->query("SELECT * FROM pacientes ORDER BY idpacientes ASC")->fe
   </head>
   <body>
 <?php
-printLayout ('../index.php', '../../../../index.php', 'registrar.php', '#', 'visualizarPaciente.php', '#','routes/subirArchivo.php',
+printLayout ('../index.php', '../../../../index.php', 'registrar.php', '../../citasmedicas/historial_clinico.php','../../citasmedicas/citas.php', 'visualizarPaciente.php', 'pacientesBaja.php', '#','subirArchivo.php',
 '../../seguridad/controllers/logout.php','../../seguridad/routes/perfil.php',
-  '../../recursoshumanos/','../../suministro/','../../contabilidad/','../../citasmedicas/','../index.php','../../seguridad/',4);
+  '../../recursoshumanos/','../../suministro/','../../contabilidad/','../../citasmedicas/','../index.php','../../seguridad/',5);
 ?>
 <div class="container-fluid">
   <div class="row">
@@ -68,7 +66,7 @@ printLayout ('../index.php', '../../../../index.php', 'registrar.php', '#', 'vis
                 <th><?php echo $Pacientes->idpacientes; ?></th>
                 <td><?php echo $Pacientes->nombres." ".$Pacientes->ape_paterno." ".$Pacientes->ape_mat ?></td>
                 <td><?php echo substr($Pacientes->created_at,0,10);?></td>
-                <td><?php if($Pacientes->sexo == 'V'){ echo 'Varón';}elseif($Pacientes->sexo == 'M'){ echo 'Mujer';} ?></td>
+                <td><?php if($Pacientes->sexo == 'V'){ echo 'Varón';}elseif($Pacientes->sexo == 'M'){ echo 'Mujer';}elseif($Pacientes->sexo == 'I'){ echo 'Indefinido';} ?></td>
                 <td><a href="informacion.php?cedula=<?php echo $Pacientes->idpacientes;?>"><i class="fas fa-user-edit" style="font-size:18px; color:black;" title="Acciones a Pacientes"></i></a></td>
                 </tr>
             <?php endforeach; ?>

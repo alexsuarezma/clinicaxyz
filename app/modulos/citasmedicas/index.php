@@ -105,7 +105,7 @@ verificarAcceso("../../../", "paciente");
   </head>
   <body>
 <?php
-printLayout ('../pacientes/home.php', '../../../index.php', 'index.php', 'historial_clinico.php', '#','../seguridad/controllers/logout.php','../seguridad/routes/perfil.php','../pacientes/home.php',2);
+printLayout ('../pacientes/home.php', '../../../index.php', 'index.php', '../pacientes/diagnostico.php', '#','../seguridad/controllers/logout.php','../seguridad/routes/perfil.php','../pacientes/home.php',2);
 ?>
 <div class="container-fluid">
   <div class="row">
@@ -165,9 +165,9 @@ printLayout ('../pacientes/home.php', '../../../index.php', 'index.php', 'histor
         </div>
 
       </form>
+      <!-- <?php echo htmlspecialchars($_SERVER['PHP_SELF'])?> -->
 
-
-      <form class="needs-validation" novalidate  action="<?php echo htmlspecialchars($_SERVER['PHP_SELF'])?>"  method="post"> 
+      <form class="needs-validation" novalidate  action="../pacientes/routes/pago.php"  method="post"> 
 
 
 

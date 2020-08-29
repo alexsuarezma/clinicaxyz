@@ -20,9 +20,9 @@ verificarAcceso("../../../", "modulo_pacientes");
   </head>
   <body>
 <?php
-printLayout ('index.php', '../../../index.php', 'routes/registrar.php', '#', 'routes/visualizarPaciente.php', '#','routes/subirArchivo.php',
+printLayout ('index.php', '../../../index.php', 'routes/registrar.php', '../citasmedicas/historial_clinico.php','../citasmedicas/citas.php', 'routes/visualizarPaciente.php', 'routes/pacientesBaja.php', '#','routes/subirArchivo.php',
 '../seguridad/controllers/logout.php','../seguridad/routes/perfil.php',
-  '../recursoshumanos/','../suministro/','../contabilidad/','../citasmedicas/','homeAdmin.php','../seguridad/',1);
+  '../recursoshumanos/','../suministro/','../contabilidad/','../citasmedicas/','index.php','../seguridad/',1);
 ?>
 <div class="container-fluid">
   <div class="row">

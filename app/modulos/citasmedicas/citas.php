@@ -1,11 +1,12 @@
 <?php 
 error_reporting(E_ALL ^ E_NOTICE);
 require '../../../database.php';
+require '../pacientes/components/LayoutAdmin.php';
 require '../seguridad/controllers/functions/credenciales.php';
 
-var_dump($_SESSION['cedula_d']);
-die;
+
 verificarAcceso("../../../", "modulo_ctas_medicas");
+session_start();
 
  date_default_timezone_set('AMERICA/GUAYAQUIL');
 include "conexion.php";
@@ -48,167 +49,50 @@ function tiempo_session()
 
 $cedula_d=$_SESSION['cedula_d'];
 ?>
-<html>
-<head>
-  <title>Citas agendadas</title>
+
+<!doctype html>
+<html lang="es">
+  <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
-    <meta name="generator" content="Jekyll v4.0.1">
-    <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/checkout/">
+    <title>Pacientes | Home</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="../recursoshumanos/assets/styles/component/dashboard.css" rel="stylesheet">
     <link rel="icon" type="image/png" href="logo1.png" />
+  <script type="text/javascript">
+    function preguntar(p1){
+     var p1;
+     eliminar=confirm("¿Deseas eliminar este registro?");
+     if (eliminar)
+     //Redireccionamos si das a aceptar
+   
+       window.location.href="eliminar.php?Id="+p1; //página web a la que te redirecciona si confirmas la eliminación
+  else
+    //Y aquí pon cualquier cosa que quieras que salga si le diste al boton de cancelar
+      alert('No se ha podido eliminar el registro...')
+  }
+  </script>
+  </head>
+  <body>
+  <?php
+    printLayout ('index.php', '../../../index.php', 'routes/registrar.php', '../citasmedicas/historial_clinico.php','../citasmedicas/citas.php', 'routes/visualizarPaciente.php', 'routes/pacientesBaja.php', '#','routes/subirArchivo.php',
+    '../seguridad/controllers/logout.php','../seguridad/routes/perfil.php',
+      '../recursoshumanos/','../suministro/','../contabilidad/','../citasmedicas/','index.php','../seguridad/',3);
+  ?>  
+<div class="container-fluid">
+  <div class="row">
 
-    
-  <!-- copia este!!! -->   <link href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" rel="stylesheet">
-
-    <!-- Bootstrap core CSS -->
-
-<LINK REL=StyleSheet HREF="formulario.css" TYPE="text/css" MEDIA=screen>
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-</head>
-<body>
-
-<script type="text/javascript">
-  function preguntar(p1){
-   var p1;
-   eliminar=confirm("¿Deseas eliminar este registro?");
-   if (eliminar)
-   //Redireccionamos si das a aceptar
- 
-     window.location.href="eliminar.php?Id="+p1; //página web a la que te redirecciona si confirmas la eliminación
-else
-  //Y aquí pon cualquier cosa que quieras que salga si le diste al boton de cancelar
-    alert('No se ha podido eliminar el registro...')
-}
-</script>
+    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Dashboard</h1>
+        <div class="btn-toolbar mb-2 mb-md-0">
+        </div>
+      </div>
 
 
-   <header>
-  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-    <a class="navbar-brand" href="../../../index.php">
-      <span style="font-weight:normal;">Clinica</span>
-      <span style="font-weight:bold;">Vitalia</span>
-    </a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarCollapse">
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item">
-        
-        </li>
-      </ul>
 
-      <?php 
-        session_start();
-        
-          if(!empty($_SESSION['user_id'])): 
-            require '../../../database.php';
-                $credenciales = $conn->query("SELECT * FROM usuario_credencial WHERE id_usuario_uc =".$_SESSION['user_id'])->fetchAll(PDO::FETCH_OBJ);
-                $_SESSION['modulo_rrhh'] = 0;
-                $_SESSION['modulo_suministros'] = 0;
-                $_SESSION['modulo_contabilidad'] = 0;
-                $_SESSION['modulo_ctas_medicas'] = 0;
-                $_SESSION['modulo_pacientes'] = 0;
-                $_SESSION['modulo_seguridad'] = 0;
-                $_SESSION['paciente'] = 0;
-                $_SESSION['nombre_credencial'] = "";
-                
-                foreach ($credenciales as $idCredencial){ 
-
-                    $records = $conn->prepare("SELECT * FROM usuario_credencial AS uc, credencial_base AS c, usuario AS u WHERE (uc.id_credencialbase_uc = c.id_credencial AND uc.id_usuario_uc = u.id_usuario) AND id_usuario_credencial = :id_usuario_credencial");
-                    $records->bindParam(':id_usuario_credencial', $idCredencial->id_usuario_credencial);
-                    $records->execute();
-                    $results = $records->fetch(PDO::FETCH_ASSOC); 
-                    if($results['modulo_rrhh'] == 1){
-                      $_SESSION['modulo_rrhh'] = 1;
-                    }
-                    if($results['modulo_suministros'] == 1){
-                      $_SESSION['modulo_suministros'] = 1;
-                    }
-                    if($results['modulo_contabilidad'] == 1){
-                      $_SESSION['modulo_contabilidad'] = 1;
-                    }
-                    if($results['modulo_ctas_medicas'] == 1){
-                      $_SESSION['modulo_ctas_medicas'] = 1;
-                    }
-                    if($results['modulo_pacientes'] == 1){
-                      $_SESSION['modulo_pacientes'] = 1;
-                    }
-                    if($results['paciente'] == 1){
-                      $_SESSION['paciente'] = 1;
-                    }
-                    if($results['modulo_seguridad'] == 1) {
-                      $_SESSION['modulo_seguridad'] = 1;
-                    }
-                    if($_SESSION['nombre_credencial'] == ""){
-                      $_SESSION['nombre_credencial'] = strtoupper($results['nombre_credencial']);
-                    }else{
-                      $_SESSION['nombre_credencial'] = $_SESSION['nombre_credencial'].", ".strtoupper($results['nombre_credencial']);
-                    }
-                }
-                
-                $_SESSION['username'] = ucwords($results['username']);
-                
-
-      ?>
-          
-          <span class="navbar-text mr-4"><?php echo $_SESSION['username']?></span>
-          <a class='nav-link dropdown-toggle' style='color: white;' href='#' id='navbarDropdownMenuLink' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
-            <i class="fas fa-th-large" ></i>
-          </a>  
-          <div class='dropdown-menu dropdown-menu-right mr-1 mb-2' style="width:400px;" aria-labelledby='navbarDropdownMenuLink'>
-            <span class="dropdown-item font-weight-bold border-bottom border-info mb-2" style="text-align:center;"><?php echo $_SESSION['nombre_credencial']?></span>
-            <?php
-              if($_SESSION['modulo_rrhh'] == 1){
-                echo "<a class='dropdown-item mt-2' href='../recursoshumanos/'><i class='fas fa-people-carry mr-2'></i> Recursos Humanos</a>";
-              }
-              if($_SESSION['modulo_suministros'] == 1){
-                echo "<a class='dropdown-item' href='../suministro/index.php'><i class='fas fa-dolly-flatbed mr-2'></i> Suministros</a>";
-              }
-              if($_SESSION['modulo_contabilidad'] == 1){
-                echo "<a class='dropdown-item' href='../contabilidad/index.php'><i class='fas fa-balance-scale mr-2'></i> Contabilidad</a>";
-              }
-              if($_SESSION['modulo_ctas_medicas'] == 1){
-                echo "<a class='dropdown-item' href='../citasmedicas/citas.php'><i class='fas fa-notes-medical mr-3'></i> Citas agendadas</a>";
-                echo "<a class='dropdown-item' href='../citasmedicas/historial_clinico.php'><i class='fas fa-notes-medical mr-3'></i>Historial clinico</a>";
-              }
-              if($_SESSION['modulo_pacientes'] == 1){
-                echo "<a class='dropdown-item' href='../pacientes/index copy 2.html'><i class='fas fa-procedures mr-2'></i> Modulo Pacientes</a>";
-              }
-              if($_SESSION['modulo_seguridad'] == 1){
-                echo "<a class='dropdown-item' href='../seguridad/'><i class='fas fa-user-shield mr-2'></i> Modulo Seguridad</a>";
-              }
-              if($_SESSION['paciente'] == 1){
-                echo "<a class='dropdown-item' href='../pacientes/index copy 2.html'><i class='fas fa-procedures mr-2'></i> Paciente</a>";
-
-                echo "<a class='dropdown-item' href='index.php'><i class='fas fa-notes-medical mr-3'></i> Citas Medicas</a>";
-
-                echo "<a class='dropdown-item' href='historial_clinico.php'><i class='fas fa-notes-medical mr-3'></i>Historial clínico</a>";
-              }
-              
-            ?>            
-            <!-- <a class='dropdown-item' href='#'><i class='fas fa-file-medical-alt mr-3'></i> Historial Clinico</a> -->
-            <hr class="ml-4 mr-4 mt-2">
-            <a class='dropdown-item mt-2' style="float:right;" href='../seguridad/routes/perfil.php'><span class="float-right">Ajustes de Usuario</span></a>
-            <a class='dropdown-item' style="float:right;" href='#'><span class="float-right">Another</span></a>
-            <a class='dropdown-item' style="float:right;" href='../seguridad/controllers/logout.php'><span class="float-right">Cerrar Sesión</span></a>
-          </div>
-       
-      <?php else: ?>
-        <span class="navbar-text">
-          <a class='' href='app/modulos/seguridad/routes/login.php'>Iniciar sesión</a>
-        </span>   
-      <?php endif; ?>
-      
-      <!-- <li class='justify-content-end'>
-        
-      </li> -->
-    </div>
-  </nav>
-</header>
-<br><br>
 
 <br><br>
 <h2 class="" style="text-align:center;">Citas agendadas</h2>
@@ -244,9 +128,10 @@ else
 
 $result=mysqli_query($conexion, $sentencia);
 
-
-     while ($row = mysqli_fetch_array($result)){   
-      ?>
+if($result){
+  
+  while ($row = mysqli_fetch_array($result)){   
+    ?>
     <th><?php echo $row['idcitas'] ?> </th>
     <th><?php echo $row['nombres'] ?> </th>
     <th><?php echo utf8_decode($row['ape_paterno'])." ".utf8_decode($row['ape_mat']) ?> </th>
@@ -271,17 +156,17 @@ SET  estado='No realizado'
 WHERe idcitas=$id_cita and estado='Pendiente'";
 
 mysqli_query($conexion,$sql_cambio);
- }elseif ($hora_actual<$row['id_hora']) {
+}elseif ($hora_actual<$row['id_hora']) {
    $sql_cambio="UPDATE citas
 SET  estado='Pendiente'
 WHERe idcitas=$id_cita and estado='No realizado'";
 
 mysqli_query($conexion,$sql_cambio);
- }
-    
-    if ($row['estado']=='Pendiente') {
-      # code...
-    
+}
+
+if ($row['estado']=='Pendiente') {
+  # code...
+  
     ?>
 
 
@@ -316,7 +201,8 @@ mysqli_query($conexion,$sql_cambio);
    <th> <a href="reportes/imprimir_receta.php?id_cita=<?php echo $id_cita ?>" > <button class="btn btn-primary" disabled="">  Receta </button></a> </th>
 <?php } ?>
   </tr>
-<?php }   ?>   
+<?php } 
+}  ?>   
 
 
   </tbody>
@@ -345,8 +231,9 @@ mysqli_query($conexion,$sql_cambio);
 <script type="text/javascript" src="js/funciones_ad.js">     </script>
 
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
-
+<script src="../recursoshumanos/components/scripts/dashboard.js"></script>
 
 </body>
 </html>

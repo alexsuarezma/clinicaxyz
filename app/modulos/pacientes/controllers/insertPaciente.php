@@ -33,7 +33,7 @@ if($paciente>0){
         $stmt->execute();
         
            //REGISTRAR PACIENTE
-           $sql = "INSERT INTO pacientes (idpacientes,ape_paterno,ape_mat,nombres,ocupacion_paciente,sexo,f_nacimiento,zona,correo,ciudad,afiliacion_publica,afiliacion_privada,id_usuario_pac,created_at,updated_at) VALUES (:idpacientes,:ape_paterno,:ape_mat,:nombres,:ocupacion_paciente,:sexo,:f_nacimiento,:zona,:correo,:ciudad,:afiliacion_publica,:afiliacion_privada,:id_usuario_pac,:created_at,:updated_at)";
+           $sql = "INSERT INTO pacientes (idpacientes,ape_paterno,ape_mat,nombres,ocupacion_paciente,sexo,f_nacimiento,zona,correo,ciudad,afiliacion_publica,afiliacion_privada,id_usuario_pac,created_at,updated_at,deleted) VALUES (:idpacientes,:ape_paterno,:ape_mat,:nombres,:ocupacion_paciente,:sexo,:f_nacimiento,:zona,:correo,:ciudad,:afiliacion_publica,:afiliacion_privada,:id_usuario_pac,:created_at,:updated_at,:deleted)";
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(':idpacientes', $cedula);
             $stmt->bindParam(':ape_paterno', $apellidoPaterno);
@@ -49,6 +49,7 @@ if($paciente>0){
             $stmt->bindParam(':afiliacion_publica', $afiliacionPublica);
             $stmt->bindParam(':afiliacion_privada', $afiliacionPrivada);
             $stmt->bindParam(':created_at', $created);
+            $stmt->bindValue(':deleted', 0, PDO::PARAM_INT);
 
             if($ingreso == "si"){
                 $created = date("H:i:s");

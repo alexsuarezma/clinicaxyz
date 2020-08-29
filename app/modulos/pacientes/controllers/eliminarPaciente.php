@@ -1,6 +1,7 @@
 <?php
 require_once('../../../../database.php');
 
+session_start();
 date_default_timezone_set('America/Guayaquil');
 
 $created = date("Y-m-d H:i:s");
@@ -11,7 +12,7 @@ try {
     $stmt = $conn->prepare($sql);
     $stmt->bindValue(':deleted', 1, PDO::PARAM_INT);
     $stmt->bindParam(':updated_at', $created);
-    $stmt->bindParam(':idpacientes', $_GET['id']);
+    $stmt->bindParam(':idpacientes', $_SESSION['cedula']);
     $stmt->execute();
 } catch (\Throwable $th) {
     //throw $th;
@@ -19,3 +20,4 @@ try {
 
 
 header('Location: ../routes/visualizarPaciente.php');
+session_destroy($_SESSION['cedula']);

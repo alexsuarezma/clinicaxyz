@@ -100,6 +100,7 @@ if ($saldo>15) {
 
               }
 
+              //FACTURACIÓN
               $sentencia_pago="INSERT INTO pagos values('','$id','$id_tj',1.8,13.2)";
 
               mysqli_query($conexion,$sentencia_pago);

@@ -19,7 +19,7 @@ session_start();
   </head>
   <body>
 <?php
-printLayout ('home.php', '../../../index.php', '../citasmedicas/', '../citasmedicas/historial_clinico.php', '#','../seguridad/controllers/logout.php','../seguridad/routes/perfil.php','home.php',1);
+printLayout ('home.php', '../../../index.php', '../citasmedicas/', 'routes/diagnostico.php', 'routes/facturas.php','../seguridad/controllers/logout.php','../seguridad/routes/perfil.php','home.php',1);
 ?>
 <div class="container-fluid">
   <div class="row">

@@ -3,7 +3,7 @@ require '../components/LayoutAdmin.php';
 require '../../../../database.php';
 require '../../seguridad/controllers/functions/credenciales.php';
 
-verificarAcceso("../../../", "modulo_pacientes");
+verificarAcceso("../../../../", "modulo_pacientes");
 $provincias = $conn->query("SELECT * FROM provincias ORDER BY nombre ASC")->fetchAll(PDO::FETCH_OBJ);
 $profesion = $conn->query("SELECT * FROM profesion_paciente ORDER BY profesion ASC")->fetchAll(PDO::FETCH_OBJ);
 $seguroPublico = $conn->query("SELECT * FROM seguro_publico ORDER BY descripcion ASC")->fetchAll(PDO::FETCH_OBJ);
@@ -25,9 +25,9 @@ $conn = null;
   </head>
   <body>
 <?php
-printLayout ('../index.php', '../../../../index.php', 'registrar.php', '#', 'visualizarPaciente.php', '#', 'subirArchivo.php',
+printLayout ('../index.php', '../../../../index.php', 'registrar.php', '../../citasmedicas/historial_clinico.php','../../citasmedicas/citas.php', 'visualizarPaciente.php', 'pacientesBaja.php', '#','subirArchivo.php',
 '../../seguridad/controllers/logout.php','../../seguridad/routes/perfil.php',
-  '../../recursoshumanos/','../../suministro/','../../contabilidad/','../../citasmedicas/','../index.php','../../seguridad/',2);
+  '../../recursoshumanos/','../../suministro/','../../contabilidad/','../../citasmedicas/','../index.php','../../seguridad/',4);
 ?>
 <div class="container-fluid">
   <div class="row">

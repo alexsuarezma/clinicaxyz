@@ -1,20 +1,18 @@
 <?php 
 error_reporting(E_ALL ^ E_NOTICE);
 require '../../../database.php';
-require '../pacientes/components/LayoutPublic.php';  
+require '../pacientes/components/LayoutAdmin.php';
 require '../seguridad/controllers/functions/credenciales.php';
 
 session_start();
 
-if ($_SESSION['nombre_credencial']=='paciente') {
- verificarAcceso("../../../", "paciente");
-}
-
+verificarAcceso("../../../", "modulo_pacientes");
+if ($_SESSION['modulo_ctas_medicas']== 1) {
+  verificarAcceso("../../../", "modulo_ctas_medicas");
+ }
 if ($_SESSION['nombre_credencial']=='Admin Ctas. Medicas') {
  verificarAcceso("../../../", "modulo_ctas_medicas");
 }
-
-
 
 
 include 'conexion.php';
@@ -47,7 +45,7 @@ if (isset($_POST['buscar'])) {
 // join ciudades as ciu on  pa.ciudad=ciu.idciudades where pa.idpacientes='$cedula' order by idcitas  ;
 //  ";
 
-$sentencia_buscar = "SELECT *,ciu.nombre as ci_nom,pro.nombre as pro_nom FROM citas AS ci, pacientes AS pa, ciudades AS ciu, provincias AS pro, profesion_paciente AS pp, direccion_paciente AS dp WHERE (ci.paciente=pa.idpacientes AND pa.ciudad=ciu.idciudades AND ciu.provincia=pro.idprovincias AND pa.ocupacion_paciente=pp.idprofesion_paciente AND pa.idpacientes=dp.id_pacientes_de) AND pa.idpacientes='$cedula' order by idcitas";
+$sentencia_buscar = "SELECT *,ciu.nombre as ci_nom,pro.nombre as pro_nom FROM citas AS ci, pacientes AS pa, ciudades AS ciu, provincias AS pro, profesion_paciente AS pp, direccion_paciente AS dp WHERE (ci.paciente=pa.idpacientes AND pa.ciudad=ciu.idciudades AND ciu.provincia=pro.idprovincias AND pa.ocupacion_paciente=pp.idprofesion_paciente AND pa.idpacientes=dp.id_pacientes_de) AND pa.idpacientes='$cedula' order by fecha DESC";
 
 
 	$resultado_b=mysqli_query($conexion,$sentencia_buscar);
@@ -79,9 +77,11 @@ $sentencia_buscar = "SELECT *,ciu.nombre as ci_nom,pro.nombre as pro_nom FROM ci
     <link href="../recursoshumanos/assets/styles/component/dashboard.css" rel="stylesheet">
   </head>
   <body>
-<?php
-printLayout ('../pacientes/home.php', '../../../index.php', 'index.php', 'historial_clinico.php', '#','../seguridad/controllers/logout.php','../seguridad/routes/perfil.php','../pacientes/home.php',3);
-?>
+  <?php
+    printLayout ('index.php', '../../../index.php', 'routes/registrar.php', '../citasmedicas/historial_clinico.php','../citasmedicas/citas.php', 'routes/visualizarPaciente.php', 'routes/pacientesBaja.php', '#','routes/subirArchivo.php',
+    '../seguridad/controllers/logout.php','../seguridad/routes/perfil.php',
+      '../recursoshumanos/','../suministro/','../contabilidad/','../citasmedicas/','index.php','../seguridad/',2);
+  ?>  
 <div class="container-fluid">
   <div class="row">
 
@@ -116,12 +116,14 @@ printLayout ('../pacientes/home.php', '../../../index.php', 'index.php', 'histor
       <th scope="col">#</th>
       <th scope="col">Nombres</th>
       <th scope="col">Apellidos</th>
+      <th scope="col">Fecha</th>
       <th scope="col">Editar</th>
     </tr>
   </thead>
   <tbody>
     <?php 
     while ($fila_b=mysqli_fetch_array($resultado_b)) {
+        if($fila_b['tipo']=='Domicilio'):
       $id_paciente=$fila_b['idpacientes'];
       
       ?>
@@ -129,11 +131,13 @@ printLayout ('../pacientes/home.php', '../../../index.php', 'index.php', 'histor
       <th scope="row"><?php echo $fila_b['idcitas']; ?>  </th>
       <td><?php echo $fila_b['nombres']; ?> </td>
       <td><?php echo $fila_b['ape_paterno']." ".$fila_b['ape_mat'] ; ?> </td>
+      <td><?php echo $fila_b['fecha'] ?></td>
       <td> <a href="historial_clinico.php? id_paciente=<?php echo $id_paciente; ?> & id_citas=<?php echo $fila_b['idcitas'] ?> ">Ver</a></td>
     </tr>
   
 
       <?php
+      endif;
     }
     ?>
   </tbody>

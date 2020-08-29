@@ -1,11 +1,11 @@
 <?php
-   function printLayout ($route, $homePage, $createPage, $citas, $visualizarPacientes, $pagos,$archivos,
+   function printLayout ($route, $homePage, $createPage, $citas, $operacionesCitas, $visualizarPacientes, $pacientesBaja, $pagos,$archivos,
    $logout,$ajuste,$rrhh,$suministro,$contabilidad,$ctas_medicas,$paciente,$seguridad,$active){
     
-    $routes[5]= [];
+    $routes[8]= [];
   
 
-    for ($i = 0; $i < 6; $i++) {
+    for ($i = 0; $i < 9; $i++) {
       if($active==($i+1)){
         $routes[$i]="active";
       }else{
@@ -70,26 +70,59 @@
       echo "Pagina Principal <span class='sr-only'>(current)</span>";
       echo "</a>";
       echo "</li>";
-      echo "<li class='nav-item'>";
-      echo "<a class='nav-link $routes[1]' href=$createPage>";
+      echo "<h6 class='sidebar-heading d-flex justify-content-around align-items-center px-3 mt-2 mb-2 text-muted'>";
+      echo "<span data-feather='briefcase'></span>";
+      echo "<span>Gestion Citas</span>";
+      echo "<a class='d-flex align-items-center text-muted ml-3' href='#' aria-label='Add a new report'>";
+      echo "  <a data-toggle='collapse' href='#citas' role='button' aria-expanded='false' aria-controls='citas'>
+            <span data-feather='plus-circle'></span></a>";
+      echo "</a>";
+      echo "</h6>";
+      echo "<div class='collapse' id='citas'>";
+      echo "<li class='nav-item ml-3'>
+        <a class='nav-link $routes[1]' href=$citas>
+        <span data-feather='layers'></span>
+        Historial de Citas
+        </a>
+        </li>";
+      echo "<li class='nav-item ml-3'>";
+      echo "<a class='nav-link $routes[2]' href=$operacionesCitas>";
+      echo "<span data-feather='layers'></span>";
+      echo "Gestion de Citas";
+      echo "</a>";
+      echo "</li>";
+      echo "</div>";
+      echo "<h6 class='sidebar-heading d-flex justify-content-around align-items-center px-3 mt-2 mb-2 text-muted'>";
+      echo "<span data-feather='briefcase'></span>";
+      echo "<span>Pacientes</span>";
+      echo "<a class='d-flex align-items-center text-muted ml-5' href='#' aria-label='Add a new report'>";
+      echo "  <a data-toggle='collapse' href='#collapsePacientes' role='button' aria-expanded='false' aria-controls='collapsePacientes'>
+            <span data-feather='plus-circle'></span></a>";
+      echo "</a>";
+      echo "</h6>";
+      echo "<div class='collapse' id='collapsePacientes'>";
+      echo "<li class='nav-item ml-3'>";
+      echo "<a class='nav-link $routes[3]' href=$createPage>";
       echo "<span data-feather='briefcase'></span>";
       echo "Registrar";
       echo "</a>";
       echo "</li>";
-      echo "<li class='nav-item'>";
-      echo "<a class='nav-link $routes[2]' href=$citas>";
-      echo "<span data-feather='layers'></span>";
-      echo "Citas";
-      echo "</a>";
-      echo "</li>";
-      echo "<li class='nav-item'>";
-      echo "<a class='nav-link $routes[3]' href=$visualizarPacientes>";
+      echo "<li class='nav-item ml-3'>";
+      echo "<a class='nav-link $routes[4]' href=$visualizarPacientes>";
       echo "<span data-feather='bar-chart-2'></span>";
-      echo "Visualizar Pacientes";
+      echo "Pacientes ";
       echo "</a>";
       echo "</li>";
+      echo "<li class='nav-item ml-3'>
+        <a class='nav-link $routes[5]' href=$pacientesBaja>
+        <span data-feather='layers'></span>
+        Pacientes de baja
+        </a>
+        </li>";
+      echo "</div>";
+
       echo "<li class='nav-item'>";
-      echo "<a class='nav-link $routes[4]' href=$pagos>";
+      echo "<a class='nav-link $routes[6]' href=$pagos>";
       echo "<span data-feather='layers'></span>";
       echo "Pagos";
       echo "</a>";
@@ -97,17 +130,17 @@
       echo "</ul>";
       echo "<ul class='nav flex-column mb-2'>";
 
-      echo "<h6 class='sidebar-heading d-flex justify-content-start align-items-center px-3 mt-2 mb-2 text-muted'>";
-      echo "<span class='mr-3' data-feather='briefcase'></span>";
-      echo "Laboratorio";
-      echo "<a class='d-flex align-items-center text-muted ml-5' href='#' aria-label='Add a new report'>";
+      echo "<h6 class='sidebar-heading d-flex justify-content-around align-items-center px-3 mt-2 mb-2 text-muted'>";
+      echo "<span data-feather='briefcase'></span>";
+      echo "<span> Laboratorio</span>";
+      echo "<a class='d-flex align-items-center text-muted ml-3' href='#' aria-label='Add a new report'>";
       echo "  <a data-toggle='collapse' href='#collapseExample' role='button' aria-expanded='false' aria-controls='collapseExample'>
             <span data-feather='plus-circle'></span></a>";
       echo "</a>";
       echo "</h6>";
       echo "<div class='collapse' id='collapseExample'>
         <li class='nav-item ml-3'>
-        <a class='nav-link $routes[5]' href=$archivos>
+        <a class='nav-link $routes[7]' href=$archivos>
         <span data-feather='layers'></span>
         Archivos
         </a>

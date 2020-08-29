@@ -17,6 +17,10 @@ session_start();
                          header("Refresh: 2; URL=../controllers/nuevoContrato.php");
                     }elseif($_POST['type']== 2){
                          header("Refresh: 2; URL=../controllers/deleteLogic.php");
+                    }elseif($_POST['type']== 3){
+                         header("Refresh: 2; URL=../../pacientes/controllers/eliminarPaciente.php");
+                    }elseif($_POST['type']== 4){
+                         header("Refresh: 2; URL=../../pacientes/controllers/reintegrarPaciente.php");
                     }
                }else{
                     $message='Credencial invalida';
@@ -112,8 +116,7 @@ session_start();
           $(document).ready(function(){
                if($('#callback').val()=='yes'){
                     document.getElementById('load').style.display='block';    
-                    document.getElementById('out-load').style.display='none';    
-      
+                    document.getElementById('out-load').style.display='none';        
                }
           });
 

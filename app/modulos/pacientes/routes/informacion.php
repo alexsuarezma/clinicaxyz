@@ -5,18 +5,14 @@ require '../../recursoshumanos/components/modal.php';
 require '../../seguridad/controllers/functions/credenciales.php';
 
 verificarAcceso("../../../../", "modulo_pacientes");
-  
+    $_SESSION['cedula'] = $_GET['cedula'];
     $afiliacionPublica= '';
     $afiliacionPrivada= '';
     $carnetConadis = '';
-    $consulta = $conn->prepare("SELECT * FROM pacientes AS p, profesion_paciente AS pp, ciudades AS c WHERE (p.ocupacion_paciente=pp.idprofesion_paciente AND p.ciudad=c.idciudades) AND idpacientes = :idpacientes AND (deleted = 0 OR deleted IS NULL)");
+    $consulta = $conn->prepare("SELECT * FROM pacientes AS p, profesion_paciente AS pp, ciudades AS c WHERE (p.ocupacion_paciente=pp.idprofesion_paciente AND p.ciudad=c.idciudades) AND idpacientes = :idpacientes");
     $consulta->bindParam(':idpacientes', $_GET['cedula']);
     $consulta->execute();
     $resultado = $consulta->fetch(PDO::FETCH_ASSOC); 
-    
-    if(!$resultado){
-        header('Location: visualizarPaciente.php');
-    }
 
     if($resultado['afiliacion_publica']!= null){
       $afiliacionPublica = $conn->query("SELECT * FROM seguro_publico WHERE idseguro_publico=".$resultado['afiliacion_publica'])->fetchAll(PDO::FETCH_OBJ);
@@ -58,9 +54,9 @@ verificarAcceso("../../../../", "modulo_pacientes");
   </head>
   <body>
 <?php
-printLayout ('../index.php', '../../../../index.php', 'registrar.php', '#', 'visualizarPaciente.php', '#','subirArchivo.php',
+printLayout ('../index.php', '../../../../index.php', 'registrar.php', '../../citasmedicas/historial_clinico.php','../../citasmedicas/citas.php', 'visualizarPaciente.php', 'pacientesBaja.php', '#','subirArchivo.php',
 '../../seguridad/controllers/logout.php','../../seguridad/routes/perfil.php',
-  '../../recursoshumanos/','../../suministro/','../../contabilidad/','../../citasmedicas/','../index.php','../../seguridad/', 4);
+  '../../recursoshumanos/','../../suministro/','../../contabilidad/','../../citasmedicas/','../index.php','../../seguridad/',4);
 ?>
 <div class="container-fluid">
   <div class="row">
@@ -73,15 +69,20 @@ printLayout ('../index.php', '../../../../index.php', 'registrar.php', '#', 'vis
       </div>
       <div class="container mt-5 mb-5">
       <div class="d-flex justify-content-end">
+      <?php if($resultado['deleted'] == 0): ?>
         <button class="btn btn-outline-danger" style="width:200px;" data-toggle="modal" data-target="#modal-delete">Dar de baja al Paciente</button>
+      <?php else:?>
+        <button class="btn btn-outline-danger" style="width:300px;" data-toggle="modal" data-target="#modal-ingresar">Volver a ingresar al Paciente</button>
+      <?php endif;?>
       </div>
-        <form method="POST" action="../../seguridad/controllers/actualizarPaciente.php" class="ml-4 mr-4 mb-5">
+        <form method="POST" id="form" onsubmit="AcualizarSubmit(event)" action="../../seguridad/controllers/actualizarPaciente.php" class="ml-4 mr-4 mb-5">
                 
                 <label class="font-weight-bold mt-4">Información personal del paciente</label>
                 <hr class="mt-1 mb-4 mr-5">
                 <div class="form-row">
                     <div class="form-group col-md-6">
                         <label for="cedula">Cedula/Pasaporte</label>
+                        <input type="hidden" name="deleted" id="deleted" value="<?php echo $resultado['deleted'] ?>">
                         <input type="hidden" name="type" value="2">
                         <input type="hidden" name="cedula" id="cedula" value="<?php echo $resultado['idpacientes']?>">
                         <input type="text" class="form-control" readonly value="<?php echo $resultado['idpacientes']?>" required>
@@ -349,7 +350,9 @@ printLayout ('../index.php', '../../../../index.php', 'registrar.php', '#', 'vis
                     </div>
                     <?php if($resultado['afiliacion_publica'] != null):?>
                         <div class="form-group col-md-2">
-                        <a href="../../seguridad/controllers/borrarSeguro.php?type=publico&cedula=<?php echo $resultado['idpacientes']?>&tipo=2"><i class="fas fa-minus-circle" title="Elimina la credencial" style="color:black; font-size:18px; margin-left:40px; margin-top:40px;"></i></a>
+                            <?php if($resultado['deleted'] == 0): ?>
+                                <a href="../../seguridad/controllers/borrarSeguro.php?type=publico&cedula=<?php echo $resultado['idpacientes']?>&tipo=2"><i class="fas fa-minus-circle" title="Elimina la credencial" style="color:black; font-size:18px; margin-left:40px; margin-top:40px;"></i></a>
+                            <?php endif;?>
                         </div>
                     <?php endif;?>
                     </div>
@@ -383,7 +386,9 @@ printLayout ('../index.php', '../../../../index.php', 'registrar.php', '#', 'vis
                     </div>
                     <?php if($resultado['afiliacion_privada'] != null):?>
                         <div class="form-group col-md-2">
-                            <a href="../../seguridad/controllers/borrarSeguro.php?type=privado&cedula=<?php echo $resultado['idpacientes']?>&tipo=2"><i class="fas fa-minus-circle" title="Eliminar seguro" style="color:black; font-size:18px; margin-left:40px; margin-top:40px;"></i></a>
+                            <?php if($resultado['deleted'] == 0): ?>
+                                <a href="../../seguridad/controllers/borrarSeguro.php?type=privado&cedula=<?php echo $resultado['idpacientes']?>&tipo=2"><i class="fas fa-minus-circle" title="Eliminar seguro" style="color:black; font-size:18px; margin-left:40px; margin-top:40px;"></i></a>
+                            <?php endif;?>
                         </div>
                     <?php endif; ?>
                     </div>      
@@ -450,13 +455,17 @@ printLayout ('../index.php', '../../../../index.php', 'registrar.php', '#', 'vis
                         <input type="text" class="form-control" id="grado" name="grado" value="<?php echo $carnetConadis[0]->grado?>" required disabled="true">
                     </div>
                     <div class="form-group col-md-2">
-                        <a href="../../seguridad/controllers/borrarCarnet.php?cedula=<?php echo $resultado['idpacientes']?>&tipo=2"><i class="fas fa-minus-circle" title="Eliminar el carnet" style="color:black; font-size:18px; margin-left:40px; margin-top:40px;"></i></a>
+                        <?php if($resultado['deleted'] == 0): ?>
+                            <a href="../../seguridad/controllers/borrarCarnet.php?cedula=<?php echo $resultado['idpacientes']?>&tipo=2"><i class="fas fa-minus-circle" title="Eliminar el carnet" style="color:black; font-size:18px; margin-left:40px; margin-top:40px;"></i></a>
+                        <?php endif;?>
                     </div>
                 </div>
                 <?php endif;?>
                 <div class="d-flex justify-content-end mt-5">
-                <a href="../../../../" class="text-secondary mr-5 mt-2">Cancelar</a>
-                    <input class="btn btn-primary font-weight-bold" name="perfil" style="width:300px;" value="Guardar cambios" type="submit">
+                    <?php if($resultado['deleted'] == 0): ?>
+                        <a href="../../../../" class="text-secondary mr-5 mt-2">Cancelar</a>
+                        <input class="btn btn-primary font-weight-bold" name="perfil" style="width:300px;" value="Guardar cambios" type="submit">
+                    <?php endif;?>
                 </div>
             </form> 
 
@@ -490,8 +499,35 @@ printLayout ('../index.php', '../../../../index.php', 'registrar.php', '#', 'vis
     </main>
   </div>
 </div>
+
+
+<div class='modal fade' name='modal-success' id='modal-success' data-backdrop='static' data-keyboard='false' tabindex='-1' role='dialog' aria-labelledby='staticBackdropLabe' aria-hidden='true'>
+    <div class='modal-dialog'>
+        <div class='modal-content'>
+            <div class='modal-header'>
+                <h5 class='modal-title' id='staticBackdropLabel'>REGISTRO SATISFACTORIO</h5>
+                
+            </div>
+            <div class='modal-body mb-5'>
+                <div class="container d-flex flex-column" style="width:100%;">
+                    <div id="icon-message" class="container d-flex justify-content-center align-items-center mb-5 mt-4" style="width:100%;">
+                        <!-- ICONO -->
+                    </div>
+                    <div class="container d-flex justify-content-center align-items-center" style="width:100%;">                            
+                        <div id="message">
+                            <!-- MESSAGE -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
 <?php
     printModal('Borrar Paciente','btn-delete','modal-delete','¡Hey!. Estas apunto de DAR DE BAJA al PACIENTE. ¿Realmente deseas continuar con esta acción?');
+    printModal('Ingresar Paciente','btn-ingresar','modal-ingresar','¡Hey!. Estas apunto de REINTEGRAR al PACIENTE. ¿Realmente deseas continuar con esta acción?');
 ?>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>     
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
@@ -499,12 +535,24 @@ printLayout ('../index.php', '../../../../index.php', 'registrar.php', '#', 'vis
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 <script src="../../recursoshumanos/components/scripts/dashboard.js"></script> 
 <script src="../../seguridad/controllers/validations/validations.js"></script>
-<script src="../../seguridad/components/scripts/ciudad.js"></script>      
+<script src="../../seguridad/components/scripts/ciudad.js"></script>  
+<script src="../components/scripts/paciente.js"></script>    
 <script>
     $(document).ready(function(){
         $('#btn-delete').click(function(){
-            location.href=`../controllers/eliminarPaciente.php?id=${$('#cedula').val()}`;
+            location.href=`../../recursoshumanos/controllers/lockScreen.php?type=3`;
         });  
+
+        $('#btn-ingresar').click(function(){
+            location.href=`../../recursoshumanos/controllers/lockScreen.php?type=4`;
+        });  
+
+        if($('#deleted').val() == 1){
+            frm = document.forms['form'];
+            for(i=0; ele=frm.elements[i]; i++){
+                ele.disabled=true;
+            }
+        }
     });
 </script>   
 </body>

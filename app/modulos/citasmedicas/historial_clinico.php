@@ -1,12 +1,9 @@
 <?php 
-require '../pacientes/components/LayoutPublic.php';  
 require '../../../database.php';
 require '../seguridad/controllers/functions/credenciales.php';
+require '../pacientes/components/LayoutPublic.php';  
 
 session_start();
-
-
-
 
 error_reporting(E_ALL ^ E_NOTICE);
 include 'conexion.php';
@@ -28,11 +25,10 @@ $var="";
 
 $cedula=$_GET['id_paciente'];
 $citas=$_GET['id_citas'];
-	$sentencia_buscar="SELECT *,ciu.nombre as ci_nom,pro.nombre as pro_nom from citas as ci join pacientes as pa on ci.paciente=pa.idpacientes
 
-join ciudades as ciu on  pa.ciudad=ciu.idciudades 
-join provincias as pro on ciu.provincia=pro.idprovincias where ci.paciente='$cedula' and ci.idcitas='$citas'
- ";
+	$sentencia_buscar="SELECT *,ciu.nombre as ci_nom,pro.nombre as pro_nom FROM citas AS ci, pacientes AS pa, ciudades AS ciu, provincias AS pro, profesion_paciente AS pp, direccion_paciente AS dp WHERE (ci.paciente=pa.idpacientes AND pa.ciudad=ciu.idciudades AND ciu.provincia=pro.idprovincias AND pa.ocupacion_paciente=pp.idprofesion_paciente AND pa.idpacientes=dp.id_pacientes_de) AND ci.paciente='$cedula' and ci.idcitas='$citas'";
+
+
 	$resultado_b=mysqli_query($conexion,$sentencia_buscar);
 	$conteo=mysqli_num_rows($resultado_b);
 	$fila_b=mysqli_fetch_array($resultado_b);
@@ -80,7 +76,152 @@ mysqli_query($conexion,$sentencia);
   </head>
   <body>
 <?php
-printLayout ('../pacientes/home.php', '../../../index.php', 'index.php', 'historial_clinico.php', '#','../seguridad/controllers/logout.php','../seguridad/routes/perfil.php','../pacientes/home.php',3);
+if ($_SESSION['nombre_credencial']=='Admin Ctas. Medicas' || $_SESSION['modulo_pacientes'] == 1 || $_SESSION['modulo_ctas_medicas'] == 1){
+  ?>
+  
+   <nav class='navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow'>
+   <a class='navbar-brand col-md-3 col-lg-2 mr-0 px-3' href='../pacientes/'>
+   <span className='font-weight-bold'>Modulo</span>
+   <span className='font-weight-ligth'>Pacientes</span>
+   </a>
+   <button class='navbar-toggler position-absolute d-md-none collapsed' type='button' data-toggle='collapse' data-target='#sidebarMenu' aria-controls='sidebarMenu' aria-expanded='false' aria-label='Toggle navigation'>
+       <span class='navbar-toggler-icon'></span>
+   </button>
+   <ul class='navbar-nav px-3'>
+
+   </ul>
+   <a class='nav-link dropdown-toggle' style='color: white;' href='#' id='navbarDropdownMenuLink' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+   <i class='fas fa-th-large' ></i>
+   </a>
+   <div class='dropdown-menu dropdown-menu-right mr-1 mb-2' style='width:400px;' aria-labelledby='navbarDropdownMenuLink'>
+   <span class='dropdown-item font-weight-bold mb-2' style='text-align:center;'><?php echo $_SESSION['username']?></span>
+   <hr class='ml-4 mr-4 mt-2'>
+   <span class='dropdown-item font-weight-bold border-bottom border-info mb-2' style='text-align:center;'><?php echo $_SESSION['nombre_credencial']?></span>
+   <?php  
+      if($_SESSION['modulo_rrhh'] == 1){
+      echo  "<a class='dropdown-item mt-2' href='../recursoshumanos/'><i class='fas fa-people-carry mr-2'></i> Recursos Humanos</a>";
+      }
+      if($_SESSION['modulo_suministros'] == 1){
+      echo "<a class='dropdown-item' href='../suministro/'><i class='fas fa-dolly-flatbed mr-2'></i> Suministros</a>";
+      }
+      if($_SESSION['modulo_contabilidad'] == 1){
+      echo "<a class='dropdown-item' href='../contabilidad/'><i class='fas fa-balance-scale mr-2'></i> Contabilidad</a>";
+      }
+      if($_SESSION['modulo_ctas_medicas'] == 1){
+      echo "<a class='dropdown-item' href='../citasmedicas/'><i class='fas fa-notes-medical mr-3'></i> Citas Medicas</a>";
+      }
+      if($_SESSION['modulo_pacientes'] == 1){
+      echo "<a class='dropdown-item' href='../pacientes/'><i class='fas fa-procedures mr-2'></i> Modulo Pacientes</a>";
+      }
+      if($_SESSION['modulo_seguridad'] == 1){
+      echo "<a class='dropdown-item' href='../seguridad/'><i class='fas fa-user-shield mr-2'></i> Modulo Seguridad</a>";
+      }
+      if($_SESSION['paciente'] == 1){
+      echo "<a class='dropdown-item' href='../pacientes/home.php'><i class='fas fa-procedures mr-2'></i> Paciente</a>";
+      }
+    ?>
+
+   <hr class='ml-4 mr-4 mt-2'>
+   <a class='dropdown-item mt-2' style='float:right;' href='../seguridad/routes/perfil.php'><span class='float-right'>Ajustes de Usuario</span></a>
+   <a class='dropdown-item' style='float:right;' href='#'><span class='float-right'>Another</span></a>
+   <a class='dropdown-item' style='float:right;' href='../seguridad/controllers/logout.php'><span class='float-right'>Cerrar Sesión</span></a>
+   </div>
+   </nav>
+
+   <nav id='sidebarMenu' class='col-md-3 col-lg-2 d-md-block bg-light sidebar collapse'>
+   <div class='sidebar-sticky pt-3'>
+   <ul class='nav flex-column'>
+   <li class='nav-item'>
+   <a class='nav-link' href='../../../'>
+   <span data-feather='home'></span>
+   Pagina Principal <span class='sr-only'>(current)</span>
+   </a>
+   </li>
+   <h6 class='sidebar-heading d-flex justify-content-around align-items-center px-3 mt-2 mb-2 text-muted'>
+      <span data-feather='briefcase'></span>
+      <span>Gestion Citas</span>
+      <a class='d-flex align-items-center text-muted ml-3' href='#' aria-label='Add a new report'>
+        <a data-toggle='collapse' href='#citas' role='button' aria-expanded='false' aria-controls='citas'>
+            <span data-feather='plus-circle'></span></a>
+      </a>
+      </h6>
+      <div class='collapse' id='citas'>
+      <li class='nav-item ml-3'>
+        <a class='nav-link active' href='historial_clinico.php'>
+        <span data-feather='layers'></span>
+        Historial de Citas
+        </a>
+        </li>
+      <li class='nav-item ml-3'>
+      <a class='nav-link' href='citas.php'>
+      <span data-feather='layers'></span>
+      Gestion de Citas
+      </a>
+      </li>
+      </div>
+      <h6 class='sidebar-heading d-flex justify-content-around align-items-center px-3 mt-2 mb-2 text-muted'>
+      <span data-feather='briefcase'></span>
+      <span>Pacientes</span>
+      <a class='d-flex align-items-center text-muted ml-5' href='#' aria-label='Add a new report'>
+        <a data-toggle='collapse' href='#collapsePacientes' role='button' aria-expanded='false' aria-controls='collapsePacientes'>
+            <span data-feather='plus-circle'></span></a>
+      </a>
+      </h6>
+      <div class='collapse' id='collapsePacientes'>
+      <li class='nav-item ml-3'>
+      <a class='nav-link' href='../pacientes/routes/registrar.php'>
+      <span data-feather='briefcase'></span>
+      Registrar
+      </a>
+      </li>
+      <li class='nav-item ml-3'>
+      <a class='nav-link' href='../pacientes/routes/visualizarPaciente.php'>
+      <span data-feather='bar-chart-2'></span>
+      Pacientes 
+      </a>
+      </li>
+      <li class='nav-item ml-3'>
+        <a class='nav-link' href='../pacientes/routes/pacientesBaja.php'>
+        <span data-feather='layers'></span>
+        Pacientes de baja
+        </a>
+        </li>
+      </div>
+
+   <li class='nav-item'>
+   <a class='nav-link' href=''>
+   <span data-feather='layers'></span>
+   Pagos
+   </a>
+   </li>
+   </ul>
+   <ul class='nav flex-column mb-2'>
+
+   <h6 class='sidebar-heading d-flex justify-content-around align-items-center px-3 mt-2 mb-2 text-muted'>
+   <span data-feather='briefcase'></span>
+   <span> Laboratorio</span>
+   <a class='d-flex align-items-center text-muted ml-3' href='#' aria-label='Add a new report'>
+     <a data-toggle='collapse' href='#collapseExample' role='button' aria-expanded='false' aria-controls='collapseExample'>
+          <span data-feather='plus-circle'></span></a>
+   </a>
+   </h6>
+   <div class='collapse' id='collapseExample'>
+      <li class='nav-item ml-3'>
+      <a class='nav-link' href='../pacientes/routes/subirArchivo.php'>
+      <span data-feather='layers'></span>
+      Archivos
+      </a>
+      </li>
+    </div>
+   </ul>
+   </div>
+   </nav>
+   
+<?php
+}else{
+  printLayout ('../pacientes/home.php', '../../../index.php', 'index.php', '../pacientes/routes/diagnostico.php', '../pacientes/routes/facturas.php','../seguridad/controllers/logout.php','../seguridad/routes/perfil.php','../pacientes/home.php',3);
+}
+
 ?>
 <div class="container-fluid">
   <div class="row">
@@ -159,14 +300,18 @@ echo $var;
 		} ?></label>
 	</div>
 	
-
-<div class="col-md-3 mb-2" style="position: relative; left: -15px;">
-    <label for="inputPassword2" class="sr-only">Buscar:</label>
-    <input type="text" class="form-control" id="cedula_b" name="cedula_b" placeholder="Ingrese número de cédula">
-</div>
+<?php if($_SESSION['nombre_credencial'] != 'PACIENTE'):?>
+  <div class="col-md-3 mb-2" style="position: relative; left: -15px;">
+      <label for="inputPassword2" class="sr-only">Buscar:</label>
+      <input type="text" class="form-control" id="cedula_b" name="cedula_b" placeholder="Ingrese número de cédula">
+  </div>
 	<button  style="position: relative; top: -47px; left: 300px;" type="submit" class="btn btn-primary mb-3" id="buscar" name="buscar">Buscar</button>
 
-	<a href="informacion.php? id_cedula=<?php  echo $cedula ?> " style="position: relative; top: -55px; left: 300px" class="btn btn-success"  >Citas anteriores</a>
+	<a href="informacion.php? id_cedula=<?php  echo $cedula ?> " style="position: relative; top: -55px; left: 300px" class="btn btn-success">Citas anteriores</a>
+<?php else:?>
+  <a href="#" style="position: relative; top:67px; left:300px" class="btn btn-success">Citas</a>
+<?php endif;?>
+
 <br>
    <div  class="row">
    	 <div class="col-md-2 mb-3">
@@ -176,16 +321,16 @@ echo $var;
       </div>
      <div class="col-md-3 mb-3">
              <label>Nombres</label>
-                 <input type="" class="form-control" name="" value="<?php echo $fila_b['nombres']; ?>" readonly >
+                 <input type="" class="form-control" name="" value="<?php echo utf8_decode($fila_b['nombres']); ?>" readonly >
       </div>
      <div class="col-md-3 mb-3">
             <label for="country">Apellidos</label>
-             <input type="" class="form-control" name="" value="<?php echo $fila_b['ape_paterno']." ".$fila_b['ape_mat'];  ?>"  readonly>
+             <input type="" class="form-control" name="" value="<?php echo utf8_encode($fila_b['ape_paterno']." ".$fila_b['ape_mat']);  ?>"  readonly>
      </div>
 
        <div class="col-md-3 mb-3">
             <label for="country">Ocupación</label>
-             <input type="" class="form-control" name="" value="<?php echo $fila_b['ocupacion']?>"  readonly>
+             <input type="" class="form-control" name="" value="<?php echo utf8_encode($fila_b['profesion'])?>"  readonly>
      </div>
 
        <div class="col-md-1 mb-3">
@@ -197,34 +342,47 @@ echo $var;
              <input type="" class="form-control" name="" value="<?php echo $fila_b['f_nacimiento']?>" readonly >
      </div>
    
+   <?php if($fila_b['tipo']== 'Domicilio'):?>
        <div class="col-md-3 mb-3">
             <label for="country">Dirección</label>
              <input type="" class="form-control" name="" value="<?php echo $fila_b['direccion']?>" readonly >
      </div>
-
+   <?php endif;?>
      
        <div class="col-md-3 mb-3">
             <label for="country">Zona</label>
              <input type="" class="form-control" name="" value="<?php echo $fila_b['zona']?>" readonly >
      </div> 
+     <?php if($fila_b['tipo']== 'Domicilio'):?>
        <div class="col-md-2 mb-3">
             <label for="country">Teléfono</label>
              <input type="" class="form-control" name="" value="<?php echo $fila_b['tlno_particular']?>" readonly >
-     </div>
+      </div>
 
        <div class="col-md-2 mb-3">
             <label for="country">Celular</label>
              <input type="" class="form-control" name="" value="<?php echo $fila_b['tlno_personal']?>" readonly >
      </div>
+   <?php endif;?>
       
        <div class="col-md-4 mb-3">
             <label for="country">Correo electronico</label>
              <input type="" class="form-control" name="" value="<?php echo $fila_b['correo']?>" readonly >
      </div>
 
-	 <div class="col-md-1 mb-3">
-            <label for="country">Afiliado</label>
-             <input type="" class="form-control" name="" value="<?php echo $fila_b['afiliado']?>" readonly >
+	 <div class="col-md-3 mb-3">
+            <label for="country">Afiliacion Publica</label>
+             <input type="" class="form-control" name="" value="<?php if($fila_b['afiliacion_publica'] == null){ echo 'No tiene';} else { 
+               $publica = $conn->query("SELECT * FROM seguro_publico AS sb, pacientes AS pa WHERE pa.afiliacion_publica=sb.idseguro_publico")->fetchAll(PDO::FETCH_OBJ);
+               $conn = null;
+               echo utf8_encode($publica[0]->descripcion);}?>" readonly >
+     </div>
+
+     <div class="col-md-2 mb-3">
+            <label for="country">Afiliacion Privada</label>
+             <input type="" class="form-control" name="" value="<?php if($fila_b['afiliacion_privada'] == null){ echo 'No tiene';} else { $privada = $conn->query("SELECT * FROM seguro_privado AS sv, pacientes AS pa WHERE pa.afiliacion_privada=sv.idseguro_privado")->fetchAll(PDO::FETCH_OBJ);
+               $conn = null;
+               echo utf8_encode($privada[0]->descripcion);}?>" readonly >
      </div>
       <div class="col-md-3 mb-3">
             <label for="country">Ciudad</label>

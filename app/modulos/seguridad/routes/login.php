@@ -11,7 +11,7 @@ require '../../../../database.php';
       if(!empty($_POST['cedula']) && !empty($_POST['password'])){
         //CONSULTA PRIMERO EN LA TABLA PACIENTES, LA CEDULA SI EXISTE, VERIFICAMOS EL CAMPO IDUSER PARA CONSULTAR SU USUARIO.PASSWORD
         $cedula = $_POST['cedula'];
-        $paciente = $conn->query("SELECT * FROM pacientes WHERE idpacientes = $cedula")->rowCount();
+        $paciente = $conn->query("SELECT * FROM pacientes WHERE idpacientes = $cedula AND deleted = 0")->rowCount();
         $empleado = $conn->query("SELECT * FROM empleados WHERE id_empleados = $cedula")->rowCount();
         
           //es paciente
