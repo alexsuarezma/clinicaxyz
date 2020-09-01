@@ -187,17 +187,7 @@ if ($_SESSION['nombre_credencial']=='Admin Ctas. Medicas' || $_SESSION['modulo_p
         </a>
         </li>
       </div>
-
-   <li class='nav-item'>
-   <a class='nav-link' href='../pacientes/routes/pagos.php'>
-   <span data-feather='layers'></span>
-   Pagos
-   </a>
-   </li>
-   </ul>
-   <ul class='nav flex-column mb-2'>
-
-   <h6 class='sidebar-heading d-flex justify-content-around align-items-center px-3 mt-2 mb-2 text-muted'>
+      <h6 class='sidebar-heading d-flex justify-content-around align-items-center px-3 mt-2 mb-2 text-muted'>
    <span data-feather='briefcase'></span>
    <span> Laboratorio</span>
    <a class='d-flex align-items-center text-muted ml-3' href='#' aria-label='Add a new report'>
@@ -213,6 +203,16 @@ if ($_SESSION['nombre_credencial']=='Admin Ctas. Medicas' || $_SESSION['modulo_p
       </a>
       </li>
     </div>
+   <li class='nav-item'>
+   <a class='nav-link' href='../pacientes/routes/pagos.php'>
+   <span data-feather='layers'></span>
+   Pagos
+   </a>
+   </li>
+   </ul>
+   <ul class='nav flex-column mb-2'>
+
+  
    </ul>
    </div>
    </nav>

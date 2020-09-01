@@ -128,7 +128,7 @@ $cedula_d=$_SESSION['cedula_d'];
     <?php
   
     include "conexion.php";
-    $sentencia="SELECT * FROM citas_medica where fecha='$fecha_actual' and id_empleados='$cedula_d' order by idcitas";
+    $sentencia="SELECT * FROM citas_medica where fecha='$fecha_actual' order by idcitas";
 
 
 $result=mysqli_query($conexion, $sentencia);

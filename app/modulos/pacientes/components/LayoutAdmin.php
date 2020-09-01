@@ -119,17 +119,7 @@
         Pacientes de baja
         </a>
         </li>";
-      echo "</div>";
-
-      echo "<li class='nav-item'>";
-      echo "<a class='nav-link $routes[6]' href=$pagos>";
-      echo "<span data-feather='layers'></span>";
-      echo "Pagos";
-      echo "</a>";
-      echo "</li>";
-      echo "</ul>";
-      echo "<ul class='nav flex-column mb-2'>";
-
+        echo "</div>";
       echo "<h6 class='sidebar-heading d-flex justify-content-around align-items-center px-3 mt-2 mb-2 text-muted'>";
       echo "<span data-feather='briefcase'></span>";
       echo "<span> Laboratorio</span>";
@@ -146,6 +136,13 @@
         </a>
         </li>
       </div>";
+
+      echo "<li class='nav-item'>";
+      echo "<a class='nav-link $routes[6]' href=$pagos>";
+      echo "<span data-feather='layers'></span>";
+      echo "Pagos";
+      echo "</a>";
+      echo "</li>";
       echo "</ul>";
       echo "</div>";
       echo "</nav>";
