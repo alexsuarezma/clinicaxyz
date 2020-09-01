@@ -27,13 +27,14 @@ printLayout ('index.php', '../../../index.php', 'routes/registrar.php', '../cita
 <div class="container-fluid">
   <div class="row">
 
-    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+  <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
       <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">Dashboard</h1>
+        <h1 class="h2"><span style="color:#0074D9">¡Bienvenido!</span> <?php echo $_SESSION['username']?></h1>
         <div class="btn-toolbar mb-2 mb-md-0">
         </div>
       </div>
-      <div class="container mt-5">
+      <div class="container mt-5 d-flex justify-content-center" style="height:600px;">
+          <img src="../../../assets/vitalia.png" class="img-fluid" width="1400px" alt="Responsive image">
       </div>
     </main>
   </div>
