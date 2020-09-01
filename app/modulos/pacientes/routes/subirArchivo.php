@@ -58,11 +58,11 @@ printLayout ('../index.php', '../../../../index.php', 'registrar.php', '../../ci
                         <label for="search">Cedula</label>
                         <input type="text" class="form-control" name="search" id="search" placeholder="Busca por cedula" onkeypress="return soloNumeros(event)" maxlength="10" required>
                     </div>
-                </div>
-                <div class="form-row">
                     <div class="form-group col-md-6" id="print-paciente">
                         
                     </div>
+                </div>
+                <div class="form-row">
                     <div class="form-group col-md-6">
                         <label for="tipo">Tipo</label>
                         <select id="tipo" name="tipo" class="form-control" required>
