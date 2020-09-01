@@ -3,7 +3,7 @@ require_once('../../../../../database.php');
 
 $cedula = $_GET['q'];
 
-$paciente = $conn->query("SELECT * FROM pacientes WHERE idpacientes LIKE '%$cedula%' ORDER BY idpacientes ASC")->fetchAll(PDO::FETCH_OBJ);
+$paciente = $conn->query("SELECT * FROM pacientes WHERE idpacientes AND deleted = 0 LIKE '%$cedula%' ORDER BY idpacientes ASC")->fetchAll(PDO::FETCH_OBJ);
 
 $data = array();
 
