@@ -4,9 +4,15 @@ require '../../../database.php';
 require '../pacientes/components/LayoutAdmin.php';
 require '../seguridad/controllers/functions/credenciales.php';
 
-
-verificarAcceso("../../../", "modulo_ctas_medicas");
 session_start();
+
+if($_SESSION['modulo_pacientes'] != 1 && $_SESSION['modulo_ctas_medicas'] != 1){
+  header('Location: ../pacientes/');
+}
+
+// verificarAcceso("../../../", "modulo_ctas_medicas");
+
+
 
  date_default_timezone_set('AMERICA/GUAYAQUIL');
 include "conexion.php";
@@ -77,7 +83,7 @@ $cedula_d=$_SESSION['cedula_d'];
   </head>
   <body>
   <?php
-    printLayout ('index.php', '../../../index.php', 'routes/registrar.php', '../citasmedicas/historial_clinico.php','../citasmedicas/citas.php', 'routes/visualizarPaciente.php', 'routes/pacientesBaja.php', '#','routes/subirArchivo.php',
+    printLayout ('../pacientes/index.php', '../../../index.php', 'routes/registrar.php', '../citasmedicas/historial_clinico.php','../citasmedicas/citas.php', 'routes/visualizarPaciente.php', 'routes/pacientesBaja.php', '#','routes/subirArchivo.php',
     '../seguridad/controllers/logout.php','../seguridad/routes/perfil.php',
       '../recursoshumanos/','../suministro/','../contabilidad/','../citasmedicas/','index.php','../seguridad/',3);
   ?>  

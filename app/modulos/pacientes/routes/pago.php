@@ -37,7 +37,7 @@ printLayout ('home.php', '../../../index.php', '../../citasmedicas/', 'diagnosti
       <div class="container mt-5">
         <section class="shoping-cart spad">
             <div class="container mb-5">
-                <span class="badge badge-success" style="font-size:16px;">La ubicación de envio se ha guardado correctamente.</span>
+                <span class="badge badge-info" style="font-size:16px;">La consulta se esta gestionando, termina el proceso de pago para reservar la cita.</span>
                 <h2 class="mb-3">Pagar</h2>
                 <div class="custom-control custom-radio">
                     <input type="radio" id="customRadio1" name="customRadio" class="custom-control-input" checked>
@@ -50,19 +50,22 @@ printLayout ('home.php', '../../../index.php', '../../citasmedicas/', 'diagnosti
                         <div class="form-row">
                             <div class="form-group col-md-12">
                                 <label for="nombreTarjeta">Nombre en la tarjeta</label>
-                                <input data-conekta="card[name]" value="" type="text" name="name" id="name" class="form-control">
+                                <input data-conekta="card[name]" value="" type="text" name="name" id="name" onkeypress="return soloLetras(event)" onchange="contarPalabras(this);" class="form-control">
+                                <div class="invalid-feedback">
+                                    ¡Debe tener almenos nombre y apellido!
+                                </div>
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-12">
-                                <label for="numeroTarjeta">Numero de tarjeta</label>
-                                <input value="4242424242424242" name="card" id="card" data-conekta="card[number]" type="text" class="form-control" maxlength="16">
+                                <label for="numeroTarjeta">Numero de tarjeta <img id="master" style="display:none;" src="../assets/images/mastercard.png" alt="" width="50"> <span class="badge badge-dark" id="visa"><img src="../assets/images/visa.png" alt="" width="40"></span></label>
+                                <input value="4242424242424242" name="card" id="card" data-conekta="card[number]" type="text" class="form-control" onchange="tipoTarjeta(this);" maxlength="16">
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label for="nombreTarjeta">CVC</label>
-                                <input data-conekta="card[cvc]" value="399" type="text" class="form-control" id="cvc" onkeypress="return soloNumeros(event)" maxlength="3" minlength="3" required>
+                                <input data-conekta="card[cvc]" value="399" type="text" class="form-control" id="cvc" onkeypress="return soloNumeros(event)" maxlength="4" minlength="3" required>
                             </div>
                         </div>
                         <div class="form-row">
@@ -108,7 +111,7 @@ printLayout ('home.php', '../../../index.php', '../../citasmedicas/', 'diagnosti
                         <span class="mr-2">$ 15.00 </span>
                     </div>
                     <span style="margin-top:20px; font-size:11px;">Clinica Vitalia está obligado por ley a recaudar los impuestos sobre las transacciones de las compras realizadas en determinadas jurisdicciones fiscales.
-                    <br>  Al completar la compra, aceptas estas <a href=""> Condiciones de uso.</a></span>
+                    <br>  Al completar la compra, aceptas estas Condiciones de uso.</a></span>
                     <div class="d-flex justify-content-center mt-4" style="width:100%">
                         <button type="hidden" onclick="enviarPago();" class="btn btn-danger" style="width:100%">Realizar pago</button>
                     </div>
@@ -149,7 +152,7 @@ printLayout ('home.php', '../../../index.php', '../../citasmedicas/', 'diagnosti
 <script src="../../recursoshumanos/components/scripts/dashboard.js"></script>   
 <script type="text/javascript" src="https://cdn.conekta.io/js/latest/conekta.js"></script>
 <script src="../../recursoshumanos/components/"></script>
-<script src="../../recursoshumanos/controllers/validations/validations.js"></script>
+<script src="../../recursoshumanos/controllers/validation/validation.js"></script>
 <script src="../components/scripts/conekta.js"></script>  
 <script>
     function enviarPago(){
@@ -179,7 +182,43 @@ printLayout ('home.php', '../../../index.php', '../../citasmedicas/', 'diagnosti
         if (numero.indexOf(teclado)==-1 && !teclado_especial) {
         return false;
         }
-    } 
+    }
+    
+    function tipoTarjeta(input){
+        if(Conekta.card.getBrand(input.value) == "mastercard"){
+            document.getElementById('master').style.display="block"; 
+            document.getElementById('visa').style.display="none"; 
+        }
+        if(Conekta.card.getBrand(input.value) == "visa"){
+            document.getElementById('visa').style.display="block"; 
+            document.getElementById('master').style.display="none"; 
+        }
+        if(Conekta.card.getBrand(input.value) == null){
+            document.getElementById('visa').style.display="none"; 
+            document.getElementById('master').style.display="none"; 
+        }
+    }
+    
+    function contarPalabras(input){
+        
+        var texto = input.value;
+
+        texto = texto.replace (/\r?\n/g," ");
+        texto = texto.replace (/[ ]+/g," ");
+        texto = texto.replace (/^ /,"");
+        texto = texto.replace (/ $/,"");
+
+        var textoTroceado = texto.split (" ");
+        var numeroPalabras = textoTroceado.length;
+        
+        if(numeroPalabras < 3 ){
+            input.className = "form-control is-invalid"
+            input.value = ""
+            input.focus();
+        }else{
+            input.className = "form-control"
+        }
+    }
 </script>   
 </body>
 </html>
