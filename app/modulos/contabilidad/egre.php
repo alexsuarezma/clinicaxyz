@@ -103,7 +103,7 @@ $conn=null;
           <li class="nav-item">
             <a class="nav-link active" href="#">
               <span data-feather="users"></span>
-              Egresos de la Cinica
+              Egresos de la Clinica
             </a>
           </li>
           <li class="nav-item">
@@ -192,85 +192,13 @@ $conn=null;
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <div class="modal-body">
-          <form id="frmnuevo">
-            <label>Codigo</label>
-            <input type="text" class="form-control input-sm" id="cod_cta" name="cod_cta" onkeypress="SoloNumeros()"> 
-            <label>Nombre de la cuenta</label>
-            <input type="text" class="form-control input-sm"  id="nom_cta" name="nom_cta" required onKeyPress="return soloLetras(event);">
-            <label>Tipo de Cuenta</label><br>
-
-             <select  id="tip_cta"  onchange="ddlselect();" required>
-                       <option value="" >Seeleccione una opcion</option>
-                      <option >Pasivo</option>
-                      <option >Activo</option>
-                     </select>
-            <input type="text"  class="form-control input-sm" disabled="" id="tipo_cta" name="tipo_cta" >
-            <label>Ingresos</label>
-            <input type="number" class="form-control input-sm"  id="ing_cta" name="ing_cta" >
-            <label>Egresos</label>
-            <input type="number" class="form-control input-sm" id="egre_cta" name="egre_cta" >
-                    
-          </form>
-      
-          
-
-
-
-
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-          <button type="button" on click="validar();" id="btnAgregarnuevo" class="btn btn-primary">Agregar nuevo</button>
-        </div>
+       
       </div>
     </div>
   </div>
 
 
-  <!-- Modal -->
-  <div class="modal fade" id="modalEditar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Actualizar cuenta</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <form id="frmnuevoU">
-            <input type="text" hidden="" id="idcta" name="idcta">
-            <label>Codigo</label>
-            <input type="text" class="form-control input-sm"  id="cod_ctaU" name="cod_ctaU">
-            <label>Nombre de la cuenta</label>
-            <input type="text" class="form-control input-sm"  id="nom_ctaU" name="nom_ctaU">
-            <label>Tipo de Cuenta</label><br>
-            <select  id="tip_ctaU"  onchange="ddlselectU();">
-                      <option >Pasivo</option>
-                      <option >Activo</option>
-                     </select>
-            <input type="text" class="form-control input-sm" id="tipo_ctaU" name="tipo_ctaU">
-
-            <label>Ingresos</label>
-            <input type="number" class="form-control input-sm" id="ing_ctaU" name="ing_ctaU">
-            <label>Egresos</label>
-            <input type="number" class="form-control input-sm" id="egre_ctaU" name="egre_ctaU">
-
-            </form>
-            
-
-            
-          
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-          <button type="button" class="btn btn-warning" id="btnActualizar">Actualizar</button>
-        </div>
-      </div>
-    </div>
-
-  </div>
+ 
       
 
 
