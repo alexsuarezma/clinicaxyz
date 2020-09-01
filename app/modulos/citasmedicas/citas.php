@@ -83,9 +83,8 @@ $cedula_d=$_SESSION['cedula_d'];
   </head>
   <body>
   <?php
-    printLayout ('../pacientes/index.php', '../../../index.php', 'routes/registrar.php', '../citasmedicas/historial_clinico.php','../citasmedicas/citas.php', 'routes/visualizarPaciente.php', 'routes/pacientesBaja.php', '#','routes/subirArchivo.php',
-    '../seguridad/controllers/logout.php','../seguridad/routes/perfil.php',
-      '../recursoshumanos/','../suministro/','../contabilidad/','../citasmedicas/','index.php','../seguridad/',3);
+    printLayout ('../pacientes/index.php', '../../../index.php', '../pacientes/routes/registrar.php', 'historial_clinico.php','citas.php', '../pacientes/routes/visualizarPaciente.php', '../pacientes/routes/pacientesBaja.php', '../pacientes/routes/pagos.php','../pacientes/routes/subirArchivo.php',
+    '../seguridad/controllers/logout.php','../seguridad/routes/perfil.php','../recursoshumanos/','../suministro/','../contabilidad/','../citasmedicas/','index.php','../seguridad/',3);
   ?>  
 <div class="container-fluid">
   <div class="row">

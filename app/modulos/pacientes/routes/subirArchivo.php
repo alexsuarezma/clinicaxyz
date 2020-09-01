@@ -30,7 +30,7 @@ $paciente = $conn->query("SELECT * FROM pacientes ORDER BY idpacientes ASC")->fe
   </head>
   <body>
 <?php
-printLayout ('../index.php', '../../../../index.php', 'registrar.php', '../../citasmedicas/historial_clinico.php','../../citasmedicas/citas.php', 'visualizarPaciente.php', 'pacientesBaja.php', '#','subirArchivo.php',
+printLayout ('../index.php', '../../../../index.php', 'registrar.php', '../../citasmedicas/historial_clinico.php','../../citasmedicas/citas.php', 'visualizarPaciente.php', 'pacientesBaja.php', 'pagos.php','subirArchivo.php',
 '../../seguridad/controllers/logout.php','../../seguridad/routes/perfil.php',
   '../../recursoshumanos/','../../suministro/','../../contabilidad/','../../citasmedicas/','../index.php','../../seguridad/',8);
 ?>
