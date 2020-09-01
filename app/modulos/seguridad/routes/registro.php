@@ -312,7 +312,7 @@ $conn = null;
                 <div class="form-row">
                     <div class="form-group col-md-3">
                         <label for="carnetConadis">Carnet Conadis</label>
-                        <input type="text" class="form-control" id="carnetConadis" name="carnetConadis" required disabled="true">
+                        <input type="text" class="form-control" id="carnetConadis" name="carnetConadis" onchange="validarConadis(this);" onkeypress="return soloNumerosConadis(event);" maxLength="5" required disabled="true">
                     </div>
                     <div class="form-group col-md-6">
                         <label for="discapacidad">Discapacidad</label>
@@ -410,7 +410,32 @@ $conn = null;
 <script src="../components/scripts/paciente.js"></script>
 <script src="../components/scripts/ciudad.js"></script>
 <script>
-  
+function soloNumerosConadis(e){
+  key=e.keyCode||e.which;
+  teclado=String.fromCharCode(key);
+  numero="0123456789.";
+  especiales="8-37-38-46";
+  teclado_especial=false;
+    for(var i in especiales){
+      if(key==especiales[i]){
+        teclado_especial=true;
+      }
+    }
+    if (numero.indexOf(teclado)==-1 && !teclado_especial) {
+      return false;
+    }
+} 
+
+  function validarConadis(input){
+    const carnet = input.value;
+      if(carnet.substr(2,1) != "."){
+        input.className="form-control is-invalid"
+        input.value=""
+        input.focus();
+      }else{
+        input.className="form-control is-valid"
+      }
+  }
 </script>
 </body>
 </html>
