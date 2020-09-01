@@ -67,7 +67,7 @@ onSubmit = (event) => {
             setTimeout("location.href='registrar.php'", 3000);
         }else{
             $("#icon-message").html( iconError );
-            $("#message").html("<span class='text-danger'>Hubo un error en el registro</span>, probablemente ya se encuentres registrado. Intenta iniciando sesión");
+            $("#message").html("<span class='text-danger'>Hubo un error en el registro</span>, probablemente ya se encuentre registrado como paciente o empleado. Intenta iniciando sesión");
             setTimeout(() => $('#modal-success').modal('hide'), 5000);
             document.getElementById("form-registro").reset();
         }

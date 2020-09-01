@@ -7,8 +7,9 @@ $created = date("Y-m-d H:i:s");
 
 //BUSCAR PRIMERO SI LA CEDULA YA ESTA REGISTRADA!!!!! Y LUEGO REGISTRAR AL USUARIO
 $paciente = $conn->query("SELECT * FROM pacientes WHERE idpacientes = ".$cedula)->rowCount();
+$empleado = $conn->query("SELECT * FROM empleados WHERE id_empleados = ".$cedula)->rowCount();
     
-if($paciente>0){
+if($paciente>0 || $empleado>0){
   echo false;
 }else{
 
