@@ -570,7 +570,7 @@ $conn=null;
                   <div class="form-row">
                       <div class="form-group col-md-3">
                           <label for="carnetConadis">Carnet Conadis</label>
-                          <input type="text" class="form-control" id="carnetConadis" name="carnetConadis" onchange="validarConadis(this);" onkeypress="return soloNumerosConadis(event);" maxLength="5" required disabled="true">
+                          <input type="text" class="form-control" id="carnetConadis" name="carnetConadis" onchange="validarConadis(this);" onkeypress="return soloNumerosConadis(event);" maxLength="6" required disabled="true">
                       </div>
                       <div class="form-group col-md-6">
                           <label for="discapacidad">Discapacidad</label>
