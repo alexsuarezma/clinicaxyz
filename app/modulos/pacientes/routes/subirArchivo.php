@@ -5,6 +5,7 @@ require '../../seguridad/controllers/functions/credenciales.php';
 
 verificarAcceso("../../../../", "modulo_pacientes");
 $paciente = $conn->query("SELECT * FROM pacientes ORDER BY idpacientes ASC")->fetchAll(PDO::FETCH_OBJ);
+$tipoExamen = $conn->query("SELECT * FROM tipo_examen ORDER BY descripcion ASC")->fetchAll(PDO::FETCH_OBJ);
 
 ?>
 <!doctype html>
@@ -63,8 +64,17 @@ printLayout ('../index.php', '../../../../index.php', 'registrar.php', '../../ci
                         
                     </div>
                     <div class="form-group col-md-6">
-                        <label for="decripcion">Descripción</label>
-                        <textarea class="form-control" name="descripcion" id="" cols="30" rows="5" required></textarea>
+                        <label for="tipo">Tipo</label>
+                        <select id="tipo" name="tipo" class="form-control" required>
+                          <option selected disabled value="">Seleccione...</option>
+                          <?php
+                            foreach ($tipoExamen as $Examenes):
+                          ?>
+                            <option value="<?php echo $Examenes->id_tipo_examen;?>"><?php echo utf8_encode($Examenes->descripcion);?></option>
+                          <?php 
+                            endforeach;
+                          ?> 
+                        </select>
                     </div>
                 </div>
                 <div class="d-flex justify-content-end mt-4">
@@ -80,7 +90,7 @@ printLayout ('../index.php', '../../../../index.php', 'registrar.php', '../../ci
         <div class='modal-dialog'>
             <div class='modal-content'>
                 <div class='modal-header'>
-                    <h5 class='modal-title' id='staticBackdropLabel'>REGISTRO SATISFACTORIO</h5>
+                  <h5 class='modal-title' id='staticBackdropLabel'>REGISTRO SATISFACTORIO</h5>
                   
                 </div>
                 <div class='modal-body mb-5'>

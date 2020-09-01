@@ -189,7 +189,7 @@ if ($_SESSION['nombre_credencial']=='Admin Ctas. Medicas' || $_SESSION['modulo_p
       </div>
 
    <li class='nav-item'>
-   <a class='nav-link' href=''>
+   <a class='nav-link' href='../pacientes/routes/pagos.php'>
    <span data-feather='layers'></span>
    Pagos
    </a>

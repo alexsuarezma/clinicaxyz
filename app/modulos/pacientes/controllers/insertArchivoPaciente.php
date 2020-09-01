@@ -7,11 +7,11 @@ extract($_REQUEST);
 $created = date("Y-m-d H:i:s");
   
 try {
-    $sql = "INSERT INTO historial_importado (file_document,descripcion,tipo,created_at,id_pacientes_hi) VALUES (:file_document,:descripcion,:tipo,:created_at,:id_pacientes_hi)";
+    $sql = "INSERT INTO historial_importado (file_document,tipo_himp,created_at,id_pacientes_hi) VALUES (:file_document,:tipo_himp,:created_at,:id_pacientes_hi)";
     $stmt = $conn->prepare($sql);
     $stmt->bindParam(':file_document', $archivo);
-    $stmt->bindParam(':descripcion', $descripcion);
-    $stmt->bindParam(':tipo', $tipo);
+    // $stmt->bindParam(':descripcion', $descripcion);
+    $stmt->bindParam(':tipo_himp', $tipo);
     $stmt->bindParam(':created_at', $created);
     $stmt->bindParam(':id_pacientes_hi', $cedula);
     $stmt->execute();

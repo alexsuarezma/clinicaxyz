@@ -472,15 +472,12 @@ printLayout ('../index.php', '../../../../index.php', 'registrar.php', '../../ci
             <h6 class="font-weight-bold mt-5"> Historial importado del paciente.</h6>
             <hr class="mt-2 mb-4">
             <?php
-                $historial = $conn->query("SELECT * FROM historial_importado WHERE id_pacientes_hi = ".$_GET['cedula']." ORDER BY created_at DESC")->fetchAll(PDO::FETCH_OBJ);
+                $historial = $conn->query("SELECT * FROM historial_importado AS hi, tipo_examen AS te WHERE (hi.tipo_himp=te.id_tipo_examen) AND id_pacientes_hi = ".$_GET['cedula']." ORDER BY created_at DESC")->fetchAll(PDO::FETCH_OBJ);
                     foreach($historial as $Historial):
             ?>
             <div class="d-flex justify-content-around mt-4 mb-5">
                 <div>
-                    <span class="font-weight-bold">Tipo: </span><?php echo $Historial->tipo?>
-                </div>
-                <div>
-                    <span class="font-weight-bold">Descripcion: </span><?php echo $Historial->descripcion?>
+                    <span class="font-weight-bold">Tipo: </span><?php echo utf8_encode($Historial->descripcion)?>
                 </div>
                 <div>
                     <span class="font-weight-bold"> Registrado:</span> <?php echo $Historial->created_at?>
