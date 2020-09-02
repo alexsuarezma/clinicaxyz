@@ -10,7 +10,7 @@ session_start();
           $records->bindParam(':id_usuario', $_SESSION['user_id']);
           $records->execute();
           $results = $records->fetch(PDO::FETCH_ASSOC);
-               if(password_verify(utf8_decode($_POST['password']),$resultado['password'])){
+               if(password_verify(utf8_decode($_POST['password']),$records['password'])){
                     $message='';
                     $response = 'yes';
                     if($_POST['type']== 1){
